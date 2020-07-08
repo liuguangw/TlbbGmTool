@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TlbbGmTool.ViewModels;
 
 namespace TlbbGmTool
 {
@@ -23,6 +24,24 @@ namespace TlbbGmTool
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private MainWindowViewModel GetViewModel()
+        {
+            return DataContext as MainWindowViewModel;
+        }
+
+        private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var vm = GetViewModel();
+            try
+            {
+                await vm.LoadApplicationData();
+            }
+            catch (Exception e1)
+            {
+                MessageBox.Show(e1.Message, "出错了",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
         }
     }
 }

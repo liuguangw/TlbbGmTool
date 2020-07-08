@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace TlbbGmTool.core
+namespace TlbbGmTool.Core
 {
     /// <summary>
     /// 命令类

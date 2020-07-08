@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TlbbGmTool.core
+namespace TlbbGmTool.Core
 {
     /// <summary>
     /// 数据绑定功能基础类

@@ -3,10 +3,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TlbbGmTool"
+        xmlns:local="clr-namespace:TlbbGmTool" 
+        xmlns:pages="clr-namespace:TlbbGmTool.View.Pages"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Loaded="MainWindow_OnLoaded"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="Menu">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Height" Value="25"/>
+        </Style>
+        <pages:AccountList x:Key="accountListPage"/>
+        <pages:RoleList x:Key="roleListPage"/>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="菜单">
+                <MenuItem Header="区服管理"/>
+                <Separator />
+                <MenuItem Header="退出"/>
+            </MenuItem>
+            <MenuItem Header="帮助">
+                <MenuItem Header="关于"/>
+            </MenuItem>
+        </Menu>
+        <DockPanel DockPanel.Dock="Bottom">
+            <WrapPanel DockPanel.Dock="Top" Margin="5">
+                <Label Content="server"/>
+                <ComboBox MinWidth="156" Margin="10,0,0,0" 
+                          ItemsSource="{Binding ServerList}"
+                          DisplayMemberPath="ServerName"/>
+                <Button Margin="10,0,0,0">connect</Button>
+                <Button Margin="10,0,0,0">disconnect</Button>
+            </WrapPanel>
+            <TabControl DockPanel.Dock="Bottom">
+                <TabItem Header="account">
+                    <Frame Content="{StaticResource accountListPage}"/>
+                </TabItem>
+                <TabItem Header="roles">
+                    <Frame Content="{StaticResource roleListPage}"/>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </DockPanel>
 </Window>
