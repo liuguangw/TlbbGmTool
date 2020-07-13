@@ -15,7 +15,7 @@ namespace TlbbGmTool.Core
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// 设置属性
+        /// 设置属性,如果属性发生变化则返回true
         /// </summary>
         /// <typeparam name="T">属性类型</typeparam>
         /// <param name="storage">存储值引用</param>
