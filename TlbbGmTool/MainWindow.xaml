@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="480" Width="800">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -22,8 +22,8 @@
         <Style TargetType="MenuItem">
             <Setter Property="Height" Value="25" />
         </Style>
-        <pages:AccountList x:Key="accountListPage" />
-        <pages:RoleList x:Key="roleListPage" />
+        <pages:AccountList x:Key="AccountListPage"/>
+        <pages:RoleList x:Key="RoleListPage" />
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -36,8 +36,12 @@
                 <MenuItem Header="关于" />
             </MenuItem>
         </Menu>
-        <DockPanel DockPanel.Dock="Bottom">
-            <WrapPanel DockPanel.Dock="Top" Margin="5">
+        <Grid DockPanel.Dock="Bottom" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <WrapPanel Grid.Row="0">
                 <Label Content="server" />
                 <ComboBox MinWidth="156" Margin="10,0,0,0"
                           IsEnabled="{Binding CanSelectServer}"
@@ -51,14 +55,14 @@
                     disconnect
                 </Button>
             </WrapPanel>
-            <TabControl DockPanel.Dock="Bottom">
+            <TabControl Grid.Row="1" Margin="0,5,0,0" IsEnabled="{Binding CanDisconnectServer}">
                 <TabItem Header="account">
-                    <Frame Content="{StaticResource accountListPage}" />
+                    <Frame Content="{StaticResource AccountListPage}" />
                 </TabItem>
                 <TabItem Header="roles">
-                    <Frame Content="{StaticResource roleListPage}" />
+                    <Frame Content="{StaticResource RoleListPage}" />
                 </TabItem>
             </TabControl>
-        </DockPanel>
+        </Grid>
     </DockPanel>
 </Window>

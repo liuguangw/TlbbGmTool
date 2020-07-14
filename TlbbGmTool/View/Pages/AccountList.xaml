@@ -1,14 +1,41 @@
 ﻿<Page x:Class="TlbbGmTool.View.Pages.AccountList"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
-      mc:Ignorable="d" 
+      xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+      mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
+      Loaded="AccountList_OnLoaded"
       Title="AccountList">
-
+    <Page.DataContext>
+        <vm:AccountListViewModel />
+    </Page.DataContext>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0" Margin="0,5">
+            <Label Content="username" />
+            <TextBox Margin="10,0,0,0" MinWidth="156" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
+            <Button Margin="10,0,0,0" Command="{Binding SearchCommand}">search</Button>
+        </WrapPanel>
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                  Margin="10,0" ItemsSource="{Binding AccountList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="45" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="ID" Binding="{Binding Id}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="150" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="账号" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="密码" Binding="{Binding Password}" />
+                <DataGridTextColumn Width="140" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="邮箱" Binding="{Binding Email}" />
+                <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="点数" Binding="{Binding Point}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Page>

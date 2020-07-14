@@ -39,18 +39,17 @@ namespace TlbbGmTool.Services
             {
                 throw new Exception($"解析配置文件{configPath}出错,{e.Message}");
             }
-
             var serverList = from serverEl in
                     serverXml.Descendants("server")
                 select new GameServer()
                 {
-                    ServerName = (serverEl.Attribute("name")?.Value) ?? string.Empty,
-                    DbHost = (serverEl.Element("host")?.Value) ?? string.Empty,
-                    DbPort = (serverEl.Element("port")?.Value) ?? string.Empty,
-                    AccountDbName = (serverEl.Element("accountDb")?.Value) ?? string.Empty,
-                    GameDbName = (serverEl.Element("gameDb")?.Value) ?? string.Empty,
-                    DbUser = (serverEl.Element("user")?.Value) ?? string.Empty,
-                    DbPassword = (serverEl.Element("password")?.Value) ?? string.Empty,
+                    ServerName = serverEl.Attribute("name")?.Value ?? string.Empty,
+                    DbHost = serverEl.Element("host")?.Value ?? string.Empty,
+                    DbPort = Convert.ToUInt32(serverEl.Element("port")?.Value ?? "3306"),
+                    AccountDbName = serverEl.Element("accountDb")?.Value ?? string.Empty,
+                    GameDbName = serverEl.Element("gameDb")?.Value ?? string.Empty,
+                    DbUser = serverEl.Element("user")?.Value ?? string.Empty,
+                    DbPassword = serverEl.Element("password")?.Value ?? string.Empty,
                 };
             return serverList;
         }

@@ -9,12 +9,12 @@ namespace TlbbGmTool.Models
 
         private string _serverName = string.Empty;
         private string _dbHost = string.Empty;
-        private string _dbPort = string.Empty;
+        private uint _dbPort;
         private string _accountDbName = string.Empty;
         private string _gameDbName = string.Empty;
         private string _dbUser = string.Empty;
         private string _dbPassword = string.Empty;
-        private bool _connected = false;
+        private bool _connected;
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace TlbbGmTool.Models
         /// <summary>
         /// 端口
         /// </summary>
-        public string DbPort
+        public uint DbPort
         {
             get => _dbPort;
             set => SetProperty(ref _dbPort, value);

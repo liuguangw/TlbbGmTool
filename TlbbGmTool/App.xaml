@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:TlbbGmTool"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="TextColumnStyle"  TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Padding" Value="5,0,0,0"/>
+        </Style>
     </Application.Resources>
 </Application>

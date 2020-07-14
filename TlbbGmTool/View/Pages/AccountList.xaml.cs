@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using TlbbGmTool.ViewModels;
 
 namespace TlbbGmTool.View.Pages
 {
@@ -23,6 +12,39 @@ namespace TlbbGmTool.View.Pages
         public AccountList()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// 主窗体对象
+        /// </summary>
+        /// <returns></returns>
+        private MainWindow GetMainWindow()
+        {
+            return Window.GetWindow(this) as MainWindow;
+        }
+
+        /// <summary>
+        /// 主窗体绑定的ViewModel对象
+        /// </summary>
+        /// <returns></returns>
+        private MainWindowViewModel GetMainWindowViewModel()
+        {
+            return GetMainWindow().DataContext as MainWindowViewModel;
+        }
+
+        /// <summary>
+        /// 当前Page绑定的ViewModel对象
+        /// </summary>
+        /// <returns></returns>
+        private AccountListViewModel GetViewModel()
+        {
+            return DataContext as AccountListViewModel;
+        }
+
+        private void AccountList_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // 存储主窗口ViewModel对象
+            GetViewModel().MainWindowViewModel = GetMainWindowViewModel();
         }
     }
 }

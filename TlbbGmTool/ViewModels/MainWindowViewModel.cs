@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.Services;
@@ -15,7 +17,12 @@ namespace TlbbGmTool.ViewModels
 
         private GameServer _selectedServer;
 
-        private bool _connected;
+        private DatabaseConnectionStatus _connectionStatus = DatabaseConnectionStatus.NoConnection;
+
+        /// <summary>
+        /// MySQL连接
+        /// </summary>
+        private MySqlConnection _mySqlConnection;
 
         #endregion
 
@@ -35,26 +42,27 @@ namespace TlbbGmTool.ViewModels
             set => SetProperty(ref _selectedServer, value);
         }
 
-        /// <summary>
-        /// connection status
-        /// </summary>
-        public bool Connected
+        public DatabaseConnectionStatus ConnectionStatus
         {
-            get => _connected;
-            set
+            get => _connectionStatus;
+            private set
             {
-                if (!SetProperty(ref _connected, value))
+                if (!SetProperty(ref _connectionStatus, value))
                 {
                     return;
                 }
 
                 RaisePropertyChanged(nameof(CanSelectServer));
+                RaisePropertyChanged(nameof(CanDisconnectServer));
                 ConnectCommand?.RaiseCanExecuteChanged();
                 DisconnectCommand?.RaiseCanExecuteChanged();
             }
         }
 
-        public bool CanSelectServer => ServerList.Count > 0 && !_connected;
+        public bool CanSelectServer =>
+            ServerList.Count > 0 && _connectionStatus == DatabaseConnectionStatus.NoConnection;
+
+        public bool CanDisconnectServer => _connectionStatus == DatabaseConnectionStatus.Connected;
 
         /// <summary>
         /// 连接命令
@@ -66,6 +74,20 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         public AppCommand DisconnectCommand { get; }
 
+        public MySqlConnection MySqlConnection
+        {
+            get => _mySqlConnection;
+            private set
+            {
+                if (SetProperty(ref _mySqlConnection, value))
+                {
+                    ConnectionStatus = value == null
+                        ? DatabaseConnectionStatus.NoConnection
+                        : DatabaseConnectionStatus.Connected;
+                }
+            }
+        }
+
         #endregion
 
         public MainWindowViewModel()
@@ -73,7 +95,7 @@ namespace TlbbGmTool.ViewModels
             ConnectCommand = new AppCommand(ConnectServer,
                 () => CanSelectServer);
             DisconnectCommand = new AppCommand(DisconnectServer,
-                () => Connected);
+                () => CanDisconnectServer);
             ServerList.CollectionChanged += (sender, e)
                 =>
             {
@@ -98,26 +120,66 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
-        public async void ConnectServer()
+        public void showErrorMessage(string title, string content)
         {
-            if (SelectedServer == null)
-            {
-                return;
-            }
-
-            SelectedServer.Connected = true;
-            Connected = true;
+            MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        public async void DisconnectServer()
+        private async void ConnectServer()
         {
             if (SelectedServer == null)
             {
                 return;
             }
 
+            var connectionStringBuilder = new MySqlConnectionStringBuilder
+            {
+                Server = _selectedServer.DbHost,
+                Port = _selectedServer.DbPort,
+                Database = _selectedServer.AccountDbName,
+                UserID = _selectedServer.DbUser,
+                Password = _selectedServer.DbPassword
+            };
+
+            var mySqlConnection = new MySqlConnection
+            {
+                ConnectionString = connectionStringBuilder.GetConnectionString(true),
+            };
+            try
+            {
+                ConnectionStatus = DatabaseConnectionStatus.Pending;
+                await Task.Run(async () => await mySqlConnection.OpenAsync());
+            }
+            catch (Exception e)
+            {
+                ConnectionStatus = DatabaseConnectionStatus.NoConnection;
+                showErrorMessage("连接数据库出错", e.Message);
+                return;
+            }
+
+            MySqlConnection = mySqlConnection;
+            SelectedServer.Connected = true;
+        }
+
+        private async void DisconnectServer()
+        {
+            if (SelectedServer == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ConnectionStatus = DatabaseConnectionStatus.Pending;
+                await _mySqlConnection.CloseAsync();
+            }
+            catch (Exception e)
+            {
+                showErrorMessage("断开连接出错", e.Message);
+            }
+
+            MySqlConnection = null;
             SelectedServer.Connected = false;
-            Connected = false;
         }
     }
 }
