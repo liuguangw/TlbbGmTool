@@ -26,7 +26,7 @@ namespace TlbbGmTool.ViewModels
         /// <summary>
         /// Main window ViewModel
         /// </summary>
-        public MainWindowViewModel MainWindowViewModel { private get; set; }
+        public MainWindowViewModel MainWindowViewModel { get; set; }
 
         #region Properties
 
@@ -120,11 +120,13 @@ namespace TlbbGmTool.ViewModels
                         };
                         //可能为null的列
                         var ordinal = rd.GetOrdinal("question");
-                        userAccount.Question = rd.IsDBNull(ordinal) ? string.Empty : rd.GetString(ordinal);
+                        userAccount.Question = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
                         ordinal = rd.GetOrdinal("answer");
-                        userAccount.Answer = rd.IsDBNull(ordinal) ? string.Empty : rd.GetString(ordinal);
+                        userAccount.Answer = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
                         ordinal = rd.GetOrdinal("email");
-                        userAccount.Email = rd.IsDBNull(ordinal) ? string.Empty : rd.GetString(ordinal);
+                        userAccount.Email = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
+                        ordinal = rd.GetOrdinal("id_card");
+                        userAccount.IdCard = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
                         //add to list
                         accountList.Add(userAccount);
                     }

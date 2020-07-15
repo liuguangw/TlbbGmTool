@@ -12,6 +12,7 @@ namespace TlbbGmTool.Models
         private string _question = string.Empty;
         private string _answer = string.Empty;
         private string _email = string.Empty;
+        private string _id_card;
         private int _point;
 
         #endregion
@@ -52,6 +53,24 @@ namespace TlbbGmTool.Models
         {
             get => _email;
             set => SetProperty(ref _email, value);
+        }
+
+        public string IdCard
+        {
+            get => _id_card;
+            set
+            {
+                if (SetProperty(ref _id_card, value))
+                {
+                    RaisePropertyChanged(nameof(IsLock));
+                }
+            }
+        }
+
+        public bool IsLock
+        {
+            get => _id_card == "1";
+            set => IdCard = value ? "1" : null;
         }
 
         public int Point

@@ -22,7 +22,7 @@
         <Style TargetType="MenuItem">
             <Setter Property="Height" Value="25" />
         </Style>
-        <pages:AccountList x:Key="AccountListPage"/>
+        <pages:AccountList x:Key="AccountListPage" />
         <pages:RoleList x:Key="RoleListPage" />
     </Window.Resources>
     <DockPanel>
@@ -44,9 +44,10 @@
             <WrapPanel Grid.Row="0">
                 <Label Content="server" />
                 <ComboBox MinWidth="156" Margin="10,0,0,0"
+                          VerticalContentAlignment="Center"
                           IsEnabled="{Binding CanSelectServer}"
                           ItemsSource="{Binding ServerList}"
-                          SelectedValue="{Binding SelectedServer}"
+                          SelectedItem="{Binding SelectedServer}"
                           DisplayMemberPath="ServerName" />
                 <Button Margin="10,0,0,0" Command="{Binding ConnectCommand}">
                     connect
