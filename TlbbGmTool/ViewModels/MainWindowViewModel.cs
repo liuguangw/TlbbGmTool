@@ -120,10 +120,9 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
-        public void showErrorMessage(string title, string content)
-        {
-            MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        public void ShowErrorMessage(string title, string content) => MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Error);
+
+        public void ShowSuccessMessage(string title, string content) => MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Information);
 
         private async void ConnectServer()
         {
@@ -153,7 +152,7 @@ namespace TlbbGmTool.ViewModels
             catch (Exception e)
             {
                 ConnectionStatus = DatabaseConnectionStatus.NoConnection;
-                showErrorMessage("连接数据库出错", e.Message);
+                ShowErrorMessage("连接数据库出错", e.Message);
                 return;
             }
 
@@ -175,7 +174,7 @@ namespace TlbbGmTool.ViewModels
             }
             catch (Exception e)
             {
-                showErrorMessage("断开连接出错", e.Message);
+                ShowErrorMessage("断开连接出错", e.Message);
             }
 
             MySqlConnection = null;

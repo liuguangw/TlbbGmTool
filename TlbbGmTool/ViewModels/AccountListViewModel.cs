@@ -65,7 +65,7 @@ namespace TlbbGmTool.ViewModels
         {
             if (MainWindowViewModel.ConnectionStatus != DatabaseConnectionStatus.Connected)
             {
-                MainWindowViewModel.showErrorMessage("出错了", "数据库未连接");
+                MainWindowViewModel.ShowErrorMessage("出错了", "数据库未连接");
                 return;
             }
 
@@ -80,7 +80,7 @@ namespace TlbbGmTool.ViewModels
             }
             catch (Exception e)
             {
-                MainWindowViewModel.showErrorMessage("搜索出错", e.Message);
+                MainWindowViewModel.ShowErrorMessage("搜索出错", e.Message);
             }
         }
 

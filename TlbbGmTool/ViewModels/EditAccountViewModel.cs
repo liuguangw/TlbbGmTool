@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
@@ -12,8 +13,9 @@ namespace TlbbGmTool.ViewModels
     {
         #region Fields
 
-        private AccountListViewModel _accountListViewModel;
+        private MainWindowViewModel _mainWindowViewModel;
         private UserAccount _userAccount;
+        private EditAccountWindow _editAccountWindow;
 
         private ComboBoxNode<string> _selectedStatus = new ComboBoxNode<string>();
 
@@ -44,10 +46,12 @@ namespace TlbbGmTool.ViewModels
             SaveAccountCommand = new AppCommand(SaveToDatabase);
         }
 
-        public void InitData(AccountListViewModel accountListViewModel, UserAccount userAccount)
+        public void InitData(MainWindowViewModel mainWindowViewModel, UserAccount userAccount,
+            EditAccountWindow editAccountWindow)
         {
-            _accountListViewModel = accountListViewModel;
+            _mainWindowViewModel = mainWindowViewModel;
             _userAccount = userAccount;
+            _editAccountWindow = editAccountWindow;
             Id = userAccount.Id;
             Name = userAccount.Name;
             Password = userAccount.Password;
@@ -82,8 +86,7 @@ namespace TlbbGmTool.ViewModels
             }
             catch (Exception e)
             {
-                var mainWindowViewModel = _accountListViewModel.MainWindowViewModel;
-                mainWindowViewModel.showErrorMessage("保存失败", e.Message);
+                _mainWindowViewModel.ShowErrorMessage("保存失败", e.Message);
                 return;
             }
 
@@ -94,67 +97,45 @@ namespace TlbbGmTool.ViewModels
             _userAccount.Email = Email;
             _userAccount.IdCard = IdCard;
             _userAccount.Point = Point;
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存账号信息成功");
+            _editAccountWindow.Close();
         }
 
         private async Task DoSaveToDatabase()
         {
-            RaisePropertyChanged(nameof(SelectedStatus));
-            var mainWindowViewModel = _accountListViewModel.MainWindowViewModel;
-            var mySqlConnection = mainWindowViewModel.MySqlConnection;
-            const string sql = "UPDATE account SET name=@name,password=@password,question=@question,answer=@answer" +
-                               ",email=@email,id_card=@idCard,point=@point WHERE id=@id";
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            const string sql =
+                "UPDATE account SET name=@name,password=@password" +
+                ",question=@question,answer=@answer,email=@email,id_card=@idCard,point=@point WHERE id=@id";
             var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            //name
-            var param = new MySqlParameter("@name", MySqlDbType.String)
+            //字符串参数
+            var paramDictionary = new Dictionary<string, string>
             {
-                Value = Name
+                ["name"] = Name,
+                ["password"] = Password,
+                ["question"] = Question,
+                ["answer"] = Answer,
+                ["email"] = Email,
+                ["idCard"] = IdCard,
             };
-            mySqlCommand.Parameters.Add(param);
-            //password
-            param = new MySqlParameter("@password", MySqlDbType.String)
-            {
-                Value = Password
-            };
-            mySqlCommand.Parameters.Add(param);
-            //question
-            param = new MySqlParameter("@question", MySqlDbType.String)
-            {
-                Value = Question
-            };
-            mySqlCommand.Parameters.Add(param);
-            //answer
-            param = new MySqlParameter("@answer", MySqlDbType.String)
-            {
-                Value = Answer
-            };
-            mySqlCommand.Parameters.Add(param);
-            //email
-            param = new MySqlParameter("@email", MySqlDbType.String)
-            {
-                Value = Email
-            };
-            mySqlCommand.Parameters.Add(param);
-            //id_card
-            param = new MySqlParameter("@idCard", MySqlDbType.String)
-            {
-                Value = IdCard
-            };
-            mySqlCommand.Parameters.Add(param);
-            //point
-            param = new MySqlParameter("@point", MySqlDbType.Int32)
+            var mySqlParameters = (from paramInfo in paramDictionary
+                select new MySqlParameter("@" + paramInfo.Key, MySqlDbType.String)
+                {
+                    Value = paramInfo.Value
+                }).ToList();
+            //int类型参数
+            mySqlParameters.Add(new MySqlParameter("@point", MySqlDbType.Int32)
             {
                 Value = Point
-            };
-            mySqlCommand.Parameters.Add(param);
-            //id
-            param = new MySqlParameter("@id", MySqlDbType.String)
+            });
+            mySqlParameters.Add(new MySqlParameter("@id", MySqlDbType.Int32)
             {
                 Value = Id
-            };
-            mySqlCommand.Parameters.Add(param);
+            });
+            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
             await Task.Run(async () =>
             {
-                var accountDbName = mainWindowViewModel.SelectedServer.AccountDbName;
+                var accountDbName = _mainWindowViewModel.SelectedServer.AccountDbName;
                 if (mySqlConnection.Database != accountDbName)
                 {
                     // 切换数据库

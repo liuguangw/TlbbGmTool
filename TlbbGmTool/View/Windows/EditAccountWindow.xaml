@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
         xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
         mc:Ignorable="d"
+        ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Title="修改账户信息" Height="300" Width="400">
     <Window.DataContext>

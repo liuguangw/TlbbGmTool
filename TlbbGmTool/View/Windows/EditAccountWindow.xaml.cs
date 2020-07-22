@@ -6,10 +6,10 @@ namespace TlbbGmTool.View.Windows
 {
     public partial class EditAccountWindow : Window
     {
-        public EditAccountWindow(AccountListViewModel accountListViewModel, UserAccount userAccount)
+        public EditAccountWindow(MainWindowViewModel mainWindowViewModel, UserAccount userAccount)
         {
             InitializeComponent();
-            GetViewModel().InitData(accountListViewModel, userAccount);
+            GetViewModel().InitData(mainWindowViewModel, userAccount, this);
         }
 
         private EditAccountViewModel GetViewModel()

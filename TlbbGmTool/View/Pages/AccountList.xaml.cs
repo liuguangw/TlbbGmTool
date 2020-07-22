@@ -58,7 +58,7 @@ namespace TlbbGmTool.View.Pages
         {
             var btn = sender as Button;
             var userAccount = btn.DataContext as UserAccount;
-            var editAccountWindow = new EditAccountWindow(GetViewModel(), userAccount)
+            var editAccountWindow = new EditAccountWindow(GetViewModel().MainWindowViewModel, userAccount)
             {
                 Owner = GetMainWindow()
             };
