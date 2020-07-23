@@ -36,13 +36,7 @@ namespace TlbbGmTool.ViewModels
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (SetProperty(ref _searchText, value))
-                {
-                    SearchCommand.RaiseCanExecuteChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         /// <summary>
@@ -54,8 +48,7 @@ namespace TlbbGmTool.ViewModels
 
         public AccountListViewModel()
         {
-            SearchCommand = new AppCommand(SearchAccount,
-                () => _searchText != string.Empty);
+            SearchCommand = new AppCommand(SearchAccount);
         }
 
         /// <summary>
@@ -88,13 +81,22 @@ namespace TlbbGmTool.ViewModels
         {
             var accountList = new List<UserAccount>();
             var mySqlConnection = MainWindowViewModel.MySqlConnection;
-            const string sql = "SELECT * FROM account WHERE name like @searchText";
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            var searchParam = new MySqlParameter("@searchText", MySqlDbType.String)
+            var sql = "SELECT * FROM account";
+            if (_searchText != string.Empty)
             {
-                Value = $"%{_searchText}%"
-            };
-            mySqlCommand.Parameters.Add(searchParam);
+                sql += " WHERE name like @searchText";
+            }
+
+            sql += " ORDER BY id ASC LIMIT 50";
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            if (_searchText != string.Empty)
+            {
+                var searchParam = new MySqlParameter("@searchText", MySqlDbType.String)
+                {
+                    Value = $"%{_searchText}%"
+                };
+                mySqlCommand.Parameters.Add(searchParam);
+            }
             await Task.Run(async () =>
             {
                 var accountDbName = MainWindowViewModel.SelectedServer.AccountDbName;

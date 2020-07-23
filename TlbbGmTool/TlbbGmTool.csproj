@@ -120,13 +120,16 @@
     <Compile Include="Core\ComboBoxNode.cs" />
     <Compile Include="Core\Convert\IsLockToTipConvert.cs" />
     <Compile Include="Models\DatabaseConnectionStatus.cs" />
+    <Compile Include="Models\GameRole.cs" />
     <Compile Include="Models\GameServer.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ServerService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />
+    <Compile Include="ViewModels\EditRoleWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\RoleListViewModel.cs" />
     <Compile Include="View\Pages\AccountList.xaml.cs">
       <DependentUpon>AccountList.xaml</DependentUpon>
     </Compile>
@@ -135,6 +138,9 @@
     </Compile>
     <Compile Include="View\Windows\EditAccountWindow.xaml.cs">
       <DependentUpon>EditAccountWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Windows\EditRoleWindow.xaml.cs">
+      <DependentUpon>EditRoleWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -159,6 +165,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Windows\EditAccountWindow.xaml" />
+    <Page Include="View\Windows\EditRoleWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -52,6 +52,7 @@ namespace TlbbGmTool.ViewModels
             _mainWindowViewModel = mainWindowViewModel;
             _userAccount = userAccount;
             _editAccountWindow = editAccountWindow;
+            //初始化属性
             Id = userAccount.Id;
             Name = userAccount.Name;
             Password = userAccount.Password;
