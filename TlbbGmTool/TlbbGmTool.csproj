@@ -124,6 +124,7 @@
     <Compile Include="Models\GameServer.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\DbStringService.cs" />
     <Compile Include="Services\ServerService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />

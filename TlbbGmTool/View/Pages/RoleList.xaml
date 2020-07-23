@@ -18,9 +18,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Margin="0,5">
-            <Label Content="nickname" />
-            <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
-            <Button Margin="10,0,0,0" Command="{Binding SearchCommand}">search</Button>
+            <Label Content="rolename" />
+            <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding RoleSearchText}" />
+            <Label Margin="13,0,0,0" Content="account name" />
+            <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding AccountSearchText}" />
+            <Button Margin="15,0,0,0" Command="{Binding SearchCommand}">search</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
                   Margin="10,0" ItemsSource="{Binding RoleList}">

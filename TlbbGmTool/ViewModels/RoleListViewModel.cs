@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.Services;
 
 namespace TlbbGmTool.ViewModels
 {
@@ -12,7 +14,8 @@ namespace TlbbGmTool.ViewModels
     {
         #region Fields
 
-        private string _searchText = string.Empty;
+        private string _roleSearchText = string.Empty;
+        private string _accountSearchText = string.Empty;
 
         #endregion
 
@@ -31,12 +34,21 @@ namespace TlbbGmTool.ViewModels
         #region Properties
 
         /// <summary>
-        /// 搜索文本
+        /// 搜索昵称的文本
         /// </summary>
-        public string SearchText
+        public string RoleSearchText
         {
-            get => _searchText;
-            set => SetProperty(ref _searchText, value);
+            get => _roleSearchText;
+            set => SetProperty(ref _roleSearchText, value);
+        }
+
+        /// <summary>
+        /// 搜索账号的文本
+        /// </summary>
+        public string AccountSearchText
+        {
+            get => _accountSearchText;
+            set => SetProperty(ref _accountSearchText, value);
         }
 
         /// <summary>
@@ -78,23 +90,40 @@ namespace TlbbGmTool.ViewModels
         {
             var roleList = new List<GameRole>();
             var mySqlConnection = MainWindowViewModel.MySqlConnection;
+            //构造SQL语句
             var sql = "SELECT * FROM t_char";
-            if (_searchText != string.Empty)
+            var searchDictionary = new Dictionary<string, string>();
+            if (_roleSearchText != string.Empty || _accountSearchText != string.Empty)
             {
-                sql += " WHERE charname like @searchText";
+                var conditionStr = string.Empty;
+                if (_roleSearchText != string.Empty)
+                {
+                    searchDictionary["charname"] = DbStringService.ToDbString(_roleSearchText);
+                    conditionStr = "charname LIKE @charname";
+                }
+
+                if (_accountSearchText != string.Empty)
+                {
+                    searchDictionary["accname"] = _accountSearchText;
+                    if (conditionStr != string.Empty)
+                    {
+                        conditionStr += " AND ";
+                    }
+
+                    conditionStr += "accname LIKE @accname";
+                }
+
+                sql += " WHERE " + conditionStr;
             }
 
             sql += " ORDER BY aid ASC LIMIT 50";
             var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            if (_searchText != string.Empty)
-            {
-                var searchParam = new MySqlParameter("@searchText", MySqlDbType.String)
+            var mySqlParameters = (from searchInfo in searchDictionary
+                select new MySqlParameter($"@{searchInfo.Key}", MySqlDbType.String)
                 {
-                    Value = $"%{_searchText}%"
-                };
-                mySqlCommand.Parameters.Add(searchParam);
-            }
-
+                    Value = $"%{searchInfo.Value}%"
+                }).ToList();
+            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
             await Task.Run(async () =>
             {
                 var gameDbName = MainWindowViewModel.SelectedServer.GameDbName;
@@ -113,8 +142,8 @@ namespace TlbbGmTool.ViewModels
                             Aid = rd.GetInt32("aid"),
                             Accname = rd.GetString("accname"),
                             Charguid = rd.GetInt32("charguid"),
-                            Charname = rd.GetString("charname"),
-                            Title = rd.GetString("title"),
+                            Charname = DbStringService.ToCommonString(rd.GetString("charname")),
+                            Title = DbStringService.ToCommonString(rd.GetString("title")),
                             Menpai = rd.GetInt32("menpai"),
                             Level = rd.GetInt32("level"),
                             Scene = rd.GetInt32("scene"),
