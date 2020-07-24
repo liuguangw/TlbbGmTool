@@ -5,10 +5,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
         xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        xmlns:pages="clr-namespace:TlbbGmTool.View.Pages"
         mc:Ignorable="d"
-        Title="EditRoleWindow" Height="450" Width="800">
+        WindowStartupLocation="CenterOwner"
+        Title="{Binding WindowTitle}" Height="480" Width="800">
     <Window.DataContext>
         <vm:EditRoleWindowViewModel />
     </Window.DataContext>
-    <Grid />
+    <Window.Resources>
+        <pages:EditRolePage x:Key="EditRolePage" />
+    </Window.Resources>
+    <DockPanel>
+        <TabControl Margin="5">
+            <TabItem Header="role">
+                <Frame Content="{StaticResource EditRolePage}" />
+            </TabItem>
+            <TabItem Header="items">
+                <Label>test</Label>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>
