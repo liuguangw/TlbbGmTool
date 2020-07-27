@@ -24,7 +24,7 @@
             <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding AccountSearchText}" />
             <Button Margin="15,0,0,0" Command="{Binding SearchCommand}">search</Button>
         </WrapPanel>
-        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10,0" ItemsSource="{Binding RoleList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="86" ElementStyle="{StaticResource TextColumnStyle}"

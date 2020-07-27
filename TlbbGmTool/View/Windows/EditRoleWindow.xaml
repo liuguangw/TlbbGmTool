@@ -8,17 +8,22 @@
         xmlns:pages="clr-namespace:TlbbGmTool.View.Pages"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
         Title="{Binding WindowTitle}" Height="480" Width="800">
     <Window.DataContext>
         <vm:EditRoleWindowViewModel />
     </Window.DataContext>
     <Window.Resources>
         <pages:EditRolePage x:Key="EditRolePage" />
+        <pages:XinFaList x:Key="XinFaList" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
             <TabItem Header="role">
                 <Frame Content="{StaticResource EditRolePage}" />
+            </TabItem>
+            <TabItem Header="xinfa">
+                <Frame Content="{StaticResource XinFaList}" />
             </TabItem>
             <TabItem Header="items">
                 <Label>test</Label>
