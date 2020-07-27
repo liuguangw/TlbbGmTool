@@ -122,6 +122,7 @@
     <Compile Include="Models\DatabaseConnectionStatus.cs" />
     <Compile Include="Models\GameRole.cs" />
     <Compile Include="Models\GameServer.cs" />
+    <Compile Include="Models\Pet.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Models\XinFa.cs" />
     <Compile Include="Services\AccountService.cs" />
@@ -129,10 +130,12 @@
     <Compile Include="Services\ServerService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />
+    <Compile Include="ViewModels\EditPetViewModel.cs" />
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\EditRoleWindowViewModel.cs" />
     <Compile Include="ViewModels\EditXinFaViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\PetListViewModel.cs" />
     <Compile Include="ViewModels\RoleListViewModel.cs" />
     <Compile Include="ViewModels\XinFaListViewModel.cs" />
     <Compile Include="View\Pages\AccountList.xaml.cs">
@@ -140,6 +143,9 @@
     </Compile>
     <Compile Include="View\Pages\EditRolePage.xaml.cs">
       <DependentUpon>EditRolePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Pages\PetList.xaml.cs">
+      <DependentUpon>PetList.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Pages\RoleList.xaml.cs">
       <DependentUpon>RoleList.xaml</DependentUpon>
@@ -149,6 +155,9 @@
     </Compile>
     <Compile Include="View\Windows\EditAccountWindow.xaml.cs">
       <DependentUpon>EditAccountWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Windows\EditPetWindow.xaml.cs">
+      <DependentUpon>EditPetWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Windows\EditRoleWindow.xaml.cs">
       <DependentUpon>EditRoleWindow.xaml</DependentUpon>
@@ -175,12 +184,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Pages\EditRolePage.xaml" />
+    <Page Include="View\Pages\PetList.xaml" />
     <Page Include="View\Pages\RoleList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Pages\XinFaList.xaml" />
     <Page Include="View\Windows\EditAccountWindow.xaml" />
+    <Page Include="View\Windows\EditPetWindow.xaml" />
     <Page Include="View\Windows\EditRoleWindow.xaml" />
     <Page Include="View\Windows\EditXinFaWindow.xaml" />
   </ItemGroup>

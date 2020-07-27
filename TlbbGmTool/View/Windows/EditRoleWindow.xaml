@@ -16,6 +16,7 @@
     <Window.Resources>
         <pages:EditRolePage x:Key="EditRolePage" />
         <pages:XinFaList x:Key="XinFaList" />
+        <pages:PetList x:Key="PetList" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
@@ -24,6 +25,9 @@
             </TabItem>
             <TabItem Header="xinfa">
                 <Frame Content="{StaticResource XinFaList}" />
+            </TabItem>
+            <TabItem Header="pet">
+                <Frame Content="{StaticResource PetList}" />
             </TabItem>
             <TabItem Header="items">
                 <Label>test</Label>
