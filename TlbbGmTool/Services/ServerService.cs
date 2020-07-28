@@ -8,17 +8,24 @@ using TlbbGmTool.Models;
 
 namespace TlbbGmTool.Services
 {
-    public class ServerService
+    public static class ServerService
     {
-        public static async Task<IEnumerable<GameServer>> LoadGameServers(string configPath)
+        private static string GetConfigFilePath()
         {
-            if (!File.Exists(configPath))
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            return Path.Combine(baseDir, "config", "servers.xml");
+        }
+
+        public static async Task<IEnumerable<GameServer>> LoadGameServers()
+        {
+            var configFilePath = GetConfigFilePath();
+            if (!File.Exists(configFilePath))
             {
-                throw new Exception($"配置文件{configPath}不存在");
+                throw new Exception($"配置文件{configFilePath}不存在");
             }
 
             string fileContent;
-            using (var streamReader = File.OpenText(configPath))
+            using (var streamReader = File.OpenText(configFilePath))
             {
                 try
                 {
@@ -26,7 +33,7 @@ namespace TlbbGmTool.Services
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"读取配置文件{configPath}出错,{e.Message}");
+                    throw new Exception($"读取配置文件{configFilePath}出错,{e.Message}");
                 }
             }
 
@@ -37,8 +44,9 @@ namespace TlbbGmTool.Services
             }
             catch (Exception e)
             {
-                throw new Exception($"解析配置文件{configPath}出错,{e.Message}");
+                throw new Exception($"解析配置文件{configFilePath}出错,{e.Message}");
             }
+
             var serverList = from serverEl in
                     serverXml.Descendants("server")
                 select new GameServer()
@@ -52,6 +60,39 @@ namespace TlbbGmTool.Services
                     DbPassword = serverEl.Element("password")?.Value ?? string.Empty,
                 };
             return serverList;
+        }
+
+        public static async Task SaveGameServers(IEnumerable<GameServer> gameServers)
+        {
+            var configFilePath = GetConfigFilePath();
+            var xmlTree = new XElement("servers");
+            xmlTree.Add(
+                from gameServer in gameServers
+                select new XElement("server",
+                    new XAttribute("name", gameServer.ServerName),
+                    new XElement("host", gameServer.DbHost),
+                    new XElement("port", gameServer.DbPort),
+                    new XElement("accountDb", gameServer.AccountDbName),
+                    new XElement("gameDb", gameServer.GameDbName),
+                    new XElement("user", gameServer.DbUser),
+                    new XElement("password", gameServer.DbPassword)
+                )
+            );
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    using (var fileStream = File.Open(configFilePath,FileMode.Truncate))
+                    {
+                        xmlTree.Save(fileStream);
+                        await fileStream.FlushAsync();
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"保存配置文件{configFilePath}出错,{e.Message}");
+                }
+            });
         }
     }
 }

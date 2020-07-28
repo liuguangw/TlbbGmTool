@@ -85,9 +85,16 @@ namespace TlbbGmTool.Models
 
         public bool Connected
         {
-            get => _connected;
-            set => SetProperty(ref _connected, value);
+            set
+            {
+                if (SetProperty(ref _connected, value))
+                {
+                    RaisePropertyChanged(nameof(CanEdit));
+                }
+            }
         }
+
+        public bool CanEdit => !_connected;
 
         #endregion
     }

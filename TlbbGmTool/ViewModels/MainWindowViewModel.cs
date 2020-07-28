@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -106,14 +105,11 @@ namespace TlbbGmTool.ViewModels
 
         public async Task LoadApplicationData()
         {
-            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            var configFilePath = Path.Combine(baseDir, "config", "servers.xml");
-            var servers = await ServerService.LoadGameServers(configFilePath);
+            var servers = await ServerService.LoadGameServers();
             foreach (var server in servers)
             {
                 ServerList.Add(server);
             }
-
             if (ServerList.Count > 0)
             {
                 SelectedServer = ServerList.First();

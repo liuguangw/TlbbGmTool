@@ -28,7 +28,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="菜单">
-                <MenuItem Header="区服管理" />
+                <MenuItem Header="区服管理" Click="ShowServerListWindow" />
                 <Separator />
                 <MenuItem Header="退出" />
             </MenuItem>

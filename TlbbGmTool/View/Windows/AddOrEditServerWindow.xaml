@@ -1,0 +1,56 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.AddOrEditServerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="{Binding WindowTitle}" Width="360" Height="300">
+    <Window.DataContext>
+        <vm:AddOrEditServerViewModel />
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="0,2" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0" Grid.Column="0">server name</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding ServerName}" />
+        <Label Grid.Row="1" Grid.Column="0">host</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbHost}" />
+        <Label Grid.Row="2" Grid.Column="0">port</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbPort}" />
+        <Label Grid.Row="3" Grid.Column="0">account db</Label>
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding AccountDbName}" />
+        <Label Grid.Row="4" Grid.Column="0">game db</Label>
+        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding GameDbName}" />
+        <Label Grid.Row="5" Grid.Column="0">user</Label>
+        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbUser}" />
+        <Label Grid.Row="6" Grid.Column="0">password</Label>
+        <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbPassword}" />
+        <Button Grid.Row="7" Grid.Column="2" Margin="0,3"
+                Command="{Binding SaveServerCommand}">
+            保存
+        </Button>
+    </Grid>
+</Window>
