@@ -22,6 +22,8 @@ namespace TlbbGmTool.ViewModels
 
         public AppCommand SavePetCommand { get; }
 
+        public string WindowTitle => $"修改 {PetName} (ID: {Aid})";
+
         public EditPetViewModel()
         {
             SavePetCommand = new AppCommand(SavePet);
@@ -105,6 +107,8 @@ namespace TlbbGmTool.ViewModels
             _petInfo.Spr = Spr;
             _petInfo.Ipr = Ipr;
             _petInfo.Skill = Skill;
+            //更新标题
+            RaisePropertyChanged(nameof(WindowTitle));
             _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存pet信息成功");
             _editPetWindow.Close();
         }
