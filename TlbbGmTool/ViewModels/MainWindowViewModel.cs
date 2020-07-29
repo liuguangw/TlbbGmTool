@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,6 +88,8 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
+        public Dictionary<int, PetSkill> PetSkills { get; private set; }
+
         #endregion
 
         public MainWindowViewModel()
@@ -110,15 +113,20 @@ namespace TlbbGmTool.ViewModels
             {
                 ServerList.Add(server);
             }
+
             if (ServerList.Count > 0)
             {
                 SelectedServer = ServerList.First();
             }
+
+            PetSkills = await TextFileService.LoadPetSkillList();
         }
 
-        public void ShowErrorMessage(string title, string content) => MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Error);
+        public void ShowErrorMessage(string title, string content) =>
+            MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Error);
 
-        public void ShowSuccessMessage(string title, string content) => MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Information);
+        public void ShowSuccessMessage(string title, string content) =>
+            MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Information);
 
         private async void ConnectServer()
         {

@@ -15,16 +15,19 @@
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding PetList}">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="ID" Binding="{Binding Aid}" SortDirection="Ascending" />
-                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="PetName" Binding="{Binding PetName}" />
-                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="Level" Binding="{Binding Level}" />
                 <DataGridTemplateColumn Width="*" Header="管理">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Margin="20,2" Click="ShowEditPetDialog">修改</Button>
+                            <WrapPanel Margin="5">
+                                <Button Padding="5" Click="ShowEditPetDialog">修改属性</Button>
+                                <Button Padding="5" Margin="5,0,0,0" Click="ShowEditPetSkillDialog">修改skill</Button>
+                            </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -43,5 +43,19 @@ namespace TlbbGmTool.View.Pages
             };
             editPetWindow.ShowDialog();
         }
+
+        private void ShowEditPetSkillDialog(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            var petInfo = btn.DataContext as Pet;
+            var editRoleWindow = GetEditRoleWindow();
+            var editRoleWindowViewModel = editRoleWindow.DataContext as EditRoleWindowViewModel;
+            var mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
+            var editPetSkillWindow = new EditPetSkillWindow(mainWindowViewModel, petInfo)
+            {
+                Owner = GetEditRoleWindow()
+            };
+            editPetSkillWindow.ShowDialog();
+        }
     }
 }

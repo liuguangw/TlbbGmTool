@@ -123,14 +123,17 @@
     <Compile Include="Models\GameRole.cs" />
     <Compile Include="Models\GameServer.cs" />
     <Compile Include="Models\Pet.cs" />
+    <Compile Include="Models\PetSkill.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Models\XinFa.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\DbStringService.cs" />
     <Compile Include="Services\ServerService.cs" />
+    <Compile Include="Services\TextFileService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
     <Compile Include="ViewModels\AddOrEditServerViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />
+    <Compile Include="ViewModels\EditPetSkillViewModel.cs" />
     <Compile Include="ViewModels\EditPetViewModel.cs" />
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\EditRoleWindowViewModel.cs" />
@@ -160,6 +163,9 @@
     </Compile>
     <Compile Include="View\Windows\EditAccountWindow.xaml.cs">
       <DependentUpon>EditAccountWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Windows\EditPetSkillWindow.xaml.cs">
+      <DependentUpon>EditPetSkillWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Windows\EditPetWindow.xaml.cs">
       <DependentUpon>EditPetWindow.xaml</DependentUpon>
@@ -200,6 +206,7 @@
     <Page Include="View\Pages\XinFaList.xaml" />
     <Page Include="View\Windows\AddOrEditServerWindow.xaml" />
     <Page Include="View\Windows\EditAccountWindow.xaml" />
+    <Page Include="View\Windows\EditPetSkillWindow.xaml" />
     <Page Include="View\Windows\EditPetWindow.xaml" />
     <Page Include="View\Windows\EditRoleWindow.xaml" />
     <Page Include="View\Windows\EditXinFaWindow.xaml" />
@@ -237,6 +244,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config\servers.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\SkillTemplate_V1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
