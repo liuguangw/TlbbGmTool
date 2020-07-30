@@ -10,15 +10,15 @@ namespace TlbbGmTool.Core
     {
         public event EventHandler CanExecuteChanged;
 
-        private Action _executeMethod;
-        private Func<bool> _canExecuteMethod;
+        private Action<object> _executeMethod;
+        private Func<object, bool> _canExecuteMethod;
 
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="executeMethod">执行功能的函数</param>
         /// <param name="canExecuteMethod">是否可以执行此功能</param>
-        public AppCommand(Action executeMethod, Func<bool> canExecuteMethod)
+        public AppCommand(Action<object> executeMethod, Func<object, bool> canExecuteMethod)
         {
             if (executeMethod == null || canExecuteMethod == null)
             {
@@ -33,19 +33,29 @@ namespace TlbbGmTool.Core
         /// 构造方法
         /// </summary>
         /// <param name="executeMethod">执行功能的函数</param>
+        public AppCommand(Action<object> executeMethod) : this(executeMethod,
+            (_) => true)
+        {
+        }
+
+        public AppCommand(Action executeMethod, Func<bool> canExecuteMethod) : this(_ => executeMethod(),
+            _ => canExecuteMethod())
+        {
+        }
+
+
         public AppCommand(Action executeMethod) : this(executeMethod, () => true)
         {
-
         }
 
         public bool CanExecute(object parameter)
         {
-            return _canExecuteMethod();
+            return _canExecuteMethod(parameter);
         }
 
         public void Execute(object parameter)
         {
-            _executeMethod();
+            _executeMethod(parameter);
         }
 
         /// <summary>
@@ -55,6 +65,5 @@ namespace TlbbGmTool.Core
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
-
     }
 }

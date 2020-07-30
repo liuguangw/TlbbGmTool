@@ -148,7 +148,7 @@ namespace TlbbGmTool.ViewModels
                 ["ipr"] = Ipr,
             };
             var fieldNames = intDictionary.Keys.ToList();
-            fieldNames.AddRange(new[] {"petname", "skill"});
+            fieldNames.Add("petname");
             var updateCondition = (from fieldName in fieldNames
                 select $"{fieldName}=@{fieldName}");
             sql += " " + string.Join(", ", updateCondition) + " WHERE aid=" + Aid;
@@ -161,10 +161,6 @@ namespace TlbbGmTool.ViewModels
             mySqlParameters.Add(new MySqlParameter("@petname", MySqlDbType.String)
             {
                 Value = DbStringService.ToDbString(PetName)
-            });
-            mySqlParameters.Add(new MySqlParameter("@skill", MySqlDbType.String)
-            {
-                Value = DbStringService.ToDbString(Skill)
             });
             //
             var mySqlConnection = _mainWindowViewModel.MySqlConnection;
