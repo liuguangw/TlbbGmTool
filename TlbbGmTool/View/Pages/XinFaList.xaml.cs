@@ -28,21 +28,9 @@ namespace TlbbGmTool.View.Pages
         {
             var editRoleWindow = GetEditRoleWindow();
             var editRoleWindowViewModel = editRoleWindow.DataContext as EditRoleWindowViewModel;
-            GetViewModel().InitData(editRoleWindowViewModel);
-        }
-
-        private void ShowEditXinFaDialog(object sender, RoutedEventArgs e)
-        {
-            var btn = sender as Button;
-            var xinFaInfo = btn.DataContext as XinFa;
-            var editRoleWindow = GetEditRoleWindow();
-            var editRoleWindowViewModel = editRoleWindow.DataContext as EditRoleWindowViewModel;
             var mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
-            var editXinFaWindow = new EditXinFaWindow(mainWindowViewModel, xinFaInfo)
-            {
-                Owner = GetEditRoleWindow()
-            };
-            editXinFaWindow.ShowDialog();
+            var charguid = editRoleWindowViewModel.GameRole.Charguid;
+            GetViewModel().InitData(mainWindowViewModel, charguid, editRoleWindow);
         }
     }
 }

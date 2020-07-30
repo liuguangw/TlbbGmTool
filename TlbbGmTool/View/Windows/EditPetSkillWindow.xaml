@@ -51,7 +51,7 @@
                                         Command="{Binding DataContext.DeletePetSkillCommand, 
                                         RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType={x:Type DataGrid}}}"
-                                        CommandParameter="{Binding}">
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
                                     删除
                                 </Button>
                             </WrapPanel>

@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.Services;
+using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
@@ -16,6 +17,8 @@ namespace TlbbGmTool.ViewModels
 
         private string _roleSearchText = string.Empty;
         private string _accountSearchText = string.Empty;
+        private MainWindowViewModel _mainWindowViewModel;
+        private MainWindow _mainWindow;
 
         #endregion
 
@@ -25,11 +28,6 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         public ObservableCollection<GameRole> RoleList { get; } =
             new ObservableCollection<GameRole>();
-
-        /// <summary>
-        /// Main window ViewModel
-        /// </summary>
-        public MainWindowViewModel MainWindowViewModel { get; set; }
 
         #region Properties
 
@@ -56,18 +54,28 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         public AppCommand SearchCommand { get; }
 
+        public AppCommand EditRoleCommand { get; }
+
         #endregion
 
         public RoleListViewModel()
         {
             SearchCommand = new AppCommand(SearchRole);
+            EditRoleCommand = new AppCommand(ShowEditRoleDialog);
+        }
+
+
+        public void InitData(MainWindowViewModel mainWindowViewModel, MainWindow mainWindow)
+        {
+            _mainWindowViewModel = mainWindowViewModel;
+            _mainWindow = mainWindow;
         }
 
         private async void SearchRole()
         {
-            if (MainWindowViewModel.ConnectionStatus != DatabaseConnectionStatus.Connected)
+            if (_mainWindowViewModel.ConnectionStatus != DatabaseConnectionStatus.Connected)
             {
-                MainWindowViewModel.ShowErrorMessage("出错了", "数据库未连接");
+                _mainWindowViewModel.ShowErrorMessage("出错了", "数据库未连接");
                 return;
             }
 
@@ -82,14 +90,14 @@ namespace TlbbGmTool.ViewModels
             }
             catch (Exception e)
             {
-                MainWindowViewModel.ShowErrorMessage("搜索出错", e.Message);
+                _mainWindowViewModel.ShowErrorMessage("搜索出错", e.Message);
             }
         }
 
         private async Task<List<GameRole>> DoSearchRole()
         {
             var roleList = new List<GameRole>();
-            var mySqlConnection = MainWindowViewModel.MySqlConnection;
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
             //构造SQL语句
             var sql = "SELECT * FROM t_char";
             var searchDictionary = new Dictionary<string, string>();
@@ -126,7 +134,7 @@ namespace TlbbGmTool.ViewModels
             mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
             await Task.Run(async () =>
             {
-                var gameDbName = MainWindowViewModel.SelectedServer.GameDbName;
+                var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
                 if (mySqlConnection.Database != gameDbName)
                 {
                     // 切换数据库
@@ -175,6 +183,16 @@ namespace TlbbGmTool.ViewModels
                 }
             });
             return roleList;
+        }
+
+        private void ShowEditRoleDialog(object parameter)
+        {
+            var gameRole = parameter as GameRole;
+            var editRoleWindow = new EditRoleWindow(_mainWindowViewModel, gameRole)
+            {
+                Owner = _mainWindow
+            };
+            editRoleWindow.ShowDialog();
         }
     }
 }

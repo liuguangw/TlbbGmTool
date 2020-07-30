@@ -88,7 +88,9 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
-        public Dictionary<int, PetSkill> PetSkills { get; private set; }
+        public Dictionary<int, PetSkill> PetSkills { get; private set; } = new Dictionary<int, PetSkill>();
+
+        public Dictionary<int, CommonItem> CommonItems { get; private set; } = new Dictionary<int, CommonItem>();
 
         #endregion
 
@@ -119,7 +121,12 @@ namespace TlbbGmTool.ViewModels
                 SelectedServer = ServerList.First();
             }
 
-            PetSkills = await TextFileService.LoadPetSkillList();
+            var loadPetSkillListTask = TextFileService.LoadPetSkillList();
+            var loadCommonItemsTask = TextFileService.LoadCommonItemList();
+            //等待配置文件读取完成
+            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask);
+            PetSkills = loadPetSkillListTask.Result;
+            CommonItems = loadCommonItemsTask.Result;
         }
 
         public void ShowErrorMessage(string title, string content) =>

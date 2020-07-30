@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
@@ -14,6 +15,7 @@ namespace TlbbGmTool.ViewModels
 
         private MainWindowViewModel _mainWindowViewModel;
         private int _charguid;
+        private EditRoleWindow _editRoleWindow;
 
         #endregion
 
@@ -22,15 +24,20 @@ namespace TlbbGmTool.ViewModels
         public ObservableCollection<XinFa> XinFaList { get; } =
             new ObservableCollection<XinFa>();
 
+        public AppCommand EditXinFaCommand { get; }
+
         #endregion
 
-        public void InitData(EditRoleWindowViewModel editRoleWindowViewModel)
+        public XinFaListViewModel()
         {
-            if (_mainWindowViewModel == null)
-            {
-                _mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
-                _charguid = editRoleWindowViewModel.GameRole.Charguid;
-            }
+            EditXinFaCommand = new AppCommand(ShowEditXinFaDialog);
+        }
+
+        public void InitData(MainWindowViewModel mainWindowViewModel, int charguid, EditRoleWindow editRoleWindow)
+        {
+            _mainWindowViewModel = mainWindowViewModel;
+            _editRoleWindow = editRoleWindow;
+            _charguid = charguid;
             // 每次切换到此页面时都重新加载
             LoadXinFaList();
         }
@@ -90,6 +97,16 @@ namespace TlbbGmTool.ViewModels
                 }
             });
             return xinFaList;
+        }
+
+        private void ShowEditXinFaDialog(object parameter)
+        {
+            var xinFaInfo = parameter as XinFa;
+            var editXinFaWindow = new EditXinFaWindow(_mainWindowViewModel, xinFaInfo)
+            {
+                Owner = _editRoleWindow
+            };
+            editXinFaWindow.ShowDialog();
         }
     }
 }

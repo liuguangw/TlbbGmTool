@@ -1,5 +1,4 @@
-﻿using System;
-using TlbbGmTool.Core;
+﻿using TlbbGmTool.Core;
 
 namespace TlbbGmTool.Models
 {
@@ -85,16 +84,9 @@ namespace TlbbGmTool.Models
 
         public bool Connected
         {
-            set
-            {
-                if (SetProperty(ref _connected, value))
-                {
-                    RaisePropertyChanged(nameof(CanEdit));
-                }
-            }
+            get => _connected;
+            set => SetProperty(ref _connected, value);
         }
-
-        public bool CanEdit => !_connected;
 
         #endregion
     }

@@ -6,6 +6,7 @@ using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.Services;
+using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
@@ -14,6 +15,7 @@ namespace TlbbGmTool.ViewModels
         #region Fields
 
         private MainWindowViewModel _mainWindowViewModel;
+        private EditRoleWindow _editRoleWindow;
         private int _charguid;
 
         #endregion
@@ -23,15 +25,23 @@ namespace TlbbGmTool.ViewModels
         public ObservableCollection<Pet> PetList { get; } =
             new ObservableCollection<Pet>();
 
+        public AppCommand EditPetCommand { get; }
+
+        public AppCommand EditPetSkillCommand { get; }
+
         #endregion
 
-        public void InitData(EditRoleWindowViewModel editRoleWindowViewModel)
+        public PetListViewModel()
         {
-            if (_mainWindowViewModel == null)
-            {
-                _mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
-                _charguid = editRoleWindowViewModel.GameRole.Charguid;
-            }
+            EditPetCommand = new AppCommand(ShowEditPetDialog);
+            EditPetSkillCommand = new AppCommand(ShowEditPetSkillDialog);
+        }
+
+        public void InitData(MainWindowViewModel mainWindowViewModel, int charguid, EditRoleWindow editRoleWindow)
+        {
+            _mainWindowViewModel = mainWindowViewModel;
+            _editRoleWindow = editRoleWindow;
+            _charguid = charguid;
 
             // 每次切换到此页面时都重新加载
             LoadPetList();
@@ -113,6 +123,26 @@ namespace TlbbGmTool.ViewModels
                 }
             });
             return itemList;
+        }
+
+        private void ShowEditPetDialog(object parameter)
+        {
+            var petInfo = parameter as Pet;
+            var editPetWindow = new EditPetWindow(_mainWindowViewModel, petInfo)
+            {
+                Owner = _editRoleWindow
+            };
+            editPetWindow.ShowDialog();
+        }
+
+        private void ShowEditPetSkillDialog(object parameter)
+        {
+            var petInfo = parameter as Pet;
+            var editPetSkillWindow = new EditPetSkillWindow(_mainWindowViewModel, petInfo)
+            {
+                Owner = _editRoleWindow
+            };
+            editPetSkillWindow.ShowDialog();
         }
     }
 }

@@ -45,19 +45,7 @@ namespace TlbbGmTool.View.Pages
 
         private void RoleList_OnLoaded(object sender, RoutedEventArgs e)
         {
-            // 存储主窗口ViewModel对象
-            GetViewModel().MainWindowViewModel = GetMainWindowViewModel();
-        }
-
-        private void ShowEditRoleDialog(object sender, RoutedEventArgs e)
-        {
-            var btn = sender as Button;
-            var gameRole = btn.DataContext as GameRole;
-            var editRoleWindow = new EditRoleWindow(GetViewModel().MainWindowViewModel, gameRole)
-            {
-                Owner = GetMainWindow()
-            };
-            editRoleWindow.ShowDialog();
+            GetViewModel().InitData(GetMainWindowViewModel(),GetMainWindow());
         }
     }
 }

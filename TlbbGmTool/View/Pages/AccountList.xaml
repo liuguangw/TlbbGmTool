@@ -23,7 +23,8 @@
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Margin="0,5">
             <Label Content="username" />
-            <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
             <Button Margin="10,0,0,0" Command="{Binding SearchCommand}">search</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
@@ -45,7 +46,13 @@
                 <DataGridTemplateColumn Header="管理" Width="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="ShowEditAccountDialog">修改</Button>
+                            <Button
+                                Command="{Binding DataContext.EditAccountCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type DataGrid}}}"
+                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                修改
+                            </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

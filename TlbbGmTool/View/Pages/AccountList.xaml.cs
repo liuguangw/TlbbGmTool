@@ -45,24 +45,7 @@ namespace TlbbGmTool.View.Pages
 
         private void AccountList_OnLoaded(object sender, RoutedEventArgs e)
         {
-            // 存储主窗口ViewModel对象
-            GetViewModel().MainWindowViewModel = GetMainWindowViewModel();
-        }
-
-        /// <summary>
-        /// 显示修改窗口
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ShowEditAccountDialog(object sender, RoutedEventArgs e)
-        {
-            var btn = sender as Button;
-            var userAccount = btn.DataContext as UserAccount;
-            var editAccountWindow = new EditAccountWindow(GetViewModel().MainWindowViewModel, userAccount)
-            {
-                Owner = GetMainWindow()
-            };
-            editAccountWindow.ShowDialog();
+            GetViewModel().InitData(GetMainWindowViewModel(), GetMainWindow());
         }
     }
 }

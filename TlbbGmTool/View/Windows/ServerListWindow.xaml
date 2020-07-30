@@ -14,7 +14,7 @@
     </Window.DataContext>
     <DockPanel Margin="10">
         <WrapPanel DockPanel.Dock="Top">
-            <Button Click="ShowAddServerDialog">add server</Button>
+            <Button Command="{Binding AddServerCommand}">add server</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="0,10,0,0" ItemsSource="{Binding ServerList}">
@@ -27,12 +27,18 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <WrapPanel Margin="5">
-                                <Button Padding="10,5" IsEnabled="{Binding CanEdit}"
-                                        Click="ShowEditServerDialog">
+                                <Button Padding="10,5"
+                                        Command="{Binding DataContext.EditServerCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
                                     修改
                                 </Button>
-                                <Button Padding="10,5" Margin="5,0,0,0" IsEnabled="{Binding CanEdit}"
-                                        Click="ProcessDeleteServer">
+                                <Button Padding="10,5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.DeleteServerCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
                                     删除
                                 </Button>
                             </WrapPanel>

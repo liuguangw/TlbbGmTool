@@ -1,6 +1,8 @@
-﻿namespace TlbbGmTool.Models
+﻿using TlbbGmTool.Core;
+
+namespace TlbbGmTool.Models
 {
-    public class PetSkill
+    public class PetSkill : ITextItem
     {
         #region Properties
 
@@ -21,5 +23,7 @@
             Name = name;
             SkillType = skillType;
         }
+
+        public int GetId() => Id;
     }
 }

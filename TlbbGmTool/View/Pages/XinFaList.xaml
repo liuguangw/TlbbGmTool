@@ -22,7 +22,13 @@
                 <DataGridTemplateColumn Width="*" Header="管理">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Margin="20,2" Click="ShowEditXinFaDialog">修改</Button>
+                            <Button Margin="20,2"
+                                    Command="{Binding DataContext.EditXinFaCommand, 
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                修改
+                            </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

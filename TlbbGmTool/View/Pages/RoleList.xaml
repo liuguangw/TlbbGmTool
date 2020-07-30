@@ -19,9 +19,11 @@
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Margin="0,5">
             <Label Content="rolename" />
-            <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding RoleSearchText}" />
+            <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding RoleSearchText}" />
             <Label Margin="13,0,0,0" Content="account name" />
-            <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}" Text="{Binding AccountSearchText}" />
+            <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding AccountSearchText}" />
             <Button Margin="15,0,0,0" Command="{Binding SearchCommand}">search</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
@@ -42,7 +44,13 @@
                 <DataGridTemplateColumn Header="管理" Width="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="ShowEditRoleDialog">修改</Button>
+                            <Button
+                                Command="{Binding DataContext.EditRoleCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type DataGrid}}}"
+                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                修改
+                            </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

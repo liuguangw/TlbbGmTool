@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
@@ -13,6 +14,8 @@ namespace TlbbGmTool.ViewModels
         #region Fields
 
         private string _searchText = string.Empty;
+        private MainWindowViewModel _mainWindowViewModel;
+        private MainWindow _mainWindow;
 
         #endregion
 
@@ -22,11 +25,6 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         public ObservableCollection<UserAccount> AccountList { get; } =
             new ObservableCollection<UserAccount>();
-
-        /// <summary>
-        /// Main window ViewModel
-        /// </summary>
-        public MainWindowViewModel MainWindowViewModel { get; set; }
 
         #region Properties
 
@@ -44,11 +42,23 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         public AppCommand SearchCommand { get; }
 
+        /// <summary>
+        /// 编辑账号命令
+        /// </summary>
+        public AppCommand EditAccountCommand { get; }
+
         #endregion
 
         public AccountListViewModel()
         {
             SearchCommand = new AppCommand(SearchAccount);
+            EditAccountCommand = new AppCommand(ShowEditAccountDialog);
+        }
+
+        public void InitData(MainWindowViewModel mainWindowViewModel, MainWindow mainWindow)
+        {
+            _mainWindowViewModel = mainWindowViewModel;
+            _mainWindow = mainWindow;
         }
 
         /// <summary>
@@ -56,9 +66,9 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         private async void SearchAccount()
         {
-            if (MainWindowViewModel.ConnectionStatus != DatabaseConnectionStatus.Connected)
+            if (_mainWindowViewModel.ConnectionStatus != DatabaseConnectionStatus.Connected)
             {
-                MainWindowViewModel.ShowErrorMessage("出错了", "数据库未连接");
+                _mainWindowViewModel.ShowErrorMessage("出错了", "数据库未连接");
                 return;
             }
 
@@ -73,14 +83,14 @@ namespace TlbbGmTool.ViewModels
             }
             catch (Exception e)
             {
-                MainWindowViewModel.ShowErrorMessage("搜索出错", e.Message);
+                _mainWindowViewModel.ShowErrorMessage("搜索出错", e.Message);
             }
         }
 
         private async Task<List<UserAccount>> DoSearchAccount()
         {
             var accountList = new List<UserAccount>();
-            var mySqlConnection = MainWindowViewModel.MySqlConnection;
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
             var sql = "SELECT * FROM account";
             if (_searchText != string.Empty)
             {
@@ -97,9 +107,10 @@ namespace TlbbGmTool.ViewModels
                 };
                 mySqlCommand.Parameters.Add(searchParam);
             }
+
             await Task.Run(async () =>
             {
-                var accountDbName = MainWindowViewModel.SelectedServer.AccountDbName;
+                var accountDbName = _mainWindowViewModel.SelectedServer.AccountDbName;
                 if (mySqlConnection.Database != accountDbName)
                 {
                     // 切换数据库
@@ -135,6 +146,16 @@ namespace TlbbGmTool.ViewModels
                 }
             });
             return accountList;
+        }
+
+        private void ShowEditAccountDialog(object parameter)
+        {
+            var userAccount = parameter as UserAccount;
+            var editAccountWindow = new EditAccountWindow(_mainWindowViewModel, userAccount)
+            {
+                Owner = _mainWindow
+            };
+            editAccountWindow.ShowDialog();
         }
     }
 }

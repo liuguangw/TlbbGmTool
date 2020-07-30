@@ -6,7 +6,6 @@ using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.Services;
-using Ubiety.Dns.Core;
 
 namespace TlbbGmTool.ViewModels
 {

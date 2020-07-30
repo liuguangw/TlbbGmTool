@@ -25,8 +25,20 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <WrapPanel Margin="5">
-                                <Button Padding="5" Click="ShowEditPetDialog">修改属性</Button>
-                                <Button Padding="5" Margin="5,0,0,0" Click="ShowEditPetSkillDialog">修改skill</Button>
+                                <Button Padding="5"
+                                        Command="{Binding DataContext.EditPetCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    修改属性
+                                </Button>
+                                <Button Padding="5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.EditPetSkillCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    修改skill
+                                </Button>
                             </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
