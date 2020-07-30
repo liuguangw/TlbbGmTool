@@ -31,8 +31,13 @@ namespace TlbbGmTool.Services
         {
             return await LoadItemList("CommonItem.txt", ParseCommonItemLine);
         }
+        
+        public static async Task<Dictionary<int, CommonItem>> LoadGemItemList()
+        {
+            return await LoadItemList("GemInfo.txt", ParseGemItemLine);
+        }
 
-        public static async Task<Dictionary<int, T>>
+        private static async Task<Dictionary<int, T>>
             LoadItemList<T>(string textFileName, Func<string, T> lineParser) where T : ITextItem
         {
             var itemList = new Dictionary<int, T>();
@@ -116,6 +121,26 @@ namespace TlbbGmTool.Services
             var description = columns[7];
             var maxSize = Convert.ToInt32(columns[12]);
             var level = Convert.ToInt32(columns[8]);
+            return new CommonItem(itemId, itemClass, itemType, name, shortTypeString, description, maxSize, level);
+        }
+        
+        private static CommonItem ParseGemItemLine(string lineContent)
+        {
+            var columns = lineContent.Split('\t');
+            const int minColumnSize = 80;
+            if (columns.Length < minColumnSize)
+            {
+                throw new Exception("字段长度不足");
+            }
+
+            var itemId = Convert.ToInt32(columns[0]);
+            var itemClass = Convert.ToInt32(columns[1]);
+            var itemType = Convert.ToInt32(columns[3]);
+            var name = columns[7];
+            var shortTypeString = columns[76];
+            var description = columns[8];
+            var maxSize = 1;
+            var level = Convert.ToInt32(columns[2]);
             return new CommonItem(itemId, itemClass, itemType, name, shortTypeString, description, maxSize, level);
         }
     }

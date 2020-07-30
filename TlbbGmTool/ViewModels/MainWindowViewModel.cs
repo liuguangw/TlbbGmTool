@@ -92,6 +92,8 @@ namespace TlbbGmTool.ViewModels
 
         public Dictionary<int, CommonItem> CommonItems { get; private set; } = new Dictionary<int, CommonItem>();
 
+        public Dictionary<int, CommonItem> GemItems { get; private set; } = new Dictionary<int, CommonItem>();
+
         #endregion
 
         public MainWindowViewModel()
@@ -123,10 +125,12 @@ namespace TlbbGmTool.ViewModels
 
             var loadPetSkillListTask = TextFileService.LoadPetSkillList();
             var loadCommonItemsTask = TextFileService.LoadCommonItemList();
+            var loadGemItemsTask = TextFileService.LoadGemItemList();
             //等待配置文件读取完成
-            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask);
+            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask);
             PetSkills = loadPetSkillListTask.Result;
             CommonItems = loadCommonItemsTask.Result;
+            GemItems = loadGemItemsTask.Result;
         }
 
         public void ShowErrorMessage(string title, string content) =>
