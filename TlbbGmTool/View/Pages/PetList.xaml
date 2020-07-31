@@ -16,7 +16,7 @@
                   Margin="10" ItemsSource="{Binding PetList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="ID" Binding="{Binding Aid}" SortDirection="Ascending" />
+                                    Header="ID" Binding="{Binding PetGuid}" SortDirection="Ascending" />
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="PetName" Binding="{Binding PetName}" />
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"

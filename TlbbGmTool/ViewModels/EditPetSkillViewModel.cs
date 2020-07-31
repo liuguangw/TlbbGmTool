@@ -32,7 +32,7 @@ namespace TlbbGmTool.ViewModels
         public AppCommand SavePetSkillCommand { get; }
 
         public string WindowTitle =>
-            _petInfo == null ? string.Empty : $"修改 {_petInfo.PetName}(ID: {_petInfo.Aid}) Skill";
+            _petInfo == null ? string.Empty : $"修改 {_petInfo.PetName}(ID: {_petInfo.PetGuid}) Skill";
 
         public ObservableCollection<PetSkill> SkillList { get; }
             = new ObservableCollection<PetSkill>();
@@ -101,8 +101,8 @@ namespace TlbbGmTool.ViewModels
             SkillTypeSelection = new List<ComboBoxNode<int>>
             {
                 new ComboBoxNode<int> {Title = "全部", Value = -1},
-                new ComboBoxNode<int> {Title = "主动", Value = 0},
-                new ComboBoxNode<int> {Title = "被部", Value = 1},
+                new ComboBoxNode<int> {Title = "手动", Value = 0},
+                new ComboBoxNode<int> {Title = "自动", Value = 1},
                 new ComboBoxNode<int> {Title = "buff", Value = 2}
             };
             AddPetSkillCommand = new AppCommand(AddSkillToList, CanAddSkill);
@@ -119,6 +119,7 @@ namespace TlbbGmTool.ViewModels
             NotifyReloadSkillSelection();
             RaisePropertyChanged(nameof(WindowTitle));
             LoadSkillList();
+            AddPetSkillCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -210,6 +211,7 @@ namespace TlbbGmTool.ViewModels
         {
             var targetSkill = parameter as PetSkill;
             SkillList.Remove(targetSkill);
+            NotifyReloadSkillSelection();
         }
 
         private async void SavePetSkill()
@@ -237,16 +239,20 @@ namespace TlbbGmTool.ViewModels
 
         private async Task DoSavePetSkill(string skillString)
         {
-            const string sql = "UPDATE t_pet SET skill=@skill WHERE aid=@aid";
+            const string sql = "UPDATE t_pet SET skill=@skill WHERE charguid=@charguid AND lpetguid=@lpetguid";
             var mySqlConnection = _mainWindowViewModel.MySqlConnection;
             var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
             mySqlCommand.Parameters.Add(new MySqlParameter("@skill", MySqlDbType.String)
             {
                 Value = skillString
             });
-            mySqlCommand.Parameters.Add(new MySqlParameter("@aid", MySqlDbType.Int32)
+            mySqlCommand.Parameters.Add(new MySqlParameter("@charguid", MySqlDbType.Int32)
             {
-                Value = _petInfo.Aid
+                Value = _petInfo.Charguid
+            });
+            mySqlCommand.Parameters.Add(new MySqlParameter("@lpetguid", MySqlDbType.Int32)
+            {
+                Value = _petInfo.PetGuid
             });
             await Task.Run(async () =>
             {
@@ -258,6 +264,7 @@ namespace TlbbGmTool.ViewModels
                 }
 
                 await mySqlCommand.ExecuteNonQueryAsync();
+                
             });
         }
     }

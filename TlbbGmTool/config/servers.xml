@@ -11,9 +11,9 @@
     <server name="server2">
         <host>192.168.200.3</host>
         <port>3306</port>
-        <accountDb>web1</accountDb>
-        <gameDb>tlbbdb1</gameDb>
-        <user>root1</user>
-        <password>root1</password>
+        <accountDb>web</accountDb>
+        <gameDb>tlbbdb</gameDb>
+        <user>root</user>
+        <password>123456</password>
     </server>
 </servers>

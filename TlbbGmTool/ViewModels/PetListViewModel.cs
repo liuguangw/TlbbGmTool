@@ -92,7 +92,7 @@ namespace TlbbGmTool.ViewModels
                     {
                         var itemInfo = new Pet()
                         {
-                            Aid = rd.GetInt32("aid"),
+                            PetGuid = rd.GetInt32("lpetguid"),
                             Charguid = rd.GetInt32("charguid"),
                             PetName = DbStringService.ToCommonString(rd.GetString("petname")),
                             Level = rd.GetInt32("level"),
@@ -107,6 +107,7 @@ namespace TlbbGmTool.ViewModels
                             Dexper = rd.GetInt32("dexper"),
                             Sprper = rd.GetInt32("sprper"),
                             Iprper = rd.GetInt32("iprper"),
+                            Savvy = rd.GetInt32("savvy"),
                             Gengu = rd.GetInt32("gengu"),
                             Growrate = rd.GetInt32("growrate"),
                             Repoint = rd.GetInt32("repoint"),

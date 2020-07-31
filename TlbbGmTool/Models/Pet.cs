@@ -6,7 +6,7 @@ namespace TlbbGmTool.Models
     {
         #region Fields
 
-        private int _aid;
+        private int _petGuid;
         private int _charguid;
         private string _petName = string.Empty;
         private int _level;
@@ -26,6 +26,7 @@ namespace TlbbGmTool.Models
         private int _iprper;
 
         //
+        private int _savvy;
         private int _gengu;
         private int _growrate;
         private int _repoint;
@@ -46,10 +47,10 @@ namespace TlbbGmTool.Models
 
         #region Properties
 
-        public int Aid
+        public int PetGuid
         {
-            get => _aid;
-            set => SetProperty(ref _aid, value);
+            get => _petGuid;
+            set => SetProperty(ref _petGuid, value);
         }
 
         public int Charguid
@@ -134,6 +135,12 @@ namespace TlbbGmTool.Models
         {
             get => _iprper;
             set => SetProperty(ref _iprper, value);
+        }
+
+        public int Savvy
+        {
+            get => _savvy;
+            set => SetProperty(ref _savvy, value);
         }
 
         public int Gengu

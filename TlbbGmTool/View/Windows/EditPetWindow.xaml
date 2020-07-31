@@ -60,8 +60,13 @@
         <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Genera}" />
         <Label Grid.Row="7" Grid.Column="0">Enjoy</Label>
         <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Enjoy}" />
-        <Label Grid.Row="8" Grid.Column="0">Gengu</Label>
-        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Gengu}" />
+        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Label Margin="5,0,0,0">Savvy</Label>
+            <TextBox MinWidth="60" Text="{Binding Savvy}" />
+            <Label>Gengu</Label>
+            <TextBox MinWidth="60" Text="{Binding Gengu}" />
+        </StackPanel>
         <Label Grid.Row="9" Grid.Column="0">Growrate</Label>
         <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Growrate}" />
         <Label Grid.Row="10" Grid.Column="0">Repoint</Label>

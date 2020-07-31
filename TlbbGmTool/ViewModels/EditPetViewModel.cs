@@ -22,7 +22,7 @@ namespace TlbbGmTool.ViewModels
 
         public AppCommand SavePetCommand { get; }
 
-        public string WindowTitle => $"修改 {PetName} (ID: {Aid})";
+        public string WindowTitle => $"修改 {PetName} (ID: {PetGuid})";
 
         public EditPetViewModel()
         {
@@ -35,7 +35,7 @@ namespace TlbbGmTool.ViewModels
             _mainWindowViewModel = mainWindowViewModel;
             _petInfo = petInfo;
             _editPetWindow = editPetWindow;
-            Aid = petInfo.Aid;
+            PetGuid = petInfo.PetGuid;
             Charguid = petInfo.Charguid;
             PetName = petInfo.PetName;
             Level = petInfo.Level;
@@ -52,6 +52,7 @@ namespace TlbbGmTool.ViewModels
             Sprper = petInfo.Sprper;
             Iprper = petInfo.Iprper;
             //
+            Savvy = petInfo.Savvy;
             Gengu = petInfo.Gengu;
             Growrate = petInfo.Growrate;
             Repoint = petInfo.Repoint;
@@ -78,8 +79,6 @@ namespace TlbbGmTool.ViewModels
             }
 
             //更新属性
-            _petInfo.Aid = Aid;
-            _petInfo.Charguid = Charguid;
             _petInfo.PetName = PetName;
             _petInfo.Level = Level;
             _petInfo.NeedLevel = NeedLevel;
@@ -95,6 +94,7 @@ namespace TlbbGmTool.ViewModels
             _petInfo.Sprper = Sprper;
             _petInfo.Iprper = Iprper;
             //
+            _petInfo.Savvy = Savvy;
             _petInfo.Gengu = Gengu;
             _petInfo.Growrate = Growrate;
             _petInfo.Repoint = Repoint;
@@ -105,7 +105,6 @@ namespace TlbbGmTool.ViewModels
             _petInfo.Dex = Dex;
             _petInfo.Spr = Spr;
             _petInfo.Ipr = Ipr;
-            _petInfo.Skill = Skill;
             //更新标题
             RaisePropertyChanged(nameof(WindowTitle));
             _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存pet信息成功");
@@ -135,6 +134,7 @@ namespace TlbbGmTool.ViewModels
                 ["sprper"] = Sprper,
                 ["iprper"] = Iprper,
                 //
+                ["savvy"] = Savvy,
                 ["gengu"] = Gengu,
                 ["growrate"] = Growrate,
                 ["repoint"] = Repoint,
@@ -145,12 +145,15 @@ namespace TlbbGmTool.ViewModels
                 ["dex"] = Dex,
                 ["spr"] = Spr,
                 ["ipr"] = Ipr,
+                //
+                ["charguid"] = Charguid,
+                ["lpetguid"] = PetGuid
             };
             var fieldNames = intDictionary.Keys.ToList();
             fieldNames.Add("petname");
             var updateCondition = (from fieldName in fieldNames
                 select $"{fieldName}=@{fieldName}");
-            sql += " " + string.Join(", ", updateCondition) + " WHERE aid=" + Aid;
+            sql += " " + string.Join(", ", updateCondition) + " WHERE charguid=@charguid AND lpetguid=@lpetguid";
             //构造参数
             var mySqlParameters = (from intParameter in intDictionary
                 select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)
