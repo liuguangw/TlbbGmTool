@@ -122,10 +122,11 @@
     <Compile Include="Core\ComboBoxNode.cs" />
     <Compile Include="Core\Convert\IsLockToTipConvert.cs" />
     <Compile Include="Core\ITextItem.cs" />
-    <Compile Include="Models\CommonItem.cs" />
     <Compile Include="Models\DatabaseConnectionStatus.cs" />
+    <Compile Include="Models\ItemBase.cs" />
     <Compile Include="Models\GameRole.cs" />
     <Compile Include="Models\GameServer.cs" />
+    <Compile Include="Models\ItemInfo.cs" />
     <Compile Include="Models\Pet.cs" />
     <Compile Include="Models\PetSkill.cs" />
     <Compile Include="Models\UserAccount.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Services\TextFileService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
     <Compile Include="ViewModels\AddOrEditServerViewModel.cs" />
+    <Compile Include="ViewModels\BagItemListViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />
     <Compile Include="ViewModels\EditPetSkillViewModel.cs" />
     <Compile Include="ViewModels\EditPetViewModel.cs" />
@@ -149,6 +151,9 @@
     <Compile Include="ViewModels\XinFaListViewModel.cs" />
     <Compile Include="View\Pages\AccountList.xaml.cs">
       <DependentUpon>AccountList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Pages\BagItemList.xaml.cs">
+      <DependentUpon>BagItemList.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Pages\EditRolePage.xaml.cs">
       <DependentUpon>EditRolePage.xaml</DependentUpon>
@@ -201,6 +206,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Pages\BagItemList.xaml" />
     <Page Include="View\Pages\EditRolePage.xaml" />
     <Page Include="View\Pages\PetList.xaml" />
     <Page Include="View\Pages\RoleList.xaml">
@@ -234,6 +240,18 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="config\text\CommonItem.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="config\text\EquipBase.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="config\text\GemInfo.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="config\text\SkillTemplate_V1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -245,21 +263,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config\servers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\SkillTemplate_V1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\CommonItem.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\GemInfo.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

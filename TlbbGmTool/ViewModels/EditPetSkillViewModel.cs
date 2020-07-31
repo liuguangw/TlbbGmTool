@@ -62,8 +62,12 @@ namespace TlbbGmTool.ViewModels
 
                 var allSkills = _mainWindowViewModel.PetSkills.Values;
                 return (from skillItem in allSkills
+                    //关键词筛选
                     where skillItem.Name.IndexOf(_searchSkill) >= 0
+                    //类别筛选
                     where _selectedSkillType == -1 || skillItem.SkillType == _selectedSkillType
+                    //排除已存在的
+                    where !SkillList.Contains(skillItem)
                     select skillItem).ToList();
             }
         }
@@ -101,7 +105,7 @@ namespace TlbbGmTool.ViewModels
                 new ComboBoxNode<int> {Title = "被部", Value = 1},
                 new ComboBoxNode<int> {Title = "buff", Value = 2}
             };
-            AddPetSkillCommand = new AppCommand(AddSkillToList);
+            AddPetSkillCommand = new AppCommand(AddSkillToList, CanAddSkill);
             DeletePetSkillCommand = new AppCommand(DeletePetSkill);
             SavePetSkillCommand = new AppCommand(SavePetSkill);
         }
@@ -124,10 +128,8 @@ namespace TlbbGmTool.ViewModels
         {
             RaisePropertyChanged(nameof(SkillSelection));
             //默认选择第一个
-            if (SkillSelection.Count > 0)
-            {
-                SelectedSkill = SkillSelection.First();
-            }
+            SelectedSkill = SkillSelection.Count > 0 ? SkillSelection.First() : null;
+            AddPetSkillCommand.RaiseCanExecuteChanged();
         }
 
         private static PetSkill MakeUnknownSkill(int skillId)
@@ -156,6 +158,17 @@ namespace TlbbGmTool.ViewModels
                     ? petSkillDictionary[skillId]
                     : MakeUnknownSkill(skillId));
             }
+        }
+
+        private bool CanAddSkill()
+        {
+            if (_selectedSkill == null)
+            {
+                return false;
+            }
+
+            const int maxSkillCount = 12;
+            return SkillList.Count < maxSkillCount;
         }
 
         private void AddSkillToList()
@@ -190,6 +203,7 @@ namespace TlbbGmTool.ViewModels
             }
 
             SkillList.Add(_selectedSkill);
+            NotifyReloadSkillSelection();
         }
 
         private void DeletePetSkill(object parameter)

@@ -17,6 +17,7 @@
         <pages:EditRolePage x:Key="EditRolePage" />
         <pages:XinFaList x:Key="XinFaList" />
         <pages:PetList x:Key="PetList" />
+        <pages:BagItemList x:Key="BagItemList" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
@@ -28,6 +29,9 @@
             </TabItem>
             <TabItem Header="pet">
                 <Frame Content="{StaticResource PetList}" />
+            </TabItem>
+            <TabItem Header="bag">
+                <Frame Content="{StaticResource BagItemList}" />
             </TabItem>
             <TabItem Header="items">
                 <Label>test</Label>

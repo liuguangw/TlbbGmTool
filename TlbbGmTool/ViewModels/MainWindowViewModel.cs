@@ -90,9 +90,7 @@ namespace TlbbGmTool.ViewModels
 
         public Dictionary<int, PetSkill> PetSkills { get; private set; } = new Dictionary<int, PetSkill>();
 
-        public Dictionary<int, CommonItem> CommonItems { get; private set; } = new Dictionary<int, CommonItem>();
-
-        public Dictionary<int, CommonItem> GemItems { get; private set; } = new Dictionary<int, CommonItem>();
+        public Dictionary<int, ItemBase> ItemBases { get; private set; } = new Dictionary<int, ItemBase>();
 
         #endregion
 
@@ -126,11 +124,24 @@ namespace TlbbGmTool.ViewModels
             var loadPetSkillListTask = TextFileService.LoadPetSkillList();
             var loadCommonItemsTask = TextFileService.LoadCommonItemList();
             var loadGemItemsTask = TextFileService.LoadGemItemList();
+            var loadEquipBasesTask = TextFileService.LoadEquipBaseList();
             //等待配置文件读取完成
-            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask);
+            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask, loadEquipBasesTask);
             PetSkills = loadPetSkillListTask.Result;
-            CommonItems = loadCommonItemsTask.Result;
-            GemItems = loadGemItemsTask.Result;
+            foreach (var itemBasePair in loadCommonItemsTask.Result)
+            {
+                ItemBases.Add(itemBasePair.Key, itemBasePair.Value);
+            }
+
+            foreach (var itemBasePair in loadGemItemsTask.Result)
+            {
+                ItemBases.Add(itemBasePair.Key, itemBasePair.Value);
+            }
+
+            foreach (var itemBasePair in loadEquipBasesTask.Result)
+            {
+                ItemBases.Add(itemBasePair.Key, itemBasePair.Value);
+            }
         }
 
         public void ShowErrorMessage(string title, string content) =>

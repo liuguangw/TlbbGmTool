@@ -35,7 +35,6 @@ namespace TlbbGmTool.ViewModels
             _mainWindowViewModel = mainWindowViewModel;
             _petInfo = petInfo;
             _editPetWindow = editPetWindow;
-            //todo 初始化属性
             Aid = petInfo.Aid;
             Charguid = petInfo.Charguid;
             PetName = petInfo.PetName;
@@ -114,7 +113,7 @@ namespace TlbbGmTool.ViewModels
         }
 
         /// <summary>
-        /// todo save
+        /// save
         /// </summary>
         /// <returns></returns>
         private async Task DoSavePet()

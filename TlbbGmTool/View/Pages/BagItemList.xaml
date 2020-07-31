@@ -1,0 +1,41 @@
+﻿<Page x:Class="TlbbGmTool.View.Pages.BagItemList"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
+      xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+      mc:Ignorable="d"
+      Loaded="BagItemList_OnLoaded"
+      Title="BagItemList" d:DesignWidth="800" d:DesignHeight="450">
+    <Page.DataContext>
+        <vm:BagItemListViewModel />
+    </Page.DataContext>
+    <DockPanel>
+        <WrapPanel DockPanel.Dock="Top" Margin="10,10,10,0">
+            <Button Command="{Binding AddItemCommand}">add item</Button>
+        </WrapPanel>
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  Margin="10" ItemsSource="{Binding ItemList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="50" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource ItemCellStyle}"
+                                    Header="Pos" Binding="{Binding Pos}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource ItemCellStyle}"
+                                    Header="ID" Binding="{Binding ItemType}" />
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource ItemCellStyle}"
+                                    Header="名称" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="120" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource ItemCellStyle}"
+                                    Header="Level" Binding="{Binding Level}" />
+                <DataGridTextColumn Width="120" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource ItemCellStyle}"
+                                    Header="Count" Binding="{Binding ItemCount}" />
+                <DataGridTemplateColumn Width="*" Header="管理"
+                                        CellTemplate="{StaticResource AdminItemTemplate}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Page>

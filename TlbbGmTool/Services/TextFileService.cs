@@ -18,7 +18,7 @@ namespace TlbbGmTool.Services
         private static string GetTextFilePath(string fileName)
         {
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(baseDir, "config", fileName);
+            return Path.Combine(baseDir, "config", "text", fileName);
         }
 
 
@@ -27,14 +27,19 @@ namespace TlbbGmTool.Services
             return await LoadItemList("SkillTemplate_V1.txt", ParseSkillLine);
         }
 
-        public static async Task<Dictionary<int, CommonItem>> LoadCommonItemList()
+        public static async Task<Dictionary<int, ItemBase>> LoadCommonItemList()
         {
             return await LoadItemList("CommonItem.txt", ParseCommonItemLine);
         }
-        
-        public static async Task<Dictionary<int, CommonItem>> LoadGemItemList()
+
+        public static async Task<Dictionary<int, ItemBase>> LoadGemItemList()
         {
             return await LoadItemList("GemInfo.txt", ParseGemItemLine);
+        }
+
+        public static async Task<Dictionary<int, ItemBase>> LoadEquipBaseList()
+        {
+            return await LoadItemList("EquipBase.txt", ParseEquipBaseLine);
         }
 
         private static async Task<Dictionary<int, T>>
@@ -104,7 +109,7 @@ namespace TlbbGmTool.Services
             return new PetSkill(skillId, skillName, skillType);
         }
 
-        private static CommonItem ParseCommonItemLine(string lineContent)
+        private static ItemBase ParseCommonItemLine(string lineContent)
         {
             var columns = lineContent.Split('\t');
             const int minColumnSize = 26;
@@ -121,10 +126,10 @@ namespace TlbbGmTool.Services
             var description = columns[7];
             var maxSize = Convert.ToInt32(columns[12]);
             var level = Convert.ToInt32(columns[8]);
-            return new CommonItem(itemId, itemClass, itemType, name, shortTypeString, description, maxSize, level);
+            return new ItemBase(itemId, itemClass, itemType, name, shortTypeString, description, level, maxSize);
         }
-        
-        private static CommonItem ParseGemItemLine(string lineContent)
+
+        private static ItemBase ParseGemItemLine(string lineContent)
         {
             var columns = lineContent.Split('\t');
             const int minColumnSize = 80;
@@ -139,9 +144,55 @@ namespace TlbbGmTool.Services
             var name = columns[7];
             var shortTypeString = columns[76];
             var description = columns[8];
-            var maxSize = 1;
             var level = Convert.ToInt32(columns[2]);
-            return new CommonItem(itemId, itemClass, itemType, name, shortTypeString, description, maxSize, level);
+            return new ItemBase(itemId, itemClass, itemType, name, shortTypeString, description, level, 1);
+        }
+
+        private static ItemBase ParseEquipBaseLine(string lineContent)
+        {
+            var columns = lineContent.Split('\t');
+            const int minColumnSize = 100;
+            if (columns.Length < minColumnSize)
+            {
+                throw new Exception("字段长度不足");
+            }
+
+            var itemId = Convert.ToInt32(columns[0]);
+            var itemClass = Convert.ToInt32(columns[1]);
+            var itemType = Convert.ToInt32(columns[3]);
+            var equipPoint = Convert.ToInt32(columns[5]);
+            var name = columns[10];
+            var shortTypeString = columns[22];
+            var description = columns[13];
+            var level = Convert.ToInt32(columns[2]);
+            var bagCapacity = Convert.ToInt32(columns[97]);
+            var materialCapacity = Convert.ToInt32(columns[98]);
+            var equipVisual = Convert.ToInt32(columns[6]);
+            var attr1List = new List<int>();
+            var attr2List = new List<int>();
+            for (var i = 0; i < 64; i++)
+            {
+                var attrValue = Convert.ToInt32(columns[i + 32]);
+                if (attrValue < 0)
+                {
+                    continue;
+                }
+
+                if (i < 32)
+                {
+                    var attrIndex = i;
+                    attr1List.Add(attrIndex);
+                }
+                else
+                {
+                    var attrIndex = i - 32;
+                    attr2List.Add(attrIndex);
+                }
+            }
+
+            return new ItemBase(itemId, itemClass, itemType,
+                name, shortTypeString, description, level, equipPoint, bagCapacity, materialCapacity,
+                equipVisual, attr1List, attr2List);
         }
     }
 }
