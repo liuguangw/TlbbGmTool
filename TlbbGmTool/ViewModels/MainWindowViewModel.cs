@@ -127,21 +127,18 @@ namespace TlbbGmTool.ViewModels
             var loadEquipBasesTask = TextFileService.LoadEquipBaseList();
             //等待配置文件读取完成
             await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask, loadEquipBasesTask);
-            PetSkills = loadPetSkillListTask.Result;
-            foreach (var itemBasePair in loadCommonItemsTask.Result)
-            {
-                ItemBases.Add(itemBasePair.Key, itemBasePair.Value);
-            }
-
-            foreach (var itemBasePair in loadGemItemsTask.Result)
-            {
-                ItemBases.Add(itemBasePair.Key, itemBasePair.Value);
-            }
-
-            foreach (var itemBasePair in loadEquipBasesTask.Result)
-            {
-                ItemBases.Add(itemBasePair.Key, itemBasePair.Value);
-            }
+            loadPetSkillListTask.Result.ForEach(
+                petSkill => PetSkills.Add(petSkill.Id, petSkill)
+            );
+            loadCommonItemsTask.Result.ForEach(
+                itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
+            );
+            loadGemItemsTask.Result.ForEach(
+                itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
+            );
+            loadEquipBasesTask.Result.ForEach(
+                itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
+            );
         }
 
         public void ShowErrorMessage(string title, string content) =>

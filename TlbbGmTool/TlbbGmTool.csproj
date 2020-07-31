@@ -121,7 +121,6 @@
     </ApplicationDefinition>
     <Compile Include="Core\ComboBoxNode.cs" />
     <Compile Include="Core\Convert\IsLockToTipConvert.cs" />
-    <Compile Include="Core\ITextItem.cs" />
     <Compile Include="Models\DatabaseConnectionStatus.cs" />
     <Compile Include="Models\ItemBase.cs" />
     <Compile Include="Models\GameRole.cs" />

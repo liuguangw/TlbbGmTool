@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 
 namespace TlbbGmTool.Services
@@ -22,30 +21,30 @@ namespace TlbbGmTool.Services
         }
 
 
-        public static async Task<Dictionary<int, PetSkill>> LoadPetSkillList()
+        public static async Task<List<PetSkill>> LoadPetSkillList()
         {
             return await LoadItemList("SkillTemplate_V1.txt", ParseSkillLine);
         }
 
-        public static async Task<Dictionary<int, ItemBase>> LoadCommonItemList()
+        public static async Task<List<ItemBase>> LoadCommonItemList()
         {
             return await LoadItemList("CommonItem.txt", ParseCommonItemLine);
         }
 
-        public static async Task<Dictionary<int, ItemBase>> LoadGemItemList()
+        public static async Task<List<ItemBase>> LoadGemItemList()
         {
             return await LoadItemList("GemInfo.txt", ParseGemItemLine);
         }
 
-        public static async Task<Dictionary<int, ItemBase>> LoadEquipBaseList()
+        public static async Task<List<ItemBase>> LoadEquipBaseList()
         {
             return await LoadItemList("EquipBase.txt", ParseEquipBaseLine);
         }
 
-        private static async Task<Dictionary<int, T>>
-            LoadItemList<T>(string textFileName, Func<string, T> lineParser) where T : ITextItem
+        private static async Task<List<T>>
+            LoadItemList<T>(string textFileName, Func<string, T> lineParser)
         {
-            var itemList = new Dictionary<int, T>();
+            var itemList = new List<T>();
             var textFilePath = GetTextFilePath(textFileName);
             if (!File.Exists(textFilePath))
             {
@@ -74,7 +73,7 @@ namespace TlbbGmTool.Services
                             var itemInfo = lineParser(lineContent);
                             if (itemInfo != null)
                             {
-                                itemList.Add(itemInfo.GetId(), itemInfo);
+                                itemList.Add(itemInfo);
                             }
                         }
                     }

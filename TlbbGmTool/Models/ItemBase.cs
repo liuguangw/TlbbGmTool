@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using TlbbGmTool.Core;
 
 namespace TlbbGmTool.Models
 {
-    public class ItemBase : ITextItem
+    public class ItemBase
     {
-        private int Id { get; }
+        public int Id { get; }
         public int ItemClass { get; }
         public int ItemType { get; }
 
@@ -66,7 +65,5 @@ namespace TlbbGmTool.Models
             Level = level;
             MaxSize = maxSize;
         }
-
-        public int GetId() => Id;
     }
 }
