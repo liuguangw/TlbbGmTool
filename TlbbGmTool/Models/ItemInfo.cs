@@ -131,6 +131,8 @@ namespace TlbbGmTool.Models
             }
         }
 
+        public ItemBase CurrentItemBase => _currentItemBase;
+
         #endregion
 
         public ItemInfo(Dictionary<int, ItemBase> itemBases)

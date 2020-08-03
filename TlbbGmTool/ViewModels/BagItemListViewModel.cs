@@ -136,6 +136,22 @@ namespace TlbbGmTool.ViewModels
 
         private void ShowEditDialog(object parameter)
         {
+            var itemInfo = parameter as ItemInfo;
+            var itemBaseInfo = itemInfo.CurrentItemBase;
+            if (itemBaseInfo == null)
+            {
+                return;
+            }
+
+            //equip
+            if (itemBaseInfo.ItemClass == 1)
+            {
+                var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, itemInfo)
+                {
+                    Owner = _editRoleWindow
+                };
+                editWindow.ShowDialog();
+            }
         }
 
         private void ProcessDelete(object parameter)

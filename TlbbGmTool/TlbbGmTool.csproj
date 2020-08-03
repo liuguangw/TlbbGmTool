@@ -135,6 +135,7 @@
     <Compile Include="Services\ServerService.cs" />
     <Compile Include="Services\TextFileService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
+    <Compile Include="ViewModels\AddOrEditEquipViewModel.cs" />
     <Compile Include="ViewModels\AddOrEditServerViewModel.cs" />
     <Compile Include="ViewModels\BagItemListViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />
@@ -165,6 +166,9 @@
     </Compile>
     <Compile Include="View\Pages\XinFaList.xaml.cs">
       <DependentUpon>XinFaList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Windows\AddOrEditEquipWindow.xaml.cs">
+      <DependentUpon>AddOrEditEquipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Windows\AddOrEditServerWindow.xaml.cs">
       <DependentUpon>AddOrEditServerWindow.xaml</DependentUpon>
@@ -213,6 +217,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Pages\XinFaList.xaml" />
+    <Page Include="View\Windows\AddOrEditEquipWindow.xaml" />
     <Page Include="View\Windows\AddOrEditServerWindow.xaml" />
     <Page Include="View\Windows\EditAccountWindow.xaml" />
     <Page Include="View\Windows\EditPetSkillWindow.xaml" />
