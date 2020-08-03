@@ -45,10 +45,10 @@
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
         </Grid.Resources>
-        <Label Grid.Row="0" Grid.Column="0">Accname</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Accname}" />
-        <Label Grid.Row="1" Grid.Column="0">Charguid</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Charguid}" />
+        <Label Grid.Row="0" Grid.Column="0">Charguid</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" BorderThickness="0" Text="{Binding Charguid}" />
+        <Label Grid.Row="1" Grid.Column="0">Accname</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Accname}" />
         <Label Grid.Row="2" Grid.Column="0">Charname</Label>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Charname}" />
         <Label Grid.Row="3" Grid.Column="0">Title</Label>

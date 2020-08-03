@@ -147,7 +147,6 @@ namespace TlbbGmTool.ViewModels
                     {
                         var gameRole = new GameRole()
                         {
-                            Aid = rd.GetInt32("aid"),
                             Accname = rd.GetString("accname"),
                             Charguid = rd.GetInt32("charguid"),
                             Charname = DbStringService.ToCommonString(rd.GetString("charname")),

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Title="修改账户信息" Width="400" Height="300">
+        Title="修改账户信息" Width="400" Height="310">
     <Window.DataContext>
         <vm:EditAccountViewModel />
     </Window.DataContext>
@@ -30,13 +30,19 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,10,0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
             <Style TargetType="TextBox">
                 <Setter Property="Margin" Value="0,2" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
         </Grid.Resources>
         <Label Grid.Row="0" Grid.Column="0">ID</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Id}" IsReadOnly="True" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Id}" 
+                 IsReadOnly="True" BorderThickness="0" />
         <Label Grid.Row="1" Grid.Column="0">账号</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name}" />
         <Label Grid.Row="2" Grid.Column="0">密码</Label>

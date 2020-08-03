@@ -31,7 +31,8 @@
             </Style>
         </Grid.Resources>
         <Label Grid.Row="0" Grid.Column="0">ID</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Xinfaid}" IsReadOnly="True" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Xinfaid}" 
+                 IsReadOnly="True" BorderThickness="0" />
         <Label Grid.Row="1" Grid.Column="0">等级</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Xinfalvl}" />
         <Button Grid.Row="2" Grid.Column="2" Margin="0,3" Command="{Binding SaveXinFaCommand}">保存</Button>

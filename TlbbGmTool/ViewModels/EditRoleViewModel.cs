@@ -32,7 +32,6 @@ namespace TlbbGmTool.ViewModels
             _mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
             _gameRole = editRoleWindowViewModel.GameRole;
             //初始化属性
-            Aid = _gameRole.Aid;
             Accname = _gameRole.Accname;
             Charguid = _gameRole.Charguid;
             Charname = _gameRole.Charname;
@@ -76,9 +75,7 @@ namespace TlbbGmTool.ViewModels
             }
 
             //模型数据更新
-            _gameRole.Aid = Aid;
             _gameRole.Accname = Accname;
-            _gameRole.Charguid = Charguid;
             _gameRole.Charname = Charname;
             _gameRole.Title = Title;
             _gameRole.Menpai = Menpai;
@@ -146,7 +143,7 @@ namespace TlbbGmTool.ViewModels
             // fieldA=@fieldA
             var updateCondition = (from fieldName in fieldNames
                 select $"{fieldName}=@{fieldName}");
-            sql += " " + string.Join(", ", updateCondition) + " WHERE aid=" + Aid;
+            sql += " " + string.Join(", ", updateCondition) + " WHERE charguid=@charguid";
             //构造参数
             var mySqlParameters = (from intParameter in intDictionary
                 select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)

@@ -5,8 +5,6 @@ namespace TlbbGmTool.Models
     public class GameRole : BindDataBase
     {
         #region Fields
-
-        private int _aid;
         private string _accname = string.Empty;
         private int _charguid;
         private string _charname = string.Empty;
@@ -54,12 +52,6 @@ namespace TlbbGmTool.Models
         #endregion
 
         #region Properties
-
-        public int Aid
-        {
-            get => _aid;
-            set => SetProperty(ref _aid, value);
-        }
 
         public string Accname
         {
