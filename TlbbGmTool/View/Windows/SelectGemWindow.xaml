@@ -1,0 +1,51 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.SelectGemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Title="SelectGemWindow" Height="140" Width="360">
+    <Window.DataContext>
+        <vm:SelectGemViewModel />
+    </Window.DataContext>
+    <Grid Margin="5,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <WrapPanel Grid.Row="0" Grid.ColumnSpan="4">
+            <Label>等级</Label>
+            <ComboBox MinWidth="50" ItemsSource="{Binding LevelSelection}"
+                      DisplayMemberPath="Title"
+                      SelectedValuePath="Value"
+                      SelectedValue="{Binding Level}" />
+            <Label>名称筛选</Label>
+            <TextBox MinWidth="160" Text="{Binding SearchText}" />
+        </WrapPanel>
+        <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+            <Label>选择</Label>
+            <ComboBox Margin="0,5,0,0" MinWidth="200" ItemsSource="{Binding GemFilterList}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding GemId}" />
+        </WrapPanel>
+        <Button Grid.Row="2" Grid.Column="2" Margin="5"
+                Command="{Binding CancelCommand}">
+            取消
+        </Button>
+        <Button Grid.Row="2" Grid.Column="3" Margin="5"
+                Command="{Binding ConfirmCommand}">
+            保存
+        </Button>
+    </Grid>
+</Window>

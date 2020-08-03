@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
@@ -56,8 +57,6 @@ namespace TlbbGmTool.ViewModels
 
         public string WindowTitle => _isAddEquip ? "添加装备" : $"修改装备 {ItemName})";
 
-        public AppCommand SaveEquipCommand { get; }
-
         public int ItemBaseId
         {
             set
@@ -85,7 +84,18 @@ namespace TlbbGmTool.ViewModels
         public int SlotCount
         {
             get => _slotCount;
-            set => SetProperty(ref _slotCount, value);
+            set
+            {
+                if (!SetProperty(ref _slotCount, value))
+                {
+                    return;
+                }
+
+                SelectGem1Command.RaiseCanExecuteChanged();
+                SelectGem2Command.RaiseCanExecuteChanged();
+                SelectGem3Command.RaiseCanExecuteChanged();
+                SelectGem4Command.RaiseCanExecuteChanged();
+            }
         }
 
         public int EnhanceCount
@@ -269,6 +279,20 @@ namespace TlbbGmTool.ViewModels
 
         #endregion
 
+        #region Commands
+
+        public AppCommand SaveEquipCommand { get; }
+
+        public AppCommand SelectGem1Command { get; }
+
+        public AppCommand SelectGem2Command { get; }
+
+        public AppCommand SelectGem3Command { get; }
+
+        public AppCommand SelectGem4Command { get; }
+
+        #endregion
+
         public AddOrEditEquipViewModel()
         {
             SaveEquipCommand = new AppCommand(SaveEquip);
@@ -288,6 +312,27 @@ namespace TlbbGmTool.ViewModels
                     });
                 }
             }
+
+            SelectGem1Command = new AppCommand(
+                () => SelectGem(
+                    _gem1,
+                    value => Gem1 = value
+                ), () => _slotCount >= 1);
+            SelectGem2Command = new AppCommand(
+                () => SelectGem(
+                    _gem2,
+                    value => Gem2 = value
+                ), () => _slotCount >= 2);
+            SelectGem3Command = new AppCommand(
+                () => SelectGem(
+                    _gem3,
+                    value => Gem3 = value
+                ), () => _slotCount >= 3);
+            SelectGem4Command = new AppCommand(
+                () => SelectGem(
+                    _gem4,
+                    value => Gem4 = value
+                ), () => _slotCount >= 4);
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, ItemInfo itemInfo,
@@ -387,6 +432,18 @@ namespace TlbbGmTool.ViewModels
             }
 
             return $"已选择{attrCount}种属性";
+        }
+
+        private void SelectGem(int gemId, Action<int> setGemCallback)
+        {
+            var selectGemWindow = new SelectGemWindow(_gemBaseList, gemId)
+            {
+                Owner = _addOrEditEquipWindow
+            };
+            if (selectGemWindow.ShowDialog() == true)
+            {
+                setGemCallback(selectGemWindow.GemId);
+            }
         }
     }
 }

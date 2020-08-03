@@ -101,13 +101,13 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="{Binding Gem1Name,Mode=OneWay}" />
-                <Button Grid.Row="0" Grid.Column="1">选择</Button>
+                <Button Grid.Row="0" Grid.Column="1" Command="{Binding SelectGem1Command}">选择</Button>
                 <Label Grid.Row="1" Grid.Column="0" Content="{Binding Gem2Name,Mode=OneWay}" />
-                <Button Grid.Row="1" Grid.Column="1">选择</Button>
+                <Button Grid.Row="1" Grid.Column="1" Command="{Binding SelectGem2Command}">选择</Button>
                 <Label Grid.Row="2" Grid.Column="0" Content="{Binding Gem3Name,Mode=OneWay}" />
-                <Button Grid.Row="2" Grid.Column="1">选择</Button>
+                <Button Grid.Row="2" Grid.Column="1" Command="{Binding SelectGem3Command}">选择</Button>
                 <Label Grid.Row="3" Grid.Column="0" Content="{Binding Gem4Name,Mode=OneWay}" />
-                <Button Grid.Row="3" Grid.Column="1">选择</Button>
+                <Button Grid.Row="3" Grid.Column="1" Command="{Binding SelectGem4Command}">选择</Button>
             </Grid>
         </GroupBox>
         <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
@@ -251,10 +251,10 @@
             </GroupBox.Header>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <CheckBox Grid.Row="0" IsChecked="{Binding BindStatus}">已绑定</CheckBox>
                 <CheckBox Grid.Row="1" IsChecked="{Binding VerifiedStatus}">已鉴定</CheckBox>
