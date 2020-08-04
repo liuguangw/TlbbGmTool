@@ -62,7 +62,8 @@
                 <TextBox MinWidth="100" Text="{Binding ItemName,Mode=OneWay}"
                          IsReadOnly="True" BorderThickness="0"
                          VerticalAlignment="Center" Height="22" />
-                <Label>星级:</Label>
+                <Button Margin="2,0,0,0" Command="{Binding SelectEquipCommand}">修改</Button>
+                <Label Margin="8,0,0,0">星级:</Label>
                 <ComboBox ItemsSource="{Binding StarSection}"
                           DisplayMemberPath="Title"
                           SelectedValuePath="Value"
@@ -74,7 +75,7 @@
                           SelectedValue="{Binding SlotCount}" />
                 <Label>外形:</Label>
                 <Label MinWidth="100" Content="{Binding EquipVisualName,Mode=OneWay}" />
-                <Button>切换</Button>
+                <Button Command="{Binding SelectVisualCommand}">切换</Button>
             </StackPanel>
         </GroupBox>
         <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="0" Grid.RowSpan="3">
@@ -128,13 +129,15 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="{Binding Attr1Tip,Mode=OneWay}" />
-                <Button Grid.Row="0" Grid.Column="1">选择</Button>
                 <Label Grid.Row="1" Grid.Column="0" Content="{Binding Attr2Tip,Mode=OneWay}" />
-                <Button Grid.Row="1" Grid.Column="1">选择</Button>
+                <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                        Command="{Binding SelectAttrCommand}">
+                    修改
+                </Button>
             </Grid>
         </GroupBox>
         <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
@@ -263,7 +266,7 @@
             </Grid>
         </GroupBox>
         <DockPanel Margin="5" Grid.Row="5" Grid.Column="2">
-            <Button>保存</Button>
+            <Button Command="{Binding SaveEquipCommand}">保存</Button>
         </DockPanel>
     </Grid>
 </Window>

@@ -24,6 +24,9 @@ namespace TlbbGmTool.Models
         public List<int> Attr1;
         public List<int> Attr2;
 
+        //
+        public string EquipTitle => $"({Level}级){Name} (ID: {Id})";
+
 
         /// <summary>
         /// for Equip

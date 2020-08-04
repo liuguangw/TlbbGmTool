@@ -146,7 +146,7 @@ namespace TlbbGmTool.ViewModels
             //equip
             if (itemBaseInfo.ItemClass == 1)
             {
-                var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, itemInfo)
+                var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, itemInfo, _charguid)
                 {
                     Owner = _editRoleWindow
                 };

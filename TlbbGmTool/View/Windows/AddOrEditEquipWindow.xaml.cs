@@ -7,10 +7,10 @@ namespace TlbbGmTool.View.Windows
     public partial class AddOrEditEquipWindow : Window
     {
         public AddOrEditEquipWindow(MainWindowViewModel mainWindowViewModel,
-            ItemInfo itemInfo)
+            ItemInfo itemInfo, int charguid)
         {
             InitializeComponent();
-            GetViewModel().InitData(mainWindowViewModel, itemInfo, this);
+            GetViewModel().InitData(mainWindowViewModel, itemInfo, charguid, this);
         }
 
         private AddOrEditEquipViewModel GetViewModel()

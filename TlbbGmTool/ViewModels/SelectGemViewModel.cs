@@ -27,7 +27,13 @@ namespace TlbbGmTool.ViewModels
         public int GemId
         {
             get => _gemId;
-            set => SetProperty(ref _gemId, value);
+            set
+            {
+                if (SetProperty(ref _gemId, value))
+                {
+                    ConfirmCommand.RaiseCanExecuteChanged();
+                }
+            }
         }
 
         public string SearchText
@@ -74,8 +80,6 @@ namespace TlbbGmTool.ViewModels
                     Value = i
                 });
             }
-
-            RaisePropertyChanged(nameof(LevelSelection));
 
             ConfirmCommand = new AppCommand(ConfirmSelect, CanConfirmSelect);
             CancelCommand = new AppCommand(CancelSelect);

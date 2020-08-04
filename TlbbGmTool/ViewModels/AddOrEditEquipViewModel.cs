@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.Services;
 using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
@@ -13,6 +16,7 @@ namespace TlbbGmTool.ViewModels
 
         private MainWindowViewModel _mainWindowViewModel;
         private ItemInfo _itemInfo;
+        private int _charguid;
         private bool _isAddEquip = true;
         private AddOrEditEquipWindow _addOrEditEquipWindow;
 
@@ -291,6 +295,12 @@ namespace TlbbGmTool.ViewModels
 
         public AppCommand SelectGem4Command { get; }
 
+        public AppCommand SelectEquipCommand { get; }
+
+        public AppCommand SelectVisualCommand { get; }
+
+        public AppCommand SelectAttrCommand { get; }
+
         #endregion
 
         public AddOrEditEquipViewModel()
@@ -333,10 +343,13 @@ namespace TlbbGmTool.ViewModels
                     _gem4,
                     value => Gem4 = value
                 ), () => _slotCount >= 4);
+            SelectEquipCommand = new AppCommand(SelectEquip);
+            SelectVisualCommand = new AppCommand(SelectVisual);
+            SelectAttrCommand = new AppCommand(SelectAttr);
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, ItemInfo itemInfo,
-            AddOrEditEquipWindow addOrEditEquipWindow)
+            int charguid, AddOrEditEquipWindow addOrEditEquipWindow)
         {
             _mainWindowViewModel = mainWindowViewModel;
             _addOrEditEquipWindow = addOrEditEquipWindow;
@@ -346,6 +359,7 @@ namespace TlbbGmTool.ViewModels
             _gemBaseList = (from itemBaseInfoPair in _mainWindowViewModel.ItemBases
                 where itemBaseInfoPair.Value.ItemClass == 5
                 select itemBaseInfoPair.Value).ToList();
+            _charguid = charguid;
             if (itemInfo == null)
             {
                 //初始化默认值
@@ -393,6 +407,333 @@ namespace TlbbGmTool.ViewModels
 
         private async void SaveEquip()
         {
+            ItemInfo itemInfo;
+            try
+            {
+                itemInfo = await DoSaveEquip();
+            }
+            catch (Exception e)
+            {
+                _mainWindowViewModel.ShowErrorMessage("保存失败", e.Message);
+                return;
+            }
+
+            //更新属性
+            if (_itemInfo != null)
+            {
+                _itemInfo.ItemType = itemInfo.ItemType;
+                _itemInfo.PArray = itemInfo.PArray;
+                _itemInfo.Creator = itemInfo.Creator;
+            }
+
+            //更新标题
+            RaisePropertyChanged(nameof(WindowTitle));
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存equip信息成功");
+            _addOrEditEquipWindow.Close();
+        }
+
+        private async Task<ItemInfo> DoSaveEquip()
+        {
+            var attrCount = GetAttrCountFromNumber(_attr1)
+                            + GetAttrCountFromNumber(_attr2);
+            var itemType = _itemBaseId;
+            var gemCount = 0;
+            var pArray = new int[17];
+            if (_gem1 != 0)
+            {
+                gemCount++;
+                //Gem1前两字节 -> p2后两字节
+                pArray[1] = (int) (pArray[1] & 0xffff0000);
+                pArray[1] |= (_gem1 >> 16) & 0xffff;
+                //Gem1后两字节 -> p1前两字节
+                pArray[0] &= 0xffff;
+                pArray[0] |= (_gem1 & 0xffff) << 16;
+            }
+
+            if (_gem2 != 0)
+            {
+                gemCount++;
+                //Gem2前两字节 -> p3后两字节
+                pArray[2] = (int) (pArray[2] & 0xffff0000);
+                pArray[2] |= (_gem2 >> 16) & 0xffff;
+                //Gem2后两字节 -> p2前两字节
+                pArray[1] &= 0xffff;
+                pArray[1] |= (_gem2 & 0xffff) << 16;
+            }
+
+            if (_gem3 != 0)
+            {
+                gemCount++;
+                //Gem3前两字节 -> p4后两字节
+                pArray[3] = (int) (pArray[1] & 0xffff0000);
+                pArray[3] |= (_gem3 >> 16) & 0xffff;
+                //Gem3后两字节 -> p3前两字节
+                pArray[2] &= 0xffff;
+                pArray[2] |= (_gem3 & 0xffff) << 16;
+            }
+
+            if (_gem4 != 0)
+            {
+                gemCount++;
+                //Gem4首字节 -> p17尾字节
+                pArray[16] = (int) (pArray[16] & 0xffffff00);
+                pArray[16] |= _gem4 >> 24;
+                //Gem4后三字节 -> p16前三字节
+                pArray[15] = pArray[15] & 0xff;
+                pArray[15] += (_gem4 & 0xffffff) << 8;
+            }
+
+            //取状态信息(P4第二个字节),将对应位置重置为0
+            var itemStatus = (pArray[3] >> 16) & 0xff;
+            itemStatus = itemStatus & 0b10011100;
+            if (_bindStatus)
+            {
+                itemStatus |= 1;
+            }
+
+            if (_verifiedStatus)
+            {
+                itemStatus |= 1 << 1;
+            }
+
+            if (_qualificationVerifiedStatus)
+            {
+                itemStatus |= 1 << 5;
+            }
+
+            if (_engravedStatus)
+            {
+                itemStatus |= 1 << 6;
+            }
+
+            //替换状态数据
+            pArray[3] = (int) (pArray[3] & 0xff00ffff);
+            pArray[3] |= itemStatus << 16;
+            //Slot Count
+            pArray[4] = (int) (pArray[4] & 0xffffff00);
+            pArray[4] |= SlotCount;
+            //P6 前三字节置0
+            pArray[5] = pArray[5] & 0xff;
+            //填充数据
+            pArray[5] |= attrCount << 8;
+            pArray[5] |= gemCount << 16;
+            pArray[5] |= _enhanceCount << 24;
+            //quality
+            pArray[6] = pArray[6] & 0xffffff;
+            pArray[6] |= _qualification1 << 24;
+            pArray[7] = 0;
+            pArray[7] |= _qualification5 << 24;
+            pArray[7] |= _qualification4 << 16;
+            pArray[7] |= _qualification2 << 8;
+            pArray[7] |= _qualification3;
+            pArray[8] = _equipVisual << 16;
+            pArray[8] |= _starCount << 8;
+            pArray[8] |= _qualification6;
+            //attr
+            pArray[9] = _attr1;
+            pArray[10] = _attr2;
+            //float value
+            pArray[11] = (int) (pArray[11] & 0xffffff00);
+            pArray[11] += FloatValue;
+            //enhance
+            pArray[12] = (int) (pArray[12] & 0xffffff00);
+            pArray[12] += EnhanceCount;
+            ItemInfo itemInfo;
+            if (_isAddEquip)
+            {
+                //@todo insert into list
+                itemInfo = await DoInsertEquip(itemType, pArray, _charguid);
+            }
+            else
+            {
+                itemInfo = await DoUpdateEquip(itemType, pArray, _charguid, _itemInfo.Pos);
+            }
+
+            return itemInfo;
+        }
+
+        private async Task<MySqlConnection> GetMySqlConnection()
+        {
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+            if (mySqlConnection.Database != gameDbName)
+            {
+                // 切换数据库
+                await mySqlConnection.ChangeDataBaseAsync(gameDbName);
+            }
+
+            return mySqlConnection;
+        }
+
+        private async Task<ItemInfo> DoUpdateEquip(int itemType, int[] pArray, int charguid, int pos)
+        {
+            var sql = "UPDATE t_iteminfo SET itemtype=@itemtype";
+            var intDictionary = new Dictionary<string, int>();
+            for (var i = 0; i < pArray.Length; i++)
+            {
+                intDictionary[$"p{i + 1}"] = pArray[i];
+            }
+
+            foreach (var keyValuePair in intDictionary)
+            {
+                sql += $",{keyValuePair.Key}=@{keyValuePair.Key}";
+            }
+
+            sql += " WHERE charguid=@charguid AND pos=@pos";
+            intDictionary.Add("itemtype", itemType);
+            intDictionary.Add("charguid", charguid);
+            intDictionary.Add("pos", pos);
+            //构造参数
+            var mySqlParameters = (from intParameter in intDictionary
+                select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)
+                {
+                    Value = intParameter.Value
+                }).ToList();
+            var mySqlConnection = await GetMySqlConnection();
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
+            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
+            return new ItemInfo(_mainWindowViewModel.ItemBases)
+            {
+                ItemType = itemType,
+                PArray = pArray,
+                Creator = _itemInfo.Creator
+            };
+        }
+
+        /// <summary>
+        /// 获取下一个有效的pos
+        /// </summary>
+        /// <param name="mySqlConnection"></param>
+        /// <param name="charguid"></param>
+        /// <returns></returns>
+        private async Task<int> GetNextPos(MySqlConnection mySqlConnection, int charguid)
+        {
+            var currentPos = 0;
+            var findPos = false;
+            var sql = "SELECT pos FROM t_iteminfo WHERE charguid="
+                      + charguid + " AND isvalid=1"
+                      + " AND pos>=0 AND pos<30"
+                      + " ORDER BY pos ASC";
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            await Task.Run(async () =>
+            {
+                using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+                {
+                    while (await rd.ReadAsync())
+                    {
+                        var pos = rd.GetInt32("pos");
+                        if (currentPos < pos)
+                        {
+                            findPos = true;
+                            break;
+                        }
+
+                        currentPos++;
+                    }
+                }
+            });
+            if (!findPos)
+            {
+                throw new Exception("找不到有效的pos");
+            }
+
+            //清理pos
+            sql = "DELETE FROM t_iteminfo WHERE charguid=" + charguid + " AND pos=" + currentPos;
+            mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
+            return currentPos;
+        }
+
+        private async Task<int> GetNextGuid(MySqlConnection mySqlConnection)
+        {
+            var nextGuid = 0;
+            const string sql = "SELECT serial FROM t_itemkey WHERE smkey=7001 LIMIT 1";
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            await Task.Run(async () =>
+            {
+                using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+                {
+                    nextGuid = rd.GetInt32("serial");
+                }
+
+                //UPDATE KEY
+                var updateSql = "UPDATE t_itemkey SET serial=serial+2 WHERE smkey=7001";
+                mySqlCommand = new MySqlCommand(updateSql, mySqlConnection);
+                await mySqlCommand.ExecuteNonQueryAsync();
+            });
+            return nextGuid + 2;
+        }
+
+        private async Task<ItemInfo> DoInsertEquip(int itemType, int[] pArray, int charguid)
+        {
+            var mySqlConnection = await GetMySqlConnection();
+            var pos = await GetNextPos(mySqlConnection, charguid);
+            var guid = await GetNextGuid(mySqlConnection);
+            var creator = "test";
+            //最大耐久值
+            var equipLife = 0xEB;
+            pArray[3] = pArray[3] & 0xffffff;
+            pArray[3] |= equipLife << 24;
+            pArray[4] = (int) (pArray[3] & 0xff00ffff);
+            pArray[4] |= equipLife << 16;
+            var intDictionary = new Dictionary<string, int>()
+            {
+                ["charguid"] = charguid,
+                ["guid"] = guid,
+                ["world"] = 101,
+                ["server"] = 0,
+                ["itemtype"] = itemType,
+                ["pos"] = pos,
+            };
+            for (var i = 0; i < pArray.Length; i++)
+            {
+                intDictionary.Add($"p{i + 1}", pArray[i]);
+            }
+
+            var fieldNames = intDictionary.Keys.ToList();
+            fieldNames.AddRange(new[]
+            {
+                "creator",
+                "fixattr",
+                "var"
+            });
+            var sql = "INSERT INTO t_iteminfo";
+            sql += "(" + string.Join(", ", fieldNames) + ") VALUES";
+            var fieldValueTemplates = (from fieldName in fieldNames
+                select "@" + fieldName);
+            sql += " (" + string.Join(", ", fieldValueTemplates) + ")";
+            //构造参数
+            var mySqlParameters = (from intParameter in intDictionary
+                select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)
+                {
+                    Value = intParameter.Value
+                }).ToList();
+            mySqlParameters.Add(new MySqlParameter("@creator", MySqlDbType.String)
+            {
+                Value = DbStringService.ToDbString("流光")
+            });
+            mySqlParameters.Add(new MySqlParameter("@fixattr", MySqlDbType.String)
+            {
+                Value = string.Empty
+            });
+            mySqlParameters.Add(new MySqlParameter("@var", MySqlDbType.String)
+            {
+                Value = string.Empty
+            });
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
+            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
+            return new ItemInfo(_mainWindowViewModel.ItemBases)
+            {
+                Charguid = charguid,
+                Guid = guid,
+                World = intDictionary["world"],
+                Server = intDictionary["server"],
+                ItemType = itemType,
+                Pos = intDictionary["pos"],
+                PArray = pArray
+            };
         }
 
         /// <summary>
@@ -414,7 +755,7 @@ namespace TlbbGmTool.ViewModels
             return itemBaseInfo != null ? $"{itemBaseInfo.Name}(ID: {itemId})" : $"未知(ID: {itemId})";
         }
 
-        private static string CalcAttrTip(int attrValue)
+        private static int GetAttrCountFromNumber(int attrValue)
         {
             var attrCount = 0;
             for (var i = 0; i < 32; i++)
@@ -431,8 +772,11 @@ namespace TlbbGmTool.ViewModels
                 }
             }
 
-            return $"已选择{attrCount}种属性";
+            return attrCount;
         }
+
+        private static string CalcAttrTip(int attrValue)
+            => $"已选择{GetAttrCountFromNumber(attrValue)}种属性";
 
         private void SelectGem(int gemId, Action<int> setGemCallback)
         {
@@ -443,6 +787,46 @@ namespace TlbbGmTool.ViewModels
             if (selectGemWindow.ShowDialog() == true)
             {
                 setGemCallback(selectGemWindow.GemId);
+            }
+        }
+
+        private void SelectEquip()
+        {
+            var selectEquipWindow = new SelectEquipWindow(_equipBaseList, _itemBaseId)
+            {
+                Owner = _addOrEditEquipWindow
+            };
+            if (selectEquipWindow.ShowDialog() == true)
+            {
+                var selectedEquip = selectEquipWindow.EquipBaseInfo;
+                ItemBaseId = selectedEquip.Id;
+                EquipVisual = selectedEquip.EquipVisual;
+            }
+        }
+
+        private void SelectVisual()
+        {
+            var selectEquipWindow = new SelectEquipWindow(_equipBaseList, _itemBaseId, true)
+            {
+                Owner = _addOrEditEquipWindow
+            };
+            if (selectEquipWindow.ShowDialog() == true)
+            {
+                var selectedEquip = selectEquipWindow.EquipBaseInfo;
+                EquipVisual = selectedEquip.EquipVisual;
+            }
+        }
+
+        private void SelectAttr()
+        {
+            var selectAttrWindow = new SelectAttrWindow(_equipBaseList, _itemBaseId, _attr1, _attr2)
+            {
+                Owner = _addOrEditEquipWindow
+            };
+            if (selectAttrWindow.ShowDialog() == true)
+            {
+                Attr1 = selectAttrWindow.Attr1;
+                Attr2 = selectAttrWindow.Attr2;
             }
         }
     }
