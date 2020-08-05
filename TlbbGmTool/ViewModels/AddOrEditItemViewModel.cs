@@ -99,6 +99,7 @@ namespace TlbbGmTool.ViewModels
                 select itemBaseInfoPair.Value).ToList();
             _charguid = charguid;
             _bagItemList = itemList;
+            _isMaterial = isMaterial;
             if (itemInfo == null)
             {
                 //初始化默认值

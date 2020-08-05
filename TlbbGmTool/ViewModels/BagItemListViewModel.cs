@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
@@ -26,6 +27,7 @@ namespace TlbbGmTool.ViewModels
 
         public AppCommand AddEquipCommand { get; }
 
+        public AppCommand AddItemCommand { get; }
         public AppCommand EditItemCommand { get; }
 
         public AppCommand DeleteItemCommand { get; }
@@ -35,6 +37,7 @@ namespace TlbbGmTool.ViewModels
         public BagItemListViewModel()
         {
             AddEquipCommand = new AppCommand(ShowAddEquipDialog);
+            AddItemCommand = new AppCommand(ShowAddItemDialog);
             EditItemCommand = new AppCommand(ShowEditDialog, CanEditItem);
             DeleteItemCommand = new AppCommand(ProcessDelete);
         }
@@ -132,6 +135,15 @@ namespace TlbbGmTool.ViewModels
             editWindow.ShowDialog();
         }
 
+        private void ShowAddItemDialog()
+        {
+            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, null, false, _charguid, ItemList)
+            {
+                Owner = _editRoleWindow
+            };
+            editWindow.ShowDialog();
+        }
+
         private bool CanEditItem(object parameter)
         {
             var itemInfo = parameter as ItemInfo;
@@ -147,19 +159,78 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            //equip
-            if (itemBaseInfo.ItemClass == 1)
+            switch (itemBaseInfo.ItemClass)
             {
-                var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, itemInfo, _charguid, ItemList)
+                //equip
+                case 1:
                 {
-                    Owner = _editRoleWindow
-                };
-                editWindow.ShowDialog();
+                    var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, itemInfo, _charguid, ItemList)
+                    {
+                        Owner = _editRoleWindow
+                    };
+                    editWindow.ShowDialog();
+                    break;
+                }
+                //item
+                case 3:
+                {
+                    var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, itemInfo, false, _charguid, ItemList)
+                    {
+                        Owner = _editRoleWindow
+                    };
+                    editWindow.ShowDialog();
+                    break;
+                }
+                default:
+                    _mainWindowViewModel.ShowErrorMessage("无法修改",
+                        $"无法修改此类物品[ItemClass={itemBaseInfo.ItemClass}, ItemId={itemBaseInfo.Id}]");
+                    break;
             }
         }
 
-        private void ProcessDelete(object parameter)
+        private async void ProcessDelete(object parameter)
         {
+            var itemInfo = parameter as ItemInfo;
+            var tipName = $"{itemInfo.Name}(ID={itemInfo.ItemType}, Pos={itemInfo.Pos})";
+            //删除确认
+            if (MessageBox.Show(_editRoleWindow, $"确定要删除 {tipName}吗?",
+                "删除提示", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await DoProcessDelete(itemInfo.Charguid, itemInfo.Pos);
+            }
+            catch (Exception e)
+            {
+                _mainWindowViewModel.ShowErrorMessage("删除失败", e.Message);
+                return;
+            }
+
+            //删除成功后,将itemInfo从列表移出
+            ItemList.Remove(itemInfo);
+            _mainWindowViewModel.ShowSuccessMessage("删除成功",
+                $"删除 {tipName}成功");
+        }
+
+        private async Task DoProcessDelete(int charguid, int pos)
+        {
+            var sql = $"DELETE FROM t_iteminfo WHERE charguid={charguid} AND pos={pos}";
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            await Task.Run(async () =>
+            {
+                var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+                if (mySqlConnection.Database != gameDbName)
+                {
+                    // 切换数据库
+                    await mySqlConnection.ChangeDataBaseAsync(gameDbName);
+                }
+
+                await mySqlCommand.ExecuteNonQueryAsync();
+            });
         }
     }
 }

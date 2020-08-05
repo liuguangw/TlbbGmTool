@@ -14,6 +14,7 @@
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Margin="10,10,10,0">
             <Button Command="{Binding AddEquipCommand}">add equip</Button>
+            <Button Command="{Binding AddItemCommand}" Margin="5,0,0,0">add item</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding ItemList}">

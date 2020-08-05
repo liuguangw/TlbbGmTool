@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
@@ -154,8 +155,49 @@ namespace TlbbGmTool.ViewModels
             editWindow.ShowDialog();
         }
 
-        private void ProcessDelete(object parameter)
+        private async void ProcessDelete(object parameter)
         {
+            var itemInfo = parameter as ItemInfo;
+            var tipName = $"{itemInfo.Name}(ID={itemInfo.ItemType}, Pos={itemInfo.Pos})";
+            //删除确认
+            if (MessageBox.Show(_editRoleWindow, $"确定要删除 {tipName}吗?",
+                "删除提示", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await DoProcessDelete(itemInfo.Charguid, itemInfo.Pos);
+            }
+            catch (Exception e)
+            {
+                _mainWindowViewModel.ShowErrorMessage("删除失败", e.Message);
+                return;
+            }
+
+            //删除成功后,将itemInfo从列表移出
+            ItemList.Remove(itemInfo);
+            _mainWindowViewModel.ShowSuccessMessage("删除成功",
+                $"删除 {tipName}成功");
+        }
+
+        private async Task DoProcessDelete(int charguid, int pos)
+        {
+            var sql = $"DELETE FROM t_iteminfo WHERE charguid={charguid} AND pos={pos}";
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            await Task.Run(async () =>
+            {
+                var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+                if (mySqlConnection.Database != gameDbName)
+                {
+                    // 切换数据库
+                    await mySqlConnection.ChangeDataBaseAsync(gameDbName);
+                }
+
+                await mySqlCommand.ExecuteNonQueryAsync();
+            });
         }
     }
 }
