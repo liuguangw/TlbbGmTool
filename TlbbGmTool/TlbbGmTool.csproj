@@ -137,6 +137,7 @@
     <Compile Include="Services\TextFileService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
     <Compile Include="ViewModels\AddOrEditEquipViewModel.cs" />
+    <Compile Include="ViewModels\AddOrEditItemViewModel.cs" />
     <Compile Include="ViewModels\AddOrEditServerViewModel.cs" />
     <Compile Include="ViewModels\BagItemListViewModel.cs" />
     <Compile Include="ViewModels\EditAccountViewModel.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="ViewModels\EditRoleWindowViewModel.cs" />
     <Compile Include="ViewModels\EditXinFaViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MaterialItemListViewModel.cs" />
     <Compile Include="ViewModels\PetListViewModel.cs" />
     <Compile Include="ViewModels\RoleListViewModel.cs" />
     <Compile Include="ViewModels\SelectAttrViewModel.cs" />
@@ -162,6 +164,9 @@
     <Compile Include="View\Pages\EditRolePage.xaml.cs">
       <DependentUpon>EditRolePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Pages\MaterialItemList.xaml.cs">
+      <DependentUpon>MaterialItemList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Pages\PetList.xaml.cs">
       <DependentUpon>PetList.xaml</DependentUpon>
     </Compile>
@@ -173,6 +178,9 @@
     </Compile>
     <Compile Include="View\Windows\AddOrEditEquipWindow.xaml.cs">
       <DependentUpon>AddOrEditEquipWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Windows\AddOrEditItemWindow.xaml.cs">
+      <DependentUpon>AddOrEditItemWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Windows\AddOrEditServerWindow.xaml.cs">
       <DependentUpon>AddOrEditServerWindow.xaml</DependentUpon>
@@ -224,6 +232,7 @@
     </Page>
     <Page Include="View\Pages\BagItemList.xaml" />
     <Page Include="View\Pages\EditRolePage.xaml" />
+    <Page Include="View\Pages\MaterialItemList.xaml" />
     <Page Include="View\Pages\PetList.xaml" />
     <Page Include="View\Pages\RoleList.xaml">
       <SubType>Designer</SubType>
@@ -231,6 +240,7 @@
     </Page>
     <Page Include="View\Pages\XinFaList.xaml" />
     <Page Include="View\Windows\AddOrEditEquipWindow.xaml" />
+    <Page Include="View\Windows\AddOrEditItemWindow.xaml" />
     <Page Include="View\Windows\AddOrEditServerWindow.xaml" />
     <Page Include="View\Windows\EditAccountWindow.xaml" />
     <Page Include="View\Windows\EditPetSkillWindow.xaml" />

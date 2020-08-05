@@ -118,8 +118,7 @@ namespace TlbbGmTool.Services
             }
 
             var itemId = Convert.ToInt32(columns[0]);
-            var itemClass = Convert.ToInt32(columns[1]);
-            var itemType = Convert.ToInt32(columns[3]);
+            var (itemClass, itemType) = GetItemClassAndType(itemId);
             var name = columns[6];
             var shortTypeString = columns[20];
             var description = columns[7];
@@ -138,8 +137,7 @@ namespace TlbbGmTool.Services
             }
 
             var itemId = Convert.ToInt32(columns[0]);
-            var itemClass = Convert.ToInt32(columns[1]);
-            var itemType = Convert.ToInt32(columns[3]);
+            var (itemClass, itemType) = GetItemClassAndType(itemId);
             var name = columns[7];
             var shortTypeString = columns[76];
             var description = columns[8];
@@ -157,8 +155,7 @@ namespace TlbbGmTool.Services
             }
 
             var itemId = Convert.ToInt32(columns[0]);
-            var itemClass = Convert.ToInt32(columns[1]);
-            var itemType = Convert.ToInt32(columns[3]);
+            var (itemClass, itemType) = GetItemClassAndType(itemId);
             var equipPoint = Convert.ToInt32(columns[5]);
             var name = columns[10];
             var shortTypeString = columns[22];
@@ -167,6 +164,8 @@ namespace TlbbGmTool.Services
             var bagCapacity = Convert.ToInt32(columns[97]);
             var materialCapacity = Convert.ToInt32(columns[98]);
             var equipVisual = Convert.ToInt32(columns[6]);
+            var ruleId = Convert.ToInt32(columns[7]);
+            var maxLife = Convert.ToInt32(columns[16]);
             var attr1List = new List<int>();
             var attr2List = new List<int>();
             for (var i = 0; i < 64; i++)
@@ -191,7 +190,14 @@ namespace TlbbGmTool.Services
 
             return new ItemBase(itemId, itemClass, itemType,
                 name, shortTypeString, description, level, equipPoint, bagCapacity, materialCapacity,
-                equipVisual, attr1List, attr2List);
+                equipVisual, ruleId, maxLife, attr1List, attr2List);
+        }
+
+        private static (int, int) GetItemClassAndType(int itemId)
+        {
+            var itemClass = itemId / 1000_0000;
+            var itemType = itemId % 10_0000 / 1000;
+            return (itemClass, itemType);
         }
     }
 }

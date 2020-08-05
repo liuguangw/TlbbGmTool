@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
@@ -18,6 +19,7 @@ namespace TlbbGmTool.ViewModels
         private ItemInfo _itemInfo;
         private int _charguid;
         private bool _isAddEquip = true;
+        private ObservableCollection<ItemInfo> _bagItemList;
         private AddOrEditEquipWindow _addOrEditEquipWindow;
 
         //
@@ -349,7 +351,7 @@ namespace TlbbGmTool.ViewModels
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, ItemInfo itemInfo,
-            int charguid, AddOrEditEquipWindow addOrEditEquipWindow)
+            int charguid, ObservableCollection<ItemInfo> itemList, AddOrEditEquipWindow addOrEditEquipWindow)
         {
             _mainWindowViewModel = mainWindowViewModel;
             _addOrEditEquipWindow = addOrEditEquipWindow;
@@ -360,12 +362,13 @@ namespace TlbbGmTool.ViewModels
                 where itemBaseInfoPair.Value.ItemClass == 5
                 select itemBaseInfoPair.Value).ToList();
             _charguid = charguid;
+            _bagItemList = itemList;
             if (itemInfo == null)
             {
                 //初始化默认值
                 var firstItem = _equipBaseList.First();
                 ItemBaseId = firstItem.Id;
-                EquipVisual = firstItem.Id;
+                EquipVisual = firstItem.EquipVisual;
                 return;
             }
 
@@ -419,7 +422,11 @@ namespace TlbbGmTool.ViewModels
             }
 
             //更新属性
-            if (_itemInfo != null)
+            if (_isAddEquip)
+            {
+                _bagItemList.Add(itemInfo);
+            }
+            else
             {
                 _itemInfo.ItemType = itemInfo.ItemType;
                 _itemInfo.PArray = itemInfo.PArray;
@@ -438,7 +445,8 @@ namespace TlbbGmTool.ViewModels
                             + GetAttrCountFromNumber(_attr2);
             var itemType = _itemBaseId;
             var gemCount = 0;
-            var pArray = new int[17];
+            var pArray =
+                _itemInfo == null ? new int[17] : _itemInfo.PArray;
             if (_gem1 != 0)
             {
                 gemCount++;
@@ -485,7 +493,7 @@ namespace TlbbGmTool.ViewModels
 
             //取状态信息(P4第二个字节),将对应位置重置为0
             var itemStatus = (pArray[3] >> 16) & 0xff;
-            itemStatus = itemStatus & 0b10011100;
+            itemStatus &= 0b10011100;
             if (_bindStatus)
             {
                 itemStatus |= 1;
@@ -541,7 +549,6 @@ namespace TlbbGmTool.ViewModels
             ItemInfo itemInfo;
             if (_isAddEquip)
             {
-                //@todo insert into list
                 itemInfo = await DoInsertEquip(itemType, pArray, _charguid);
             }
             else
@@ -611,9 +618,10 @@ namespace TlbbGmTool.ViewModels
         {
             var currentPos = 0;
             var findPos = false;
+            var maxPosCount = 30;
             var sql = "SELECT pos FROM t_iteminfo WHERE charguid="
                       + charguid + " AND isvalid=1"
-                      + " AND pos>=0 AND pos<30"
+                      + " AND pos>=0 AND pos<" + maxPosCount
                       + " ORDER BY pos ASC";
             var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
             await Task.Run(async () =>
@@ -633,7 +641,11 @@ namespace TlbbGmTool.ViewModels
                     }
                 }
             });
-            if (!findPos)
+            if (!findPos && currentPos < maxPosCount)
+            {
+                findPos = true;
+            }
+            else if (!findPos)
             {
                 throw new Exception("找不到有效的pos");
             }
@@ -654,7 +666,10 @@ namespace TlbbGmTool.ViewModels
             {
                 using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
                 {
-                    nextGuid = rd.GetInt32("serial");
+                    if (await rd.ReadAsync())
+                    {
+                        nextGuid = rd.GetInt32("serial");
+                    }
                 }
 
                 //UPDATE KEY
@@ -670,9 +685,13 @@ namespace TlbbGmTool.ViewModels
             var mySqlConnection = await GetMySqlConnection();
             var pos = await GetNextPos(mySqlConnection, charguid);
             var guid = await GetNextGuid(mySqlConnection);
-            var creator = "test";
+            var creator = "流光";
+            var equipBaseInfo = FindItemById(itemType, _equipBaseList);
+            //规则ID
+            pArray[0] = (int) (pArray[0] & 0xffffff00);
+            pArray[0] |= equipBaseInfo.RuleId;
             //最大耐久值
-            var equipLife = 0xEB;
+            var equipLife = equipBaseInfo.MaxLife;
             pArray[3] = pArray[3] & 0xffffff;
             pArray[3] |= equipLife << 24;
             pArray[4] = (int) (pArray[3] & 0xff00ffff);
@@ -711,7 +730,7 @@ namespace TlbbGmTool.ViewModels
                 }).ToList();
             mySqlParameters.Add(new MySqlParameter("@creator", MySqlDbType.String)
             {
-                Value = DbStringService.ToDbString("流光")
+                Value = DbStringService.ToDbString(creator)
             });
             mySqlParameters.Add(new MySqlParameter("@fixattr", MySqlDbType.String)
             {
@@ -736,6 +755,18 @@ namespace TlbbGmTool.ViewModels
             };
         }
 
+        private static ItemBase FindItemById(int itemId, IEnumerable<ItemBase> itemBaseList)
+        {
+            if (itemId == 0)
+            {
+                return null;
+            }
+
+            return (from baseInfo in itemBaseList
+                where baseInfo.Id == itemId
+                select baseInfo).First();
+        }
+
         /// <summary>
         /// 通过ID查找名称
         /// </summary>
@@ -749,9 +780,7 @@ namespace TlbbGmTool.ViewModels
                 return "无";
             }
 
-            var itemBaseInfo = (from baseInfo in itemBaseList
-                where baseInfo.Id == itemId
-                select baseInfo).First();
+            var itemBaseInfo = FindItemById(itemId, itemBaseList);
             return itemBaseInfo != null ? $"{itemBaseInfo.Name}(ID: {itemId})" : $"未知(ID: {itemId})";
         }
 

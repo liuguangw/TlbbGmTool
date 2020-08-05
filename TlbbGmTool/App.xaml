@@ -29,8 +29,17 @@
                                 <Run Foreground="#FF615858">等级:</Run>
                                 <Run Text="{Binding Level, Mode=OneWay}" Foreground="#FFF12679" />
                                 <LineBreak />
+                                <Run Foreground="#FF615858">最大叠加:</Run>
+                                <Run Text="{Binding MaxSize, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
                                 <Run Foreground="#FF615858">物品id:</Run>
                                 <Run Text="{Binding ItemType, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">Class:</Run>
+                                <Run Text="{Binding ItemBaseClass, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">Type:</Run>
+                                <Run Text="{Binding ItemBaseType, Mode=OneWay}" Foreground="#FFF12679" />
                             </TextBlock>
                             <TextBlock Text="{Binding Description, Mode=OneWay}" MaxWidth="200"
                                        TextWrapping="Wrap"

@@ -7,7 +7,6 @@ namespace TlbbGmTool.Models
     {
         #region Fields
 
-        private int _aid;
         private int _charguid;
         private int _guid;
         private int _world;
@@ -24,12 +23,6 @@ namespace TlbbGmTool.Models
         #endregion
 
         #region Properties
-
-        public int Aid
-        {
-            get => _aid;
-            set => SetProperty(ref _aid, value);
-        }
 
         public int Charguid
         {
@@ -112,6 +105,15 @@ namespace TlbbGmTool.Models
         public int Level =>
             _currentItemBase?.Level ?? 0;
 
+        public int MaxSize =>
+            _currentItemBase?.MaxSize ?? 0;
+
+        public int ItemBaseClass =>
+            _currentItemBase?.ItemClass ?? 0;
+
+        public int ItemBaseType =>
+            _currentItemBase?.ItemType ?? 0;
+
         public int ItemCount
         {
             get
@@ -148,6 +150,9 @@ namespace TlbbGmTool.Models
             RaisePropertyChanged(nameof(Description));
             RaisePropertyChanged(nameof(Level));
             RaisePropertyChanged(nameof(ItemCount));
+            RaisePropertyChanged(nameof(MaxSize));
+            RaisePropertyChanged(nameof(ItemBaseClass));
+            RaisePropertyChanged(nameof(ItemBaseType));
         }
     }
 }

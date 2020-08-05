@@ -9,7 +9,7 @@ using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
-    public class BagItemListViewModel : BindDataBase
+    public class MaterialItemListViewModel : BindDataBase
     {
         #region Fields
 
@@ -24,7 +24,7 @@ namespace TlbbGmTool.ViewModels
         public ObservableCollection<ItemInfo> ItemList { get; } =
             new ObservableCollection<ItemInfo>();
 
-        public AppCommand AddEquipCommand { get; }
+        public AppCommand AddItemCommand { get; }
 
         public AppCommand EditItemCommand { get; }
 
@@ -32,9 +32,9 @@ namespace TlbbGmTool.ViewModels
 
         #endregion
 
-        public BagItemListViewModel()
+        public MaterialItemListViewModel()
         {
-            AddEquipCommand = new AppCommand(ShowAddEquipDialog);
+            AddItemCommand = new AppCommand(ShowAddItemDialog);
             EditItemCommand = new AppCommand(ShowEditDialog, CanEditItem);
             DeleteItemCommand = new AppCommand(ProcessDelete);
         }
@@ -77,8 +77,8 @@ namespace TlbbGmTool.ViewModels
         {
             var itemList = new List<ItemInfo>();
             var mySqlConnection = _mainWindowViewModel.MySqlConnection;
-            const int offset = 0;
-            const int limit = 30;
+            const int offset = 30;
+            const int limit = 60;
             var sql =
                 $"SELECT * FROM t_iteminfo WHERE charguid={_charguid}" +
                 $" AND isvalid=1 AND pos>={offset}" +
@@ -123,9 +123,9 @@ namespace TlbbGmTool.ViewModels
             return itemList;
         }
 
-        private void ShowAddEquipDialog()
+        private void ShowAddItemDialog()
         {
-            var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, null, _charguid, ItemList)
+            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, null, true, _charguid, ItemList)
             {
                 Owner = _editRoleWindow
             };
@@ -147,15 +147,11 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            //equip
-            if (itemBaseInfo.ItemClass == 1)
+            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, itemInfo, true, _charguid, ItemList)
             {
-                var editWindow = new AddOrEditEquipWindow(_mainWindowViewModel, itemInfo, _charguid, ItemList)
-                {
-                    Owner = _editRoleWindow
-                };
-                editWindow.ShowDialog();
-            }
+                Owner = _editRoleWindow
+            };
+            editWindow.ShowDialog();
         }
 
         private void ProcessDelete(object parameter)

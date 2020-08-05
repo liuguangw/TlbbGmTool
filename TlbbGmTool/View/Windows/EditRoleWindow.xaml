@@ -18,6 +18,7 @@
         <pages:XinFaList x:Key="XinFaList" />
         <pages:PetList x:Key="PetList" />
         <pages:BagItemList x:Key="BagItemList" />
+        <pages:MaterialItemList x:Key="MaterialItemList" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
@@ -32,6 +33,9 @@
             </TabItem>
             <TabItem Header="bag">
                 <Frame Content="{StaticResource BagItemList}" />
+            </TabItem>
+            <TabItem Header="material">
+                <Frame Content="{StaticResource MaterialItemList}" />
             </TabItem>
             <TabItem Header="items">
                 <Label>test</Label>

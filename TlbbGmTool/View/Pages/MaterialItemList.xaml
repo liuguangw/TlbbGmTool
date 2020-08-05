@@ -1,4 +1,4 @@
-﻿<Page x:Class="TlbbGmTool.View.Pages.BagItemList"
+﻿<Page x:Class="TlbbGmTool.View.Pages.MaterialItemList"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,14 +6,14 @@
       xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
       xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
       mc:Ignorable="d"
-      Loaded="BagItemList_OnLoaded"
+      Loaded="MaterialItemList_OnLoaded"
       Title="BagItemList" d:DesignWidth="800" d:DesignHeight="450">
     <Page.DataContext>
-        <vm:BagItemListViewModel />
+        <vm:MaterialItemListViewModel />
     </Page.DataContext>
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Margin="10,10,10,0">
-            <Button Command="{Binding AddEquipCommand}">add equip</Button>
+            <Button Command="{Binding AddItemCommand}">add item</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding ItemList}">

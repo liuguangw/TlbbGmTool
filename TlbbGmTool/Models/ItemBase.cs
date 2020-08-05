@@ -21,6 +21,8 @@ namespace TlbbGmTool.Models
         public int BagCapacity { get; }
         public int MaterialCapacity { get; }
         public int EquipVisual { get; }
+        public int RuleId { get; }
+        public int MaxLife { get; }
         public List<int> Attr1;
         public List<int> Attr2;
 
@@ -34,7 +36,7 @@ namespace TlbbGmTool.Models
         public ItemBase(int id, int itemClass, int itemType,
             string name, string shortTypeString, string description, int level,
             int equipPoint, int bagCapacity, int materialCapacity,
-            int equipVisual, List<int> attr1, List<int> attr2)
+            int equipVisual, int ruleId, int maxLife, List<int> attr1, List<int> attr2)
         {
             Id = id;
             ItemClass = itemClass;
@@ -48,6 +50,8 @@ namespace TlbbGmTool.Models
             BagCapacity = bagCapacity;
             MaterialCapacity = materialCapacity;
             EquipVisual = equipVisual;
+            RuleId = ruleId;
+            MaxLife = maxLife;
             Attr1 = attr1;
             Attr2 = attr2;
         }
