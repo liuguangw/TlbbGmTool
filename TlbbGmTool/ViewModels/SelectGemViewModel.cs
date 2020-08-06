@@ -11,12 +11,44 @@ namespace TlbbGmTool.ViewModels
     {
         #region Fields
 
-        private List<ItemBase> _gemList;
-        private SelectGemWindow _selectGemWindow;
+        /// <summary>
+        /// item库
+        /// </summary>
+        private List<ItemBase> _itemBaseList;
 
-        private int _gemId;
-        private string _searchText = string.Empty;
+        /// <summary>
+        /// 符合筛选条件的所有item的列表
+        /// </summary>
+        private List<ItemBase> _filterItemList = new List<ItemBase>();
+
+        /// <summary>
+        /// 当前选择窗口
+        /// </summary>
+        private SelectGemWindow _selectWindow;
+
+        /// <summary>
+        /// 初始时的item id
+        /// </summary>
+        private int _initItemId;
+
+        private int _shortType;
         private int _level;
+        private string _searchText = string.Empty;
+
+        /// <summary>
+        /// 当前页码
+        /// </summary>
+        private int _page = 1;
+
+        /// <summary>
+        /// 总页数
+        /// </summary>
+        private int _pageTotal = 1;
+
+        /// <summary>
+        /// 每页最大展示量
+        /// </summary>
+        private const int _pageLimit = 20;
 
         #endregion
 
@@ -24,26 +56,17 @@ namespace TlbbGmTool.ViewModels
 
         public List<ComboBoxNode<int>> LevelSelection { get; }
 
-        public int GemId
-        {
-            get => _gemId;
-            set
-            {
-                if (SetProperty(ref _gemId, value))
-                {
-                    ConfirmCommand.RaiseCanExecuteChanged();
-                }
-            }
-        }
+        public List<ComboBoxNode<int>> ShortTypeSelection { get; private set; }
+            = new List<ComboBoxNode<int>>();
 
-        public string SearchText
+        public int ShortType
         {
-            get => _searchText;
+            get => _shortType;
             set
             {
-                if (SetProperty(ref _searchText, value))
+                if (SetProperty(ref _shortType, value))
                 {
-                    RaisePropertyChanged(nameof(GemFilterList));
+                    DoFilterItemList();
                 }
             }
         }
@@ -55,14 +78,69 @@ namespace TlbbGmTool.ViewModels
             {
                 if (SetProperty(ref _level, value))
                 {
-                    RaisePropertyChanged(nameof(GemFilterList));
+                    DoFilterItemList();
                 }
             }
         }
 
-        public List<ItemBase> GemFilterList => FilterGem(_level, _searchText);
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (SetProperty(ref _searchText, value))
+                {
+                    DoFilterItemList();
+                }
+            }
+        }
+
+        public int Page
+        {
+            set
+            {
+                if (SetProperty(ref _page, value))
+                {
+                    RaisePropertyChanged(nameof(PageTip));
+                    RaisePageCommandChange();
+                }
+            }
+        }
+
+        private int PageTotal
+        {
+            set
+            {
+                if (SetProperty(ref _pageTotal, value))
+                {
+                    RaisePropertyChanged(nameof(PageTip));
+                    RaisePageCommandChange();
+                }
+            }
+        }
+
+        public string PageTip => $"第{_page}/{_pageTotal}页";
+
+        public IEnumerable<ItemBase> CurrentPageItemList
+        {
+            get
+            {
+                var offset = (_page - 1) * _pageLimit;
+                return (from itemInfo in _filterItemList
+                    select itemInfo).Skip(offset).Take(_pageLimit);
+            }
+        }
+
+        #endregion
+
+        #region Commands
+
         public AppCommand ConfirmCommand { get; }
-        public AppCommand CancelCommand { get; }
+
+        public AppCommand FirstPageCommand { get; }
+        public AppCommand LastPageCommand { get; }
+        public AppCommand PrevPageCommand { get; }
+        public AppCommand NextPageCommand { get; }
 
         #endregion
 
@@ -82,44 +160,111 @@ namespace TlbbGmTool.ViewModels
             }
 
             ConfirmCommand = new AppCommand(ConfirmSelect, CanConfirmSelect);
-            CancelCommand = new AppCommand(CancelSelect);
+            FirstPageCommand = new AppCommand(GoToFirstPage, CanGotoFirstPage);
+            LastPageCommand = new AppCommand(GoToLastPage, CanGotoLastPage);
+            PrevPageCommand = new AppCommand(GotoPrevPage, CanGotoPrevPage);
+            NextPageCommand = new AppCommand(GotoNextPage, CanGotoNextPage);
         }
 
-        public void InitData(List<ItemBase> gemList, SelectGemWindow selectGemWindow, int gemId)
+        public void InitData(List<ItemBase> itemBaseList, SelectGemWindow selectWindow, int initItemId)
         {
-            _gemList = gemList;
-            _selectGemWindow = selectGemWindow;
-            GemId = gemId;
-            RaisePropertyChanged(nameof(GemFilterList));
+            _itemBaseList = itemBaseList;
+            _selectWindow = selectWindow;
+            _initItemId = initItemId;
+            LoadShortTypeSelection();
+            DoFilterItemList();
         }
 
-
-        private List<ItemBase> FilterGem(int level, string searchText)
+        private void LoadShortTypeSelection()
         {
-            if (_gemList == null)
+            var shortTypeNames = new List<string> {"全部"};
+            _itemBaseList.ForEach(itemBaseInfo =>
             {
-                return new List<ItemBase>();
+                if (!shortTypeNames.Contains(itemBaseInfo.ShortTypeString))
+                {
+                    shortTypeNames.Add(itemBaseInfo.ShortTypeString);
+                }
+            });
+            ShortTypeSelection =
+                shortTypeNames.Select(
+                    (itemName, itemIndex)
+                        =>
+                        new ComboBoxNode<int> {Title = itemName, Value = itemIndex}
+                ).ToList();
+            RaisePropertyChanged(nameof(ShortTypeSelection));
+        }
+
+        private void DoFilterItemList()
+        {
+            _filterItemList = (from itemBaseInfo in _itemBaseList
+                where _level == 0 || itemBaseInfo.Level == _level
+                where _shortType == 0 || itemBaseInfo.ShortTypeString == ShortTypeSelection[_shortType].Title
+                where itemBaseInfo.Name.IndexOf(_searchText, StringComparison.Ordinal) >= 0
+                select itemBaseInfo).ToList();
+            Page = 1;
+            var pageTotal = (int) Math.Ceiling(_filterItemList.Count / (double) _pageLimit);
+            if (pageTotal < 1)
+            {
+                pageTotal = 1;
             }
 
-            return (from gemInfo in _gemList
-                where level == 0 || gemInfo.Level == level
-                where gemInfo.Name.IndexOf(searchText) >= 0
-                select gemInfo).ToList();
+            PageTotal = pageTotal;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
         }
 
-        private bool CanConfirmSelect() => _gemId != 0;
-
-        private void ConfirmSelect()
+        private void RaisePageCommandChange()
         {
-            _selectGemWindow.GemId = _gemId;
-            _selectGemWindow.DialogResult = true;
-            _selectGemWindow.Close();
+            FirstPageCommand.RaiseCanExecuteChanged();
+            LastPageCommand.RaiseCanExecuteChanged();
+            PrevPageCommand.RaiseCanExecuteChanged();
+            NextPageCommand.RaiseCanExecuteChanged();
         }
 
-        private void CancelSelect()
+        private bool CanConfirmSelect(object parameter)
         {
-            _selectGemWindow.DialogResult = false;
-            _selectGemWindow.Close();
+            var itemBaseInfo = parameter as ItemBase;
+            return itemBaseInfo.Id != _initItemId;
+        }
+
+        private void ConfirmSelect(object parameter)
+        {
+            var itemBaseInfo = parameter as ItemBase;
+            _selectWindow.TargetItemId = itemBaseInfo.Id;
+            _selectWindow.DialogResult = true;
+            _selectWindow.Close();
+        }
+
+        private bool CanGotoFirstPage() => _page != 1;
+
+        private void GoToFirstPage()
+        {
+            Page = 1;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+
+        private bool CanGotoLastPage() => _page != _pageTotal;
+
+        private void GoToLastPage()
+        {
+            Page = _pageTotal;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+        private bool CanGotoPrevPage() => _page > 1;
+
+        private void GotoPrevPage()
+        {
+            Page = _page - 1;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+        private bool CanGotoNextPage() => _page < _pageTotal;
+
+        private void GotoNextPage()
+        {
+            Page = _page + 1;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
         }
     }
 }

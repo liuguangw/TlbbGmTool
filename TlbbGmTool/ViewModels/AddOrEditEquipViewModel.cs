@@ -815,7 +815,7 @@ namespace TlbbGmTool.ViewModels
             };
             if (selectGemWindow.ShowDialog() == true)
             {
-                setGemCallback(selectGemWindow.GemId);
+                setGemCallback(selectGemWindow.TargetItemId);
             }
         }
 

@@ -9,15 +9,14 @@ namespace TlbbGmTool.View.Windows
     {
         #region Properties
 
-        public int GemId { get; set; } = 0;
+        public int TargetItemId { get; set; } = 0;
 
         #endregion
 
-        public SelectGemWindow(List<ItemBase> gemList, int gemId)
+        public SelectGemWindow(List<ItemBase> gemList, int initItemId = 0)
         {
             InitializeComponent();
-            GemId = gemId;
-            GetViewModel().InitData(gemList, this, gemId);
+            GetViewModel().InitData(gemList, this, initItemId);
         }
 
         private SelectGemViewModel GetViewModel()
