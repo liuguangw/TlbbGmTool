@@ -37,7 +37,7 @@ namespace TlbbGmTool.Services
         private static async Task<int> GetNextPos(MySqlConnection mySqlConnection, int charguid, int startPos,
             int endPos)
         {
-            var currentPos = 0;
+            var currentPos = startPos;
             var findPos = false;
             var sql = $"SELECT pos FROM t_iteminfo WHERE charguid={charguid}"
                       + " AND isvalid=1"

@@ -52,6 +52,7 @@ namespace TlbbGmTool.ViewModels
         //
         private bool _bindStatus;
         private bool _verifiedStatus;
+        private bool _lockStatus;
         private bool _qualificationVerifiedStatus;
         private bool _engravedStatus;
         private int _equipVisual;
@@ -241,6 +242,12 @@ namespace TlbbGmTool.ViewModels
             set => SetProperty(ref _verifiedStatus, value);
         }
 
+        public bool LockStatus
+        {
+            get => _lockStatus;
+            set => SetProperty(ref _lockStatus, value);
+        }
+
         public bool QualificationVerifiedStatus
         {
             get => _qualificationVerifiedStatus;
@@ -386,13 +393,13 @@ namespace TlbbGmTool.ViewModels
             StarCount = (_itemInfo.PArray[8] >> 8) & 0xff;
             SlotCount = _itemInfo.PArray[4] & 0xff;
             EquipVisual = (_itemInfo.PArray[8] >> 16) & 0xffff;
-            Gem1 = ((_itemInfo.PArray[1] & 0xffff) << 16) + (_itemInfo.PArray[0] >> 16);
-            Gem2 = ((_itemInfo.PArray[2] & 0xffff) << 16) + (_itemInfo.PArray[1] >> 16);
-            Gem3 = ((_itemInfo.PArray[3] & 0xffff) << 16) + (_itemInfo.PArray[2] >> 16);
+            Gem1 = ((_itemInfo.PArray[1] & 0xffff) << 16) + ((_itemInfo.PArray[0] >> 16) & 0xffff);
+            Gem2 = ((_itemInfo.PArray[2] & 0xffff) << 16) + ((_itemInfo.PArray[1] >> 16) & 0xffff);
+            Gem3 = ((_itemInfo.PArray[3] & 0xffff) << 16) + ((_itemInfo.PArray[2] >> 16) & 0xffff);
             Gem4 = ((_itemInfo.PArray[16] & 0xff) << 24) + ((_itemInfo.PArray[15] >> 8) & 0xffffff);
             Attr1 = _itemInfo.PArray[9];
             Attr2 = _itemInfo.PArray[10];
-            EnhanceCount = _itemInfo.PArray[5] >> 24;
+            EnhanceCount = (_itemInfo.PArray[5] >> 24) & 0xff;
             FloatValue = _itemInfo.PArray[11] & 0xff;
             Qualification1 = (_itemInfo.PArray[6] >> 24) & 0xff;
             Qualification2 = (_itemInfo.PArray[7] >> 8) & 0xff;
@@ -403,6 +410,7 @@ namespace TlbbGmTool.ViewModels
             var statusVal = (_itemInfo.PArray[3] >> 16) & 0xff;
             BindStatus = (statusVal & 1) != 0;
             VerifiedStatus = ((statusVal >> 1) & 1) != 0;
+            LockStatus = ((statusVal >> 2) & 1) != 0;
             QualificationVerifiedStatus = ((statusVal >> 5) & 1) != 0;
             EngravedStatus = ((statusVal >> 6) & 1) != 0;
         }
@@ -451,7 +459,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem1前两字节 -> p2后两字节
                 pArray[1] = (int) (pArray[1] & 0xffff0000);
-                pArray[1] |= (_gem1 >> 16) & 0xffff;
+                pArray[1] |= (_gem1 >> 16)&0xffff;
                 //Gem1后两字节 -> p1前两字节
                 pArray[0] &= 0xffff;
                 pArray[0] |= (_gem1 & 0xffff) << 16;
@@ -462,7 +470,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem2前两字节 -> p3后两字节
                 pArray[2] = (int) (pArray[2] & 0xffff0000);
-                pArray[2] |= (_gem2 >> 16) & 0xffff;
+                pArray[2] |= (_gem2 >> 16)&0xffff;
                 //Gem2后两字节 -> p2前两字节
                 pArray[1] &= 0xffff;
                 pArray[1] |= (_gem2 & 0xffff) << 16;
@@ -472,8 +480,8 @@ namespace TlbbGmTool.ViewModels
             {
                 gemCount++;
                 //Gem3前两字节 -> p4后两字节
-                pArray[3] = (int) (pArray[1] & 0xffff0000);
-                pArray[3] |= (_gem3 >> 16) & 0xffff;
+                pArray[3] = (int) (pArray[3] & 0xffff0000);
+                pArray[3] |= (_gem3 >> 16)&0xffff;
                 //Gem3后两字节 -> p3前两字节
                 pArray[2] &= 0xffff;
                 pArray[2] |= (_gem3 & 0xffff) << 16;
@@ -484,7 +492,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem4首字节 -> p17尾字节
                 pArray[16] = (int) (pArray[16] & 0xffffff00);
-                pArray[16] |= _gem4 >> 24;
+                pArray[16] |= (_gem4 >> 24)&0xff;
                 //Gem4后三字节 -> p16前三字节
                 pArray[15] = pArray[15] & 0xff;
                 pArray[15] += (_gem4 & 0xffffff) << 8;
@@ -492,7 +500,7 @@ namespace TlbbGmTool.ViewModels
 
             //取状态信息(P4第二个字节),将对应位置重置为0
             var itemStatus = (pArray[3] >> 16) & 0xff;
-            itemStatus &= 0b10011100;
+            itemStatus &= 0b10011000;
             if (_bindStatus)
             {
                 itemStatus |= 1;
@@ -501,6 +509,11 @@ namespace TlbbGmTool.ViewModels
             if (_verifiedStatus)
             {
                 itemStatus |= 1 << 1;
+            }
+
+            if (_lockStatus)
+            {
+                itemStatus |= 1 << 2;
             }
 
             if (_qualificationVerifiedStatus)
@@ -567,7 +580,7 @@ namespace TlbbGmTool.ViewModels
                 var equipLife = equipBaseInfo.MaxLife;
                 pArray[3] = pArray[3] & 0xffffff;
                 pArray[3] |= equipLife << 24;
-                pArray[4] = (int) (pArray[3] & 0xff00ffff);
+                pArray[4] = (int) (pArray[4] & 0xff00ffff);
                 pArray[4] |= equipLife << 16;
                 itemInfo = await SaveItemService.InsertItemAsync(mySqlConnection, itemType,
                     pArray, _charguid, itemBases, SaveItemService.BagType.ItemBag, creator);
@@ -597,6 +610,7 @@ namespace TlbbGmTool.ViewModels
             {
                 return $"未知(ID: {itemId})";
             }
+
             var itemBaseInfo = _mainWindowViewModel.ItemBases[itemId];
             return $"{itemBaseInfo.Name}(ID: {itemId})";
         }

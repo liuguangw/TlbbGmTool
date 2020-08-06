@@ -236,7 +236,7 @@ namespace TlbbGmTool.ViewModels
                 pArray[3] = -1;
                 pArray[4] = -1;
                 pArray[5] = -1;
-                pArray[6] = 16842751;
+                pArray[6] |= 0xFFFF;
                 var bagType = _isMaterial ? SaveItemService.BagType.MaterialBag : SaveItemService.BagType.ItemBag;
                 itemInfo = await SaveItemService.InsertItemAsync(mySqlConnection, itemType, pArray,
                     _charguid, itemBases, bagType, string.Empty);
