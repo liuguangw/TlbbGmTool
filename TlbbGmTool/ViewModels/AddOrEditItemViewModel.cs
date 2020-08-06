@@ -202,15 +202,26 @@ namespace TlbbGmTool.ViewModels
         private async Task<ItemInfo> DoSaveItem()
         {
             var itemType = _itemBaseId;
-            var pArray =
-                _itemInfo == null ? new int[17] : _itemInfo.PArray;
-            pArray[6] &= 0xffffff;
-            pArray[6] |= _itemCurrentSize << 24;
             var itemBases = _mainWindowViewModel.ItemBases;
             if (!itemBases.ContainsKey(itemType))
             {
                 throw new Exception($"无效的物品ID: {itemType}");
             }
+            //防止不正确的数量,或者数量超出堆叠上限
+            var itemCount = _itemCurrentSize;
+            if (itemCount < 1)
+            {
+                itemCount = 1;
+            }
+            else if (itemCount > itemBases[itemType].MaxSize)
+            {
+                itemCount = itemBases[itemType].MaxSize;
+            }
+
+            var pArray =
+                _itemInfo == null ? new int[17] : _itemInfo.PArray;
+            pArray[6] &= 0xffffff;
+            pArray[6] |= itemCount << 24;
 
             //获取数据库数据连接
             var mySqlConnection = _mainWindowViewModel.MySqlConnection;
