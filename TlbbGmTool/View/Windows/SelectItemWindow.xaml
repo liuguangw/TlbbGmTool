@@ -1,4 +1,4 @@
-﻿<Window x:Class="TlbbGmTool.View.Windows.SelectGemWindow"
+﻿<Window x:Class="TlbbGmTool.View.Windows.SelectItemWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,7 +9,7 @@
         ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
         Title="SelectGemWindow" Height="500" Width="520">
     <Window.DataContext>
-        <vm:SelectGemViewModel />
+        <vm:SelectItemViewModel />
     </Window.DataContext>
     <Grid Margin="5,10">
         <Grid.RowDefinitions>
@@ -18,16 +18,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0">
-            <Label>等级</Label>
-            <ComboBox VerticalContentAlignment="Center" MinWidth="50" ItemsSource="{Binding LevelSelection}"
-                      DisplayMemberPath="Title"
-                      SelectedValuePath="Value"
-                      SelectedValue="{Binding Level}" />
-            <Label Margin="8,0,0,0">类型</Label>
+            <Label>类型</Label>
             <ComboBox VerticalContentAlignment="Center" MinWidth="50" ItemsSource="{Binding ShortTypeSelection}"
                       DisplayMemberPath="Title"
                       SelectedValuePath="Value"
                       SelectedValue="{Binding ShortType}" />
+            <Label Margin="8,0,0,0">最低等级</Label>
+            <TextBox MinWidth="40" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding MinLevel,UpdateSourceTrigger=PropertyChanged}" />
             <Label Margin="8,0,0,0">名称筛选</Label>
             <TextBox MinWidth="160" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />

@@ -69,13 +69,7 @@ namespace TlbbGmTool.Models
         public int[] PArray
         {
             get => _pArray;
-            set
-            {
-                if (SetProperty(ref _pArray, value))
-                {
-                    RaisePropertyChanged(nameof(ItemCount));
-                }
-            }
+            set => SetProperty(ref _pArray, value);
         }
 
         public string Creator
@@ -153,6 +147,11 @@ namespace TlbbGmTool.Models
             RaisePropertyChanged(nameof(MaxSize));
             RaisePropertyChanged(nameof(ItemBaseClass));
             RaisePropertyChanged(nameof(ItemBaseType));
+        }
+
+        public void RaiseItemCountChange()
+        {
+            RaisePropertyChanged(nameof(ItemCount));
         }
     }
 }

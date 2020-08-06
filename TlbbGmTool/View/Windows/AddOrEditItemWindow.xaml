@@ -49,7 +49,8 @@
         <TextBox Grid.Row="0" Grid.Column="1"
                  IsReadOnly="True" BorderThickness="0"
                  Text="{Binding ItemName,Mode=OneWay}" />
-        <Button Grid.Row="0" Grid.Column="2" Margin="5">替换</Button>
+        <Button Grid.Row="0" Grid.Column="2" Margin="5"
+                Command="{Binding SelectItemCommand}">替换</Button>
         <Label Grid.Row="1" Grid.Column="0">最大数量</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                  IsReadOnly="True" BorderThickness="0"
@@ -63,8 +64,7 @@
                  Text="{Binding ItemCurrentSize,UpdateSourceTrigger=PropertyChanged}" />
         <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
                    HorizontalAlignment="Right" VerticalAlignment="Center">
-            <Button>取消</Button>
-            <Button Margin="5,0,0,0">保存</Button>
+            <Button Margin="5,0,0,0" Command="{Binding SaveItemCommand}">保存</Button>
         </WrapPanel>
     </Grid>
 </Window>

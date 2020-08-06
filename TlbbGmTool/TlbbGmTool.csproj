@@ -133,6 +133,7 @@
     <Compile Include="Models\XinFa.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\DbStringService.cs" />
+    <Compile Include="Services\SaveItemService.cs" />
     <Compile Include="Services\ServerService.cs" />
     <Compile Include="Services\TextFileService.cs" />
     <Compile Include="ViewModels\AccountListViewModel.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="ViewModels\SelectAttrViewModel.cs" />
     <Compile Include="ViewModels\SelectEquipViewModel.cs" />
     <Compile Include="ViewModels\SelectGemViewModel.cs" />
+    <Compile Include="ViewModels\SelectItemViewModel.cs" />
     <Compile Include="ViewModels\ServerListViewModel.cs" />
     <Compile Include="ViewModels\XinFaListViewModel.cs" />
     <Compile Include="View\Pages\AccountList.xaml.cs">
@@ -209,6 +211,9 @@
     <Compile Include="View\Windows\SelectGemWindow.xaml.cs">
       <DependentUpon>SelectGemWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Windows\SelectItemWindow.xaml.cs">
+      <DependentUpon>SelectItemWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Windows\ServerListWindow.xaml.cs">
       <DependentUpon>ServerListWindow.xaml</DependentUpon>
     </Compile>
@@ -250,6 +255,7 @@
     <Page Include="View\Windows\SelectAttrWindow.xaml" />
     <Page Include="View\Windows\SelectEquipWindow.xaml" />
     <Page Include="View\Windows\SelectGemWindow.xaml" />
+    <Page Include="View\Windows\SelectItemWindow.xaml" />
     <Page Include="View\Windows\ServerListWindow.xaml" />
   </ItemGroup>
   <ItemGroup>

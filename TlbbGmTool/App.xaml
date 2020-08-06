@@ -68,5 +68,42 @@
                 </Button>
             </WrapPanel>
         </DataTemplate>
+        <!--for select item column-->
+        <Style x:Key="SelectItemCellStyle" TargetType="DataGridCell">
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock>
+                                <Run Foreground="#FF615858">名称:</Run>
+                                <Run Text="{Binding Name, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">类型:</Run>
+                                <Run Text="{Binding ShortTypeString, Mode=OneWay}"
+                                     Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">等级:</Run>
+                                <Run Text="{Binding Level, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">最大叠加:</Run>
+                                <Run Text="{Binding MaxSize, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">物品id:</Run>
+                                <Run Text="{Binding Id, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">Class:</Run>
+                                <Run Text="{Binding ItemClass, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">Type:</Run>
+                                <Run Text="{Binding ItemType, Mode=OneWay}" Foreground="#FFF12679" />
+                            </TextBlock>
+                            <TextBlock Text="{Binding Description, Mode=OneWay}" MaxWidth="200"
+                                       TextWrapping="Wrap"
+                                       Foreground="#FF4FC32D" />
+                        </StackPanel>
+                    </ToolTip>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

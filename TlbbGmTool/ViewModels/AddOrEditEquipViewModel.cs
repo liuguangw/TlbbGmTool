@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.Services;
@@ -75,7 +74,7 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
-        public string ItemName => FindItemName(_itemBaseId, _equipBaseList);
+        public string ItemName => FindItemName(_itemBaseId);
 
         public List<ComboBoxNode<int>> StarSection { get; } = new List<ComboBoxNode<int>>();
 
@@ -186,13 +185,13 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
-        public string Gem1Name => FindItemName(_gem1, _gemBaseList);
+        public string Gem1Name => FindItemName(_gem1);
 
-        public string Gem2Name => FindItemName(_gem2, _gemBaseList);
+        public string Gem2Name => FindItemName(_gem2);
 
-        public string Gem3Name => FindItemName(_gem3, _gemBaseList);
+        public string Gem3Name => FindItemName(_gem3);
 
-        public string Gem4Name => FindItemName(_gem4, _gemBaseList);
+        public string Gem4Name => FindItemName(_gem4);
 
         public int Qualification1
         {
@@ -307,7 +306,6 @@ namespace TlbbGmTool.ViewModels
 
         public AddOrEditEquipViewModel()
         {
-            SaveEquipCommand = new AppCommand(SaveEquip);
             for (var i = 0; i <= 9; i++)
             {
                 StarSection.Add(new ComboBoxNode<int>()
@@ -325,6 +323,7 @@ namespace TlbbGmTool.ViewModels
                 }
             }
 
+            SaveEquipCommand = new AppCommand(SaveEquip);
             SelectGem1Command = new AppCommand(
                 () => SelectGem(
                     _gem1,
@@ -546,242 +545,60 @@ namespace TlbbGmTool.ViewModels
             //enhance
             pArray[12] = (int) (pArray[12] & 0xffffff00);
             pArray[12] += EnhanceCount;
-            ItemInfo itemInfo;
-            if (_isAddEquip)
+            var itemBases = _mainWindowViewModel.ItemBases;
+            if (!itemBases.ContainsKey(itemType))
             {
-                itemInfo = await DoInsertEquip(itemType, pArray, _charguid);
+                throw new Exception($"无效的物品ID: {itemType}");
+            }
+
+            //获取数据库数据连接
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+            await SaveItemService.PrepareConnection(mySqlConnection, gameDbName);
+            ItemInfo itemInfo;
+            if (_itemInfo == null)
+            {
+                var creator = "流光";
+                var equipBaseInfo = itemBases[itemType];
+                //规则ID
+                pArray[0] = (int) (pArray[0] & 0xffffff00);
+                pArray[0] |= equipBaseInfo.RuleId;
+                //最大耐久值
+                var equipLife = equipBaseInfo.MaxLife;
+                pArray[3] = pArray[3] & 0xffffff;
+                pArray[3] |= equipLife << 24;
+                pArray[4] = (int) (pArray[3] & 0xff00ffff);
+                pArray[4] |= equipLife << 16;
+                itemInfo = await SaveItemService.InsertItemAsync(mySqlConnection, itemType,
+                    pArray, _charguid, itemBases, SaveItemService.BagType.ItemBag, creator);
             }
             else
             {
-                itemInfo = await DoUpdateEquip(itemType, pArray, _charguid, _itemInfo.Pos);
+                itemInfo = await SaveItemService.UpdateItemAsync(mySqlConnection, itemType,
+                    pArray, _charguid, itemBases, _itemInfo.Pos);
             }
 
             return itemInfo;
-        }
-
-        private async Task<MySqlConnection> GetMySqlConnection()
-        {
-            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
-            var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
-            if (mySqlConnection.Database != gameDbName)
-            {
-                // 切换数据库
-                await mySqlConnection.ChangeDataBaseAsync(gameDbName);
-            }
-
-            return mySqlConnection;
-        }
-
-        private async Task<ItemInfo> DoUpdateEquip(int itemType, int[] pArray, int charguid, int pos)
-        {
-            var sql = "UPDATE t_iteminfo SET itemtype=@itemtype";
-            var intDictionary = new Dictionary<string, int>();
-            for (var i = 0; i < pArray.Length; i++)
-            {
-                intDictionary[$"p{i + 1}"] = pArray[i];
-            }
-
-            foreach (var keyValuePair in intDictionary)
-            {
-                sql += $",{keyValuePair.Key}=@{keyValuePair.Key}";
-            }
-
-            sql += " WHERE charguid=@charguid AND pos=@pos";
-            intDictionary.Add("itemtype", itemType);
-            intDictionary.Add("charguid", charguid);
-            intDictionary.Add("pos", pos);
-            //构造参数
-            var mySqlParameters = (from intParameter in intDictionary
-                select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)
-                {
-                    Value = intParameter.Value
-                }).ToList();
-            var mySqlConnection = await GetMySqlConnection();
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
-            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
-            return new ItemInfo(_mainWindowViewModel.ItemBases)
-            {
-                ItemType = itemType,
-                PArray = pArray,
-                Creator = _itemInfo.Creator
-            };
-        }
-
-        /// <summary>
-        /// 获取下一个有效的pos
-        /// </summary>
-        /// <param name="mySqlConnection"></param>
-        /// <param name="charguid"></param>
-        /// <returns></returns>
-        private async Task<int> GetNextPos(MySqlConnection mySqlConnection, int charguid)
-        {
-            var currentPos = 0;
-            var findPos = false;
-            var maxPosCount = 30;
-            var sql = "SELECT pos FROM t_iteminfo WHERE charguid="
-                      + charguid + " AND isvalid=1"
-                      + " AND pos>=0 AND pos<" + maxPosCount
-                      + " ORDER BY pos ASC";
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            await Task.Run(async () =>
-            {
-                using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
-                {
-                    while (await rd.ReadAsync())
-                    {
-                        var pos = rd.GetInt32("pos");
-                        if (currentPos < pos)
-                        {
-                            findPos = true;
-                            break;
-                        }
-
-                        currentPos++;
-                    }
-                }
-            });
-            if (!findPos && currentPos < maxPosCount)
-            {
-                findPos = true;
-            }
-            else if (!findPos)
-            {
-                throw new Exception("找不到有效的pos");
-            }
-
-            //清理pos
-            sql = "DELETE FROM t_iteminfo WHERE charguid=" + charguid + " AND pos=" + currentPos;
-            mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
-            return currentPos;
-        }
-
-        private async Task<int> GetNextGuid(MySqlConnection mySqlConnection)
-        {
-            var nextGuid = 0;
-            const string sql = "SELECT serial FROM t_itemkey WHERE smkey=7001 LIMIT 1";
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            await Task.Run(async () =>
-            {
-                using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
-                {
-                    if (await rd.ReadAsync())
-                    {
-                        nextGuid = rd.GetInt32("serial");
-                    }
-                }
-
-                //UPDATE KEY
-                var updateSql = "UPDATE t_itemkey SET serial=serial+2 WHERE smkey=7001";
-                mySqlCommand = new MySqlCommand(updateSql, mySqlConnection);
-                await mySqlCommand.ExecuteNonQueryAsync();
-            });
-            return nextGuid + 2;
-        }
-
-        private async Task<ItemInfo> DoInsertEquip(int itemType, int[] pArray, int charguid)
-        {
-            var mySqlConnection = await GetMySqlConnection();
-            var pos = await GetNextPos(mySqlConnection, charguid);
-            var guid = await GetNextGuid(mySqlConnection);
-            var creator = "流光";
-            var equipBaseInfo = FindItemById(itemType, _equipBaseList);
-            //规则ID
-            pArray[0] = (int) (pArray[0] & 0xffffff00);
-            pArray[0] |= equipBaseInfo.RuleId;
-            //最大耐久值
-            var equipLife = equipBaseInfo.MaxLife;
-            pArray[3] = pArray[3] & 0xffffff;
-            pArray[3] |= equipLife << 24;
-            pArray[4] = (int) (pArray[3] & 0xff00ffff);
-            pArray[4] |= equipLife << 16;
-            var intDictionary = new Dictionary<string, int>()
-            {
-                ["charguid"] = charguid,
-                ["guid"] = guid,
-                ["world"] = 101,
-                ["server"] = 0,
-                ["itemtype"] = itemType,
-                ["pos"] = pos,
-            };
-            for (var i = 0; i < pArray.Length; i++)
-            {
-                intDictionary.Add($"p{i + 1}", pArray[i]);
-            }
-
-            var fieldNames = intDictionary.Keys.ToList();
-            fieldNames.AddRange(new[]
-            {
-                "creator",
-                "fixattr",
-                "var"
-            });
-            var sql = "INSERT INTO t_iteminfo";
-            sql += "(" + string.Join(", ", fieldNames) + ") VALUES";
-            var fieldValueTemplates = (from fieldName in fieldNames
-                select "@" + fieldName);
-            sql += " (" + string.Join(", ", fieldValueTemplates) + ")";
-            //构造参数
-            var mySqlParameters = (from intParameter in intDictionary
-                select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)
-                {
-                    Value = intParameter.Value
-                }).ToList();
-            mySqlParameters.Add(new MySqlParameter("@creator", MySqlDbType.String)
-            {
-                Value = DbStringService.ToDbString(creator)
-            });
-            mySqlParameters.Add(new MySqlParameter("@fixattr", MySqlDbType.String)
-            {
-                Value = string.Empty
-            });
-            mySqlParameters.Add(new MySqlParameter("@var", MySqlDbType.String)
-            {
-                Value = string.Empty
-            });
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
-            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
-            return new ItemInfo(_mainWindowViewModel.ItemBases)
-            {
-                Charguid = charguid,
-                Guid = guid,
-                World = intDictionary["world"],
-                Server = intDictionary["server"],
-                ItemType = itemType,
-                Pos = intDictionary["pos"],
-                PArray = pArray
-            };
-        }
-
-        private static ItemBase FindItemById(int itemId, IEnumerable<ItemBase> itemBaseList)
-        {
-            if (itemId == 0)
-            {
-                return null;
-            }
-
-            return (from baseInfo in itemBaseList
-                where baseInfo.Id == itemId
-                select baseInfo).First();
         }
 
         /// <summary>
         /// 通过ID查找名称
         /// </summary>
         /// <param name="itemId"></param>
-        /// <param name="itemBaseList"></param>
         /// <returns></returns>
-        private static string FindItemName(int itemId, IEnumerable<ItemBase> itemBaseList)
+        private string FindItemName(int itemId)
         {
             if (itemId == 0)
             {
                 return "无";
             }
 
-            var itemBaseInfo = FindItemById(itemId, itemBaseList);
-            return itemBaseInfo != null ? $"{itemBaseInfo.Name}(ID: {itemId})" : $"未知(ID: {itemId})";
+            if (!_mainWindowViewModel.ItemBases.ContainsKey(itemId))
+            {
+                return $"未知(ID: {itemId})";
+            }
+            var itemBaseInfo = _mainWindowViewModel.ItemBases[itemId];
+            return $"{itemBaseInfo.Name}(ID: {itemId})";
         }
 
         private static int GetAttrCountFromNumber(int attrValue)

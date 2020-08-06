@@ -160,7 +160,7 @@ namespace TlbbGmTool.Services
             var name = columns[10];
             var shortTypeString = columns[22];
             var description = columns[13];
-            var level = Convert.ToInt32(columns[2]);
+            var level = Convert.ToInt32(columns[11]);
             var bagCapacity = Convert.ToInt32(columns[97]);
             var materialCapacity = Convert.ToInt32(columns[98]);
             var equipVisual = Convert.ToInt32(columns[6]);

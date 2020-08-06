@@ -7,7 +7,7 @@ using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
 {
-    public class SelectGemViewModel : BindDataBase
+    public class SelectItemViewModel : BindDataBase
     {
         #region Fields
 
@@ -24,7 +24,7 @@ namespace TlbbGmTool.ViewModels
         /// <summary>
         /// 当前选择窗口
         /// </summary>
-        private SelectGemWindow _selectWindow;
+        private SelectItemWindow _selectWindow;
 
         /// <summary>
         /// 初始时的item id
@@ -32,7 +32,7 @@ namespace TlbbGmTool.ViewModels
         private int _initItemId;
 
         private int _shortType;
-        private int _level;
+        private int _minLevel;
         private string _searchText = string.Empty;
 
         /// <summary>
@@ -54,8 +54,6 @@ namespace TlbbGmTool.ViewModels
 
         #region Properties
 
-        public List<ComboBoxNode<int>> LevelSelection { get; }
-
         public List<ComboBoxNode<int>> ShortTypeSelection { get; private set; }
             = new List<ComboBoxNode<int>>();
 
@@ -71,12 +69,12 @@ namespace TlbbGmTool.ViewModels
             }
         }
 
-        public int Level
+        public int MinLevel
         {
-            get => _level;
+            get => _minLevel;
             set
             {
-                if (SetProperty(ref _level, value))
+                if (SetProperty(ref _minLevel, value))
                 {
                     DoFilterItemList();
                 }
@@ -144,21 +142,8 @@ namespace TlbbGmTool.ViewModels
 
         #endregion
 
-        public SelectGemViewModel()
+        public SelectItemViewModel()
         {
-            LevelSelection = new List<ComboBoxNode<int>>
-            {
-                new ComboBoxNode<int> {Title = "全部", Value = 0}
-            };
-            for (var i = 1; i <= 9; i++)
-            {
-                LevelSelection.Add(new ComboBoxNode<int>
-                {
-                    Title = $"{i}级",
-                    Value = i
-                });
-            }
-
             ConfirmCommand = new AppCommand(ConfirmSelect, CanConfirmSelect);
             FirstPageCommand = new AppCommand(GoToFirstPage, CanGotoFirstPage);
             LastPageCommand = new AppCommand(GoToLastPage, CanGotoLastPage);
@@ -166,7 +151,7 @@ namespace TlbbGmTool.ViewModels
             NextPageCommand = new AppCommand(GotoNextPage, CanGotoNextPage);
         }
 
-        public void InitData(List<ItemBase> itemBaseList, SelectGemWindow selectWindow, int initItemId)
+        public void InitData(List<ItemBase> itemBaseList, SelectItemWindow selectWindow, int initItemId)
         {
             _itemBaseList = itemBaseList;
             _selectWindow = selectWindow;
@@ -197,7 +182,7 @@ namespace TlbbGmTool.ViewModels
         private void DoFilterItemList()
         {
             _filterItemList = (from itemBaseInfo in _itemBaseList
-                where _level == 0 || itemBaseInfo.Level == _level
+                where itemBaseInfo.Level >= _minLevel
                 where _shortType == 0 || itemBaseInfo.ShortTypeString == ShortTypeSelection[_shortType].Title
                 where itemBaseInfo.Name.IndexOf(_searchText, StringComparison.Ordinal) >= 0
                 select itemBaseInfo).ToList();
@@ -221,7 +206,7 @@ namespace TlbbGmTool.ViewModels
         private void ConfirmSelect(object parameter)
         {
             var itemBaseInfo = parameter as ItemBase;
-            _selectWindow.TargetItemId = itemBaseInfo.Id;
+            _selectWindow.TargetItem = itemBaseInfo;
             _selectWindow.DialogResult = true;
             _selectWindow.Close();
         }

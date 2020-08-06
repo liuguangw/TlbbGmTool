@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.Services;
 using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
@@ -69,7 +72,6 @@ namespace TlbbGmTool.ViewModels
                 {
                     RaisePropertyChanged(nameof(ItemName));
                     RaisePropertyChanged(nameof(WindowTitle));
-                    RaisePropertyChanged(nameof(ItemMaxSize));
                 }
             }
         }
@@ -87,6 +89,19 @@ namespace TlbbGmTool.ViewModels
         }
 
         #endregion
+
+        #region Commands
+
+        public AppCommand SelectItemCommand { get; }
+        public AppCommand SaveItemCommand { get; }
+
+        #endregion
+
+        public AddOrEditItemViewModel()
+        {
+            SelectItemCommand = new AppCommand(SelectItem);
+            SaveItemCommand = new AppCommand(SaveItem);
+        }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, ItemInfo itemInfo,
             int charguid, bool isMaterial, ObservableCollection<ItemInfo> itemList,
@@ -135,6 +150,93 @@ namespace TlbbGmTool.ViewModels
             return itemBaseInfo != null
                 ? $"{itemBaseInfo.Name}(ID: {itemBaseInfo.Id})"
                 : $"未知(ID: {itemId})";
+        }
+
+        private void SelectItem()
+        {
+            var selectItemWindow = new SelectItemWindow(_itemBaseList, _itemBaseId)
+            {
+                Owner = _addOrEditItemWindow
+            };
+            if (selectItemWindow.ShowDialog() == true)
+            {
+                var selectedItem = selectItemWindow.TargetItem;
+                ItemBaseId = selectedItem.Id;
+                ItemMaxSize = selectedItem.MaxSize;
+                ItemCurrentSize = selectedItem.MaxSize;
+            }
+        }
+
+        private async void SaveItem()
+        {
+            ItemInfo itemInfo;
+            try
+            {
+                itemInfo = await DoSaveItem();
+            }
+            catch (Exception e)
+            {
+                _mainWindowViewModel.ShowErrorMessage("保存失败", e.Message);
+                return;
+            }
+
+            //更新属性
+            if (_isAdd)
+            {
+                _bagItemList.Add(itemInfo);
+            }
+            else
+            {
+                _itemInfo.ItemType = itemInfo.ItemType;
+                _itemInfo.PArray = itemInfo.PArray;
+                _itemInfo.RaiseItemCountChange();
+                _itemInfo.Creator = itemInfo.Creator;
+            }
+
+            //更新标题
+            RaisePropertyChanged(nameof(WindowTitle));
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存item信息成功");
+            _addOrEditItemWindow.Close();
+        }
+
+        private async Task<ItemInfo> DoSaveItem()
+        {
+            var itemType = _itemBaseId;
+            var pArray =
+                _itemInfo == null ? new int[17] : _itemInfo.PArray;
+            pArray[6] &= 0xffffff;
+            pArray[6] |= _itemCurrentSize << 24;
+            var itemBases = _mainWindowViewModel.ItemBases;
+            if (!itemBases.ContainsKey(itemType))
+            {
+                throw new Exception($"无效的物品ID: {itemType}");
+            }
+
+            //获取数据库数据连接
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+            await SaveItemService.PrepareConnection(mySqlConnection, gameDbName);
+            ItemInfo itemInfo;
+            if (_itemInfo == null)
+            {
+                pArray[0] = 65540;
+                pArray[1] = 65536;
+                pArray[2] = 16842752;
+                pArray[3] = -1;
+                pArray[4] = -1;
+                pArray[5] = -1;
+                pArray[6] = 16842751;
+                var bagType = _isMaterial ? SaveItemService.BagType.MaterialBag : SaveItemService.BagType.ItemBag;
+                itemInfo = await SaveItemService.InsertItemAsync(mySqlConnection, itemType, pArray,
+                    _charguid, itemBases, bagType, string.Empty);
+            }
+            else
+            {
+                itemInfo = await SaveItemService.UpdateItemAsync(mySqlConnection, itemType, pArray,
+                    _charguid, itemBases, _itemInfo.Pos);
+            }
+
+            return itemInfo;
         }
     }
 }

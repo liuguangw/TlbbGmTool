@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using TlbbGmTool.Core;
@@ -11,40 +12,62 @@ namespace TlbbGmTool.ViewModels
     {
         #region Fields
 
-        private List<ItemBase> _equipBaseList;
-        private SelectEquipWindow _selectEquipWindow;
-        private ItemBase _selectedEquip;
-        private bool _sameEquipPoint;
-        private int _equipPoint = -1;
+        /// <summary>
+        /// item库
+        /// </summary>
+        private List<ItemBase> _itemBaseList;
+
+        /// <summary>
+        /// 符合筛选条件的所有item的列表
+        /// </summary>
+        private List<ItemBase> _filterItemList = new List<ItemBase>();
+
+        /// <summary>
+        /// 当前选择窗口
+        /// </summary>
+        private SelectEquipWindow _selectWindow;
+
+        /// <summary>
+        /// 初始时的item id
+        /// </summary>
+        private int _initItemId;
+
+        private int _shortType;
         private int _minLevel;
         private string _searchText = string.Empty;
+
+        /// <summary>
+        /// 当前页码
+        /// </summary>
+        private int _page = 1;
+
+        /// <summary>
+        /// 总页数
+        /// </summary>
+        private int _pageTotal = 1;
+
+        /// <summary>
+        /// 每页最大展示量
+        /// </summary>
+        private const int _pageLimit = 20;
 
         #endregion
 
         #region Properties
 
-        public ItemBase SelectedEquip
+        public List<ComboBoxNode<int>> LevelSelection { get; }
+
+        public List<ComboBoxNode<int>> ShortTypeSelection { get; private set; }
+            = new List<ComboBoxNode<int>>();
+
+        public int ShortType
         {
-            get => _selectedEquip;
+            get => _shortType;
             set
             {
-                if (SetProperty(ref _selectedEquip, value))
+                if (SetProperty(ref _shortType, value))
                 {
-                    ConfirmCommand.RaiseCanExecuteChanged();
-                }
-            }
-        }
-
-        public List<ComboBoxNode<int>> EquipPointSelection { get; }
-
-        public int EquipPoint
-        {
-            get => _equipPoint;
-            set
-            {
-                if (SetProperty(ref _equipPoint, value))
-                {
-                    RaisePropertyChanged(nameof(FilterEquipList));
+                    DoFilterItemList();
                 }
             }
         }
@@ -56,7 +79,7 @@ namespace TlbbGmTool.ViewModels
             {
                 if (SetProperty(ref _minLevel, value))
                 {
-                    RaisePropertyChanged(nameof(FilterEquipList));
+                    DoFilterItemList();
                 }
             }
         }
@@ -68,81 +91,199 @@ namespace TlbbGmTool.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    RaisePropertyChanged(nameof(FilterEquipList));
+                    DoFilterItemList();
                 }
             }
         }
 
-        public Visibility SelectEquipPointVisibility =>
-            _sameEquipPoint ? Visibility.Collapsed : Visibility.Visible;
+        public int Page
+        {
+            set
+            {
+                if (SetProperty(ref _page, value))
+                {
+                    RaisePropertyChanged(nameof(PageTip));
+                    RaisePageCommandChange();
+                }
+            }
+        }
 
-        public List<ItemBase> FilterEquipList =>
-            FilterEquip(_sameEquipPoint, _equipPoint, _minLevel, _searchText);
+        private int PageTotal
+        {
+            set
+            {
+                if (SetProperty(ref _pageTotal, value))
+                {
+                    RaisePropertyChanged(nameof(PageTip));
+                    RaisePageCommandChange();
+                }
+            }
+        }
 
-        public AppCommand ConfirmCommand { get; }
-        public AppCommand CancelCommand { get; }
+        public string PageTip => $"第{_page}/{_pageTotal}页";
+
+        public IEnumerable<ItemBase> CurrentPageItemList
+        {
+            get
+            {
+                var offset = (_page - 1) * _pageLimit;
+                return (from itemInfo in _filterItemList
+                    select itemInfo).Skip(offset).Take(_pageLimit);
+            }
+        }
 
         #endregion
 
+        #region Commands
+
+        public AppCommand ConfirmCommand { get; }
+
+        public AppCommand FirstPageCommand { get; }
+        public AppCommand LastPageCommand { get; }
+        public AppCommand PrevPageCommand { get; }
+        public AppCommand NextPageCommand { get; }
+
+        #endregion
+
+
         public SelectEquipViewModel()
         {
-            var equipPointSelection = new List<ComboBoxNode<int>>
-            {
-                new ComboBoxNode<int> {Title = "全部", Value = -1}
-            };
-            for (var i = 0; i <= 21; i++)
-            {
-                equipPointSelection.Add(new ComboBoxNode<int>
-                {
-                    Title = $"装备点{i}", Value = i
-                });
-            }
-
-            EquipPointSelection = equipPointSelection;
             ConfirmCommand = new AppCommand(ConfirmSelect, CanConfirmSelect);
-            CancelCommand = new AppCommand(CancelSelect);
+            FirstPageCommand = new AppCommand(GoToFirstPage, CanGotoFirstPage);
+            LastPageCommand = new AppCommand(GoToLastPage, CanGotoLastPage);
+            PrevPageCommand = new AppCommand(GotoPrevPage, CanGotoPrevPage);
+            NextPageCommand = new AppCommand(GotoNextPage, CanGotoNextPage);
         }
 
 
-        public void InitData(List<ItemBase> equipBaseList, SelectEquipWindow selectEquipWindow, ItemBase equipBaseInfo,
+        public void InitData(List<ItemBase> equipBaseList, SelectEquipWindow selectWindow, int initItemId,
             bool sameEquipPoint)
         {
-            _equipBaseList = equipBaseList;
-            _selectEquipWindow = selectEquipWindow;
-            _sameEquipPoint = sameEquipPoint;
-            RaisePropertyChanged(nameof(SelectEquipPointVisibility));
-            SelectedEquip = equipBaseInfo;
-            RaisePropertyChanged(nameof(FilterEquipList));
-        }
-
-        private List<ItemBase> FilterEquip(bool sameEquipPoint, int equipPoint, int minLevel, string searchText)
-        {
-            var targetEquipPoint = equipPoint;
-            if (sameEquipPoint && _selectedEquip != null)
+            if (sameEquipPoint)
             {
-                targetEquipPoint = _selectedEquip.EquipPoint;
+                var equipPoint = 0;
+                if (initItemId != 0)
+                {
+                    //计算equip point
+                    var initItemBaseInfo = (from itemBaseInfo in equipBaseList
+                        where itemBaseInfo.Id == initItemId
+                        select itemBaseInfo).First();
+                    if (initItemBaseInfo != null)
+                    {
+                        equipPoint = initItemBaseInfo.EquipPoint;
+                    }
+                }
+
+                //只筛选equip point相同的
+                _itemBaseList = (from itemBaseInfo in equipBaseList
+                    where itemBaseInfo.EquipPoint == equipPoint
+                    select itemBaseInfo).ToList();
+            }
+            else
+            {
+                _itemBaseList = equipBaseList;
             }
 
-            return (from equipInfo in _equipBaseList
-                where targetEquipPoint == -1 || targetEquipPoint == equipInfo.EquipPoint
-                where equipInfo.Level >= minLevel
-                where equipInfo.Name.IndexOf(searchText) >= 0
-                select equipInfo).Take(60).ToList();
+            _selectWindow = selectWindow;
+            _initItemId = initItemId;
+            LoadShortTypeSelection();
+            DoFilterItemList();
         }
 
-        private bool CanConfirmSelect() => _selectedEquip != null;
-
-        private void ConfirmSelect()
+        private void LoadShortTypeSelection()
         {
-            _selectEquipWindow.EquipBaseInfo = _selectedEquip;
-            _selectEquipWindow.DialogResult = true;
-            _selectEquipWindow.Close();
+            var shortTypeNames = new List<string> {"全部"};
+            _itemBaseList.ForEach(itemBaseInfo =>
+            {
+                if (!shortTypeNames.Contains(itemBaseInfo.ShortTypeString))
+                {
+                    shortTypeNames.Add(itemBaseInfo.ShortTypeString);
+                }
+            });
+            ShortTypeSelection =
+                shortTypeNames.Select(
+                    (itemName, itemIndex)
+                        =>
+                        new ComboBoxNode<int> {Title = itemName, Value = itemIndex}
+                ).ToList();
+            RaisePropertyChanged(nameof(ShortTypeSelection));
         }
 
-        private void CancelSelect()
+        private void DoFilterItemList()
         {
-            _selectEquipWindow.DialogResult = false;
-            _selectEquipWindow.Close();
+            _filterItemList = (from itemBaseInfo in _itemBaseList
+                where itemBaseInfo.Level >= _minLevel
+                where _shortType == 0 || itemBaseInfo.ShortTypeString == ShortTypeSelection[_shortType].Title
+                where itemBaseInfo.Name.IndexOf(_searchText, StringComparison.Ordinal) >= 0
+                select itemBaseInfo).ToList();
+            Page = 1;
+            var pageTotal = (int) Math.Ceiling(_filterItemList.Count / (double) _pageLimit);
+            if (pageTotal < 1)
+            {
+                pageTotal = 1;
+            }
+
+            PageTotal = pageTotal;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
         }
+
+        private bool CanConfirmSelect(object parameter)
+        {
+            var itemBaseInfo = parameter as ItemBase;
+            return itemBaseInfo.Id != _initItemId;
+        }
+
+        private void ConfirmSelect(object parameter)
+        {
+            var itemBaseInfo = parameter as ItemBase;
+            _selectWindow.EquipBaseInfo = itemBaseInfo;
+            _selectWindow.DialogResult = true;
+            _selectWindow.Close();
+        }
+        
+        #region PageMethods
+
+        private void RaisePageCommandChange()
+        {
+            FirstPageCommand.RaiseCanExecuteChanged();
+            LastPageCommand.RaiseCanExecuteChanged();
+            PrevPageCommand.RaiseCanExecuteChanged();
+            NextPageCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool CanGotoFirstPage() => _page != 1;
+
+        private void GoToFirstPage()
+        {
+            Page = 1;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+
+        private bool CanGotoLastPage() => _page != _pageTotal;
+
+        private void GoToLastPage()
+        {
+            Page = _pageTotal;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+        private bool CanGotoPrevPage() => _page > 1;
+
+        private void GotoPrevPage()
+        {
+            Page = _page - 1;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+        private bool CanGotoNextPage() => _page < _pageTotal;
+
+        private void GotoNextPage()
+        {
+            Page = _page + 1;
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        }
+
+        #endregion
     }
 }

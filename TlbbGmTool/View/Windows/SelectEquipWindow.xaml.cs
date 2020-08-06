@@ -14,15 +14,11 @@ namespace TlbbGmTool.View.Windows
 
         #endregion
 
-        public SelectEquipWindow(List<ItemBase> equipBaseList, int itemBaseId,
+        public SelectEquipWindow(List<ItemBase> equipBaseList, int initItemId,
             bool sameEquipPoint = false)
         {
             InitializeComponent();
-            var equipBaseInfo = (from baseInfo in equipBaseList
-                where baseInfo.Id == itemBaseId
-                select baseInfo).First();
-            EquipBaseInfo = equipBaseInfo;
-            GetViewModel().InitData(equipBaseList, this, equipBaseInfo, sameEquipPoint);
+            GetViewModel().InitData(equipBaseList, this, initItemId, sameEquipPoint);
         }
 
         private SelectEquipViewModel GetViewModel()
