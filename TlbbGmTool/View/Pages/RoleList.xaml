@@ -24,7 +24,7 @@
             <Label Margin="13,0,0,0" Content="account name" />
             <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding AccountSearchText}" />
-            <Button Margin="15,0,0,0" Command="{Binding SearchCommand}">search</Button>
+            <Button Margin="15,0,0,0" Padding="8,0" Command="{Binding SearchCommand}">search</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10,0" ItemsSource="{Binding RoleList}">
@@ -35,8 +35,8 @@
                                     Header="charname" Binding="{Binding Charname}" />
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="accname" Binding="{Binding Accname}" />
-                <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="menpai" Binding="{Binding Menpai}" />
+                <DataGridTextColumn Width="80" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="menpai" Binding="{Binding MenpaiTip}" />
                 <DataGridTextColumn Width="50" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="level" Binding="{Binding Level}" />
                 <DataGridTextColumn Width="120" ElementStyle="{StaticResource TextColumnStyle}"
@@ -45,6 +45,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button
+                                Margin="3" Padding="3,5"
                                 Command="{Binding DataContext.EditRoleCommand, 
                                 RelativeSource={RelativeSource FindAncestor, 
                                 AncestorType={x:Type DataGrid}}}"

@@ -25,7 +25,7 @@
             <Label Content="username" />
             <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
-            <Button Margin="10,0,0,0" Command="{Binding SearchCommand}">search</Button>
+            <Button Margin="10,0,0,0" Padding="8,0" Command="{Binding SearchCommand}">search</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10,0" ItemsSource="{Binding AccountList}">
@@ -47,6 +47,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button
+                                Margin="3" Padding="3,5"
                                 Command="{Binding DataContext.EditAccountCommand, 
                                 RelativeSource={RelativeSource FindAncestor, 
                                 AncestorType={x:Type DataGrid}}}"

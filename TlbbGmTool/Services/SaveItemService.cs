@@ -30,13 +30,12 @@ namespace TlbbGmTool.Services
         /// </summary>
         /// <param name="mySqlConnection"></param>
         /// <param name="charguid"></param>
-        /// <param name="startPos">pos开始位置(含)</param>
-        /// <param name="endPos">pos结束位置(不含)</param>
+        /// <param name="bagType"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        private static async Task<int> GetNextPos(MySqlConnection mySqlConnection, int charguid, int startPos,
-            int endPos)
+        private static async Task<int> GetNextPos(MySqlConnection mySqlConnection, int charguid, BagType bagType)
         {
+            var (startPos, endPos) = GetBagItemIndexRange(bagType);
             var currentPos = startPos;
             var findPos = false;
             var sql = $"SELECT pos FROM t_iteminfo WHERE charguid={charguid}"
@@ -115,20 +114,7 @@ namespace TlbbGmTool.Services
         public static async Task<ItemInfo> InsertItemAsync(MySqlConnection mySqlConnection, int itemType, int[] pArray,
             int charguid, Dictionary<int, ItemBase> itemBases, BagType itemBagType, string creator)
         {
-            var startPos = 0;
-            switch (itemBagType)
-            {
-                case BagType.MaterialBag:
-                    startPos = 30;
-                    break;
-                case BagType.TaskBag:
-                    startPos = 60;
-                    break;
-            }
-
-            var endPos = startPos + 30;
-
-            var pos = await GetNextPos(mySqlConnection, charguid, startPos, endPos);
+            var pos = await GetNextPos(mySqlConnection, charguid, itemBagType);
             var guid = await GetNextGuid(mySqlConnection);
             var intDictionary = new Dictionary<string, int>()
             {
@@ -232,6 +218,24 @@ namespace TlbbGmTool.Services
                 ItemType = itemType,
                 PArray = pArray
             };
+        }
+
+
+        public static (int, int) GetBagItemIndexRange(BagType bagType)
+        {
+            var startPos = 0;
+            switch (bagType)
+            {
+                case BagType.MaterialBag:
+                    startPos = 30;
+                    break;
+                case BagType.TaskBag:
+                    startPos = 60;
+                    break;
+            }
+
+            var endPos = startPos + 30;
+            return (startPos, endPos);
         }
     }
 }

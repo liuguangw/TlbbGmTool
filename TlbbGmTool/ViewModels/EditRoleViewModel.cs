@@ -20,11 +20,13 @@ namespace TlbbGmTool.ViewModels
         #endregion
 
         public AppCommand SaveRoleCommand { get; }
+        public AppCommand GoHomeCommand { get; }
         public List<ComboBoxNode<int>> MenpaiSelection { get; private set; } = new List<ComboBoxNode<int>>();
 
         public EditRoleViewModel()
         {
             SaveRoleCommand = new AppCommand(SaveRole);
+            GoHomeCommand = new AppCommand(GoHome);
         }
 
         public void InitData(EditRoleWindowViewModel editRoleWindowViewModel)
@@ -32,17 +34,21 @@ namespace TlbbGmTool.ViewModels
             _editRoleWindowViewModel = editRoleWindowViewModel;
             _mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
             _gameRole = editRoleWindowViewModel.GameRole;
-            MenpaiSelection =
-                _mainWindowViewModel.MenpaiList.Select(
-                    menpaiPair
-                        =>
-                        new ComboBoxNode<int>
-                        {
-                            Title = menpaiPair.Value,
-                            Value = menpaiPair.Key
-                        }
-                ).ToList();
-            RaisePropertyChanged(nameof(MenpaiSelection));
+            if (MenpaiSelection.Count == 0)
+            {
+                MenpaiSelection =
+                    MenpaiList.Select(
+                        menpaiPair
+                            =>
+                            new ComboBoxNode<int>
+                            {
+                                Title = menpaiPair.Value,
+                                Value = menpaiPair.Key
+                            }
+                    ).ToList();
+                RaisePropertyChanged(nameof(MenpaiSelection));
+            }
+
             //初始化属性
             Accname = _gameRole.Accname;
             Charguid = _gameRole.Charguid;
@@ -188,6 +194,13 @@ namespace TlbbGmTool.ViewModels
 
                 await mySqlCommand.ExecuteNonQueryAsync();
             });
+        }
+
+        private void GoHome()
+        {
+            Scene = 2;
+            Xpos = 160 * 100;
+            Zpos = 149 * 100;
         }
     }
 }

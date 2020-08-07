@@ -92,7 +92,6 @@ namespace TlbbGmTool.ViewModels
 
         public Dictionary<int, ItemBase> ItemBases { get; private set; } = new Dictionary<int, ItemBase>();
 
-        public Dictionary<int, string> MenpaiList { get; private set; } = new Dictionary<int, string>();
         public Dictionary<int, string> Attr1CategoryList = new Dictionary<int, string>();
         public Dictionary<int, string> Attr2CategoryList = new Dictionary<int, string>();
 
@@ -146,7 +145,7 @@ namespace TlbbGmTool.ViewModels
                 itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
             );
             var (menpaiDictionary, attr1Dictionary, attr2Dictionary) = loadCommonConfigTask.Result;
-            MenpaiList = menpaiDictionary;
+            GameRole.MenpaiList = menpaiDictionary;
             Attr1CategoryList = attr1Dictionary;
             Attr2CategoryList = attr2Dictionary;
         }

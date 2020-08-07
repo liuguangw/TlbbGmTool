@@ -69,7 +69,10 @@
         <Label Grid.Row="8" Grid.Column="0">Exp</Label>
         <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Exp}" />
         <Label Grid.Row="9" Grid.Column="0">Scene</Label>
-        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Scene}" />
+        <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal">
+            <TextBox MinWidth="60" Text="{Binding Scene}" />
+            <Button Padding="12,5" Margin="5" Command="{Binding GoHomeCommand}">回城</Button>
+        </StackPanel>
         <Label Grid.Row="10" Grid.Column="0">pos</Label>
         <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal">
             <TextBox MinWidth="60" Text="{Binding Xpos}" />

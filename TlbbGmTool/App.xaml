@@ -52,14 +52,14 @@
         <!--for item admin column-->
         <DataTemplate x:Key="AdminItemTemplate">
             <WrapPanel Margin="5">
-                <Button Padding="5"
+                <Button Padding="10,5"
                         Command="{Binding DataContext.EditItemCommand, 
                                         RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType={x:Type DataGrid}}}"
                         CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
                     修改
                 </Button>
-                <Button Padding="5" Margin="5,0,0,0"
+                <Button Padding="10,5" Margin="5,0,0,0"
                         Command="{Binding DataContext.DeleteItemCommand, 
                                         RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType={x:Type DataGrid}}}"

@@ -1,10 +1,14 @@
-﻿using TlbbGmTool.Core;
+﻿using System.Collections.Generic;
+using TlbbGmTool.Core;
 
 namespace TlbbGmTool.Models
 {
     public class GameRole : BindDataBase
     {
+        public static Dictionary<int, string> MenpaiList = new Dictionary<int, string>();
+
         #region Fields
+
         private string _accname = string.Empty;
         private int _charguid;
         private string _charname = string.Empty;
@@ -80,8 +84,17 @@ namespace TlbbGmTool.Models
         public int Menpai
         {
             get => _menpai;
-            set => SetProperty(ref _menpai, value);
+            set
+            {
+                if (SetProperty(ref _menpai, value))
+                {
+                    RaisePropertyChanged(nameof(MenpaiTip));
+                }
+            }
         }
+
+        public string MenpaiTip =>
+            MenpaiList.ContainsKey(_menpai) ? MenpaiList[_menpai] : "-";
 
         public int Level
         {

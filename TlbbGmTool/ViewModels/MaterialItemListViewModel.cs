@@ -6,6 +6,7 @@ using System.Windows;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
+using TlbbGmTool.Services;
 using TlbbGmTool.View.Windows;
 
 namespace TlbbGmTool.ViewModels
@@ -80,12 +81,11 @@ namespace TlbbGmTool.ViewModels
         {
             var itemList = new List<ItemInfo>();
             var mySqlConnection = _mainWindowViewModel.MySqlConnection;
-            const int offset = 30;
-            const int limit = 60;
+            var (startPos, endPos) = SaveItemService.GetBagItemIndexRange(SaveItemService.BagType.MaterialBag);
             var sql =
                 $"SELECT * FROM t_iteminfo WHERE charguid={_charguid}" +
-                $" AND isvalid=1 AND pos>={offset}" +
-                $" AND pos<{limit} ORDER BY pos ASC";
+                $" AND isvalid=1 AND pos>={startPos}" +
+                $" AND pos<{endPos} ORDER BY pos ASC";
             var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
             await Task.Run(async () =>
             {

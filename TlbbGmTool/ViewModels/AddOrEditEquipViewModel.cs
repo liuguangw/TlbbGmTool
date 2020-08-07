@@ -428,13 +428,16 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            //更新属性
             if (_isAddEquip)
             {
-                _bagItemList.Add(itemInfo);
+                //计算插入列表的位置
+                var (startPos, _) = SaveItemService.GetBagItemIndexRange(SaveItemService.BagType.ItemBag);
+                var insertIndex = itemInfo.Pos - startPos;
+                _bagItemList.Insert(insertIndex, itemInfo);
             }
             else
             {
+                //更新属性
                 _itemInfo.ItemType = itemInfo.ItemType;
                 _itemInfo.PArray = itemInfo.PArray;
                 _itemInfo.Creator = itemInfo.Creator;
@@ -442,7 +445,7 @@ namespace TlbbGmTool.ViewModels
 
             //更新标题
             RaisePropertyChanged(nameof(WindowTitle));
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存equip信息成功");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", $"保存equip信息成功(pos={itemInfo.Pos})");
             _addOrEditEquipWindow.Close();
         }
 

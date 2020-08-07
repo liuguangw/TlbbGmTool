@@ -13,8 +13,13 @@
     </Page.DataContext>
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Margin="10,10,10,0">
+            <WrapPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Padding" Value="10,5" />
+                </Style>
+            </WrapPanel.Resources>
             <Button Command="{Binding AddMaterialCommand}">add material</Button>
-            <Button Command="{Binding AddGemCommand}" Margin="5,0,0,0">add gem</Button>
+            <Button Command="{Binding AddGemCommand}" Margin="6,0,0,0">add gem</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding ItemList}">
@@ -22,19 +27,19 @@
                 <DataGridTextColumn Width="50" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="Pos" Binding="{Binding Pos}" SortDirection="Ascending" />
-                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="3*" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="ID" Binding="{Binding ItemType}" />
-                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="4*" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="名称" Binding="{Binding Name}" />
-                <DataGridTextColumn Width="120" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="Level" Binding="{Binding Level}" />
-                <DataGridTextColumn Width="120" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="Count" Binding="{Binding ItemCount}" />
-                <DataGridTemplateColumn Width="*" Header="管理"
+                <DataGridTemplateColumn Width="150" Header="管理"
                                         CellTemplate="{StaticResource AdminItemTemplate}" />
             </DataGrid.Columns>
         </DataGrid>

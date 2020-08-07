@@ -22,7 +22,7 @@
                 <DataGridTemplateColumn Width="*" Header="管理">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Margin="20,2"
+                            <Button Margin="20,2" Padding="10,5"
                                     Command="{Binding DataContext.EditXinFaCommand, 
                                     RelativeSource={RelativeSource FindAncestor, 
                                     AncestorType={x:Type DataGrid}}}"

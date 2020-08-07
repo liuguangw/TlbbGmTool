@@ -226,13 +226,22 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            //更新属性
             if (_isAdd)
             {
-                _bagItemList.Add(itemInfo);
+                var bagType = SaveItemService.BagType.ItemBag;
+                if (_itemCategory == ItemCategory.Gem || _itemCategory == ItemCategory.Material)
+                {
+                    bagType = SaveItemService.BagType.MaterialBag;
+                }
+
+                //计算插入列表的位置
+                var (startPos, _) = SaveItemService.GetBagItemIndexRange(bagType);
+                var insertIndex = itemInfo.Pos - startPos;
+                _bagItemList.Insert(insertIndex, itemInfo);
             }
             else
             {
+                //更新属性
                 _itemInfo.ItemType = itemInfo.ItemType;
                 _itemInfo.PArray = itemInfo.PArray;
                 _itemInfo.RaiseItemCountChange();
@@ -241,7 +250,7 @@ namespace TlbbGmTool.ViewModels
 
             //更新标题
             RaisePropertyChanged(nameof(WindowTitle));
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存item信息成功");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", $"保存item信息成功(pos={itemInfo.Pos})");
             _addOrEditItemWindow.Close();
         }
 
