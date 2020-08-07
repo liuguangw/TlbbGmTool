@@ -37,10 +37,15 @@ namespace TlbbGmTool.ViewModels
 
         public MaterialItemListViewModel()
         {
-            AddMaterialCommand = new AppCommand(ShowAddMaterialDialog);
-            AddGemCommand = new AppCommand(ShowAddGemDialog);
+            AddMaterialCommand = new AppCommand(ShowAddMaterialDialog, CanAddItem);
+            AddGemCommand = new AppCommand(ShowAddGemDialog, CanAddItem);
             EditItemCommand = new AppCommand(ShowEditDialog, CanEditItem);
             DeleteItemCommand = new AppCommand(ProcessDelete);
+            ItemList.CollectionChanged += (sender, e) =>
+            {
+                AddMaterialCommand.RaiseCanExecuteChanged();
+                AddGemCommand.RaiseCanExecuteChanged();
+            };
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, int charguid, EditRoleWindow editRoleWindow)
@@ -145,6 +150,8 @@ namespace TlbbGmTool.ViewModels
             };
             editWindow.ShowDialog();
         }
+
+        private bool CanAddItem() => ItemList.Count < 30;
 
         private bool CanEditItem(object parameter)
         {
