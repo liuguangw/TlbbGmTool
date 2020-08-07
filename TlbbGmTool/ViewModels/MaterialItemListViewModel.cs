@@ -25,7 +25,8 @@ namespace TlbbGmTool.ViewModels
         public ObservableCollection<ItemInfo> ItemList { get; } =
             new ObservableCollection<ItemInfo>();
 
-        public AppCommand AddItemCommand { get; }
+        public AppCommand AddMaterialCommand { get; }
+        public AppCommand AddGemCommand { get; }
 
         public AppCommand EditItemCommand { get; }
 
@@ -35,7 +36,8 @@ namespace TlbbGmTool.ViewModels
 
         public MaterialItemListViewModel()
         {
-            AddItemCommand = new AppCommand(ShowAddItemDialog);
+            AddMaterialCommand = new AppCommand(ShowAddMaterialDialog);
+            AddGemCommand = new AppCommand(ShowAddGemDialog);
             EditItemCommand = new AppCommand(ShowEditDialog, CanEditItem);
             DeleteItemCommand = new AppCommand(ProcessDelete);
         }
@@ -124,9 +126,20 @@ namespace TlbbGmTool.ViewModels
             return itemList;
         }
 
-        private void ShowAddItemDialog()
+        private void ShowAddMaterialDialog()
         {
-            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, null, true, _charguid, ItemList)
+            ShowAddDialog(AddOrEditItemViewModel.ItemCategory.Material);
+        }
+
+        private void ShowAddGemDialog()
+        {
+            ShowAddDialog(AddOrEditItemViewModel.ItemCategory.Gem);
+        }
+
+        private void ShowAddDialog(AddOrEditItemViewModel.ItemCategory itemCategory)
+        {
+            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, null,
+                itemCategory, _charguid, ItemList)
             {
                 Owner = _editRoleWindow
             };
@@ -148,7 +161,13 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, itemInfo, true, _charguid, ItemList)
+            var itemCategory = AddOrEditItemViewModel.ItemCategory.Material;
+            if (itemBaseInfo.ItemClass == 5)
+            {
+                itemCategory = AddOrEditItemViewModel.ItemCategory.Gem;
+            }
+
+            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, itemInfo, itemCategory, _charguid, ItemList)
             {
                 Owner = _editRoleWindow
             };

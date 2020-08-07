@@ -36,7 +36,7 @@
                 <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource SelectItemCellStyle}"
                                     Header="ID" Binding="{Binding Id}" SortDirection="Ascending" />
-                <DataGridTextColumn Width="30" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="38" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource SelectItemCellStyle}"
                                     Header="等级" Binding="{Binding Level}" />
                 <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"

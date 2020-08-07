@@ -137,7 +137,8 @@ namespace TlbbGmTool.ViewModels
 
         private void ShowAddItemDialog()
         {
-            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, null, false, _charguid, ItemList)
+            var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, null,
+                AddOrEditItemViewModel.ItemCategory.CommonItem, _charguid, ItemList)
             {
                 Owner = _editRoleWindow
             };
@@ -174,7 +175,8 @@ namespace TlbbGmTool.ViewModels
                 //item
                 case 3:
                 {
-                    var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, itemInfo, false, _charguid, ItemList)
+                    var editWindow = new AddOrEditItemWindow(_mainWindowViewModel, itemInfo,
+                        AddOrEditItemViewModel.ItemCategory.CommonItem, _charguid, ItemList)
                     {
                         Owner = _editRoleWindow
                     };

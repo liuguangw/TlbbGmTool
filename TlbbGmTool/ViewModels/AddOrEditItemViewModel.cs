@@ -12,13 +12,20 @@ namespace TlbbGmTool.ViewModels
 {
     public class AddOrEditItemViewModel : BindDataBase
     {
+        public enum ItemCategory
+        {
+            CommonItem,
+            Material,
+            Gem
+        }
+
         #region Fields
 
         private MainWindowViewModel _mainWindowViewModel;
         private ItemInfo _itemInfo;
         private int _charguid;
         private bool _isAdd = true;
-        private bool _isMaterial = true;
+        private ItemCategory _itemCategory;
         private ObservableCollection<ItemInfo> _bagItemList;
 
         private AddOrEditItemWindow _addOrEditItemWindow;
@@ -29,7 +36,7 @@ namespace TlbbGmTool.ViewModels
         //
         private int _itemBaseId;
         private int _itemMaxSize = 1;
-        private int _itemCurrentSize = 1;
+        private int _itemCount = 1;
 
         #endregion
 
@@ -39,12 +46,26 @@ namespace TlbbGmTool.ViewModels
         {
             get
             {
-                if (_isAdd)
+                if (!_isAdd)
                 {
-                    return "添加" + (_isMaterial ? "材料" : "物品");
+                    return "修改 " + ItemName;
                 }
 
-                return "修改 " + ItemName;
+                var targetName = string.Empty;
+                switch (_itemCategory)
+                {
+                    case ItemCategory.CommonItem:
+                        targetName = "物品";
+                        break;
+                    case ItemCategory.Material:
+                        targetName = "材料";
+                        break;
+                    case ItemCategory.Gem:
+                        targetName = "宝石";
+                        break;
+                }
+
+                return "添加" + targetName;
             }
         }
 
@@ -79,14 +100,25 @@ namespace TlbbGmTool.ViewModels
         public int ItemMaxSize
         {
             get => _itemMaxSize;
-            set => SetProperty(ref _itemMaxSize, value);
+            set
+            {
+                if (SetProperty(ref _itemMaxSize, value))
+                {
+                    RaisePropertyChanged(nameof(CanEditCount));
+                }
+            }
         }
 
-        public int ItemCurrentSize
+        public int ItemCount
         {
-            get => _itemCurrentSize;
-            set => SetProperty(ref _itemCurrentSize, value);
+            get => _itemCount;
+            set => SetProperty(ref _itemCount, value);
         }
+
+        /// <summary>
+        /// 是否可以修改个数
+        /// </summary>
+        public bool CanEditCount => _itemMaxSize > 1;
 
         #endregion
 
@@ -104,24 +136,38 @@ namespace TlbbGmTool.ViewModels
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, ItemInfo itemInfo,
-            int charguid, bool isMaterial, ObservableCollection<ItemInfo> itemList,
+            int charguid, ItemCategory itemCategory, ObservableCollection<ItemInfo> itemList,
             AddOrEditItemWindow addOrEditItemWindow)
         {
             _mainWindowViewModel = mainWindowViewModel;
             _addOrEditItemWindow = addOrEditItemWindow;
+            var itemClass = 0;
+            switch (itemCategory)
+            {
+                case ItemCategory.CommonItem:
+                    itemClass = 3;
+                    break;
+                case ItemCategory.Material:
+                    itemClass = 2;
+                    break;
+                case ItemCategory.Gem:
+                    itemClass = 5;
+                    break;
+            }
+
             _itemBaseList = (from itemBaseInfoPair in _mainWindowViewModel.ItemBases
-                where itemBaseInfoPair.Value.ItemClass == (isMaterial ? 2 : 3)
+                where itemBaseInfoPair.Value.ItemClass == itemClass
                 select itemBaseInfoPair.Value).ToList();
             _charguid = charguid;
             _bagItemList = itemList;
-            _isMaterial = isMaterial;
+            _itemCategory = itemCategory;
             if (itemInfo == null)
             {
                 //初始化默认值
                 var firstItem = _itemBaseList.First();
                 ItemBaseId = firstItem.Id;
                 ItemMaxSize = firstItem.MaxSize;
-                ItemCurrentSize = firstItem.MaxSize;
+                ItemCount = firstItem.MaxSize;
                 return;
             }
 
@@ -130,7 +176,7 @@ namespace TlbbGmTool.ViewModels
             //初始化属性
             ItemBaseId = itemInfo.ItemType;
             ItemMaxSize = itemInfo.MaxSize;
-            ItemCurrentSize = itemInfo.ItemCount;
+            ItemCount = itemInfo.ItemCount;
         }
 
         private static ItemBase FindItemById(int itemId, IEnumerable<ItemBase> itemBaseList)
@@ -163,7 +209,7 @@ namespace TlbbGmTool.ViewModels
                 var selectedItem = selectItemWindow.TargetItem;
                 ItemBaseId = selectedItem.Id;
                 ItemMaxSize = selectedItem.MaxSize;
-                ItemCurrentSize = selectedItem.MaxSize;
+                ItemCount = selectedItem.MaxSize;
             }
         }
 
@@ -207,8 +253,9 @@ namespace TlbbGmTool.ViewModels
             {
                 throw new Exception($"无效的物品ID: {itemType}");
             }
+
             //防止不正确的数量,或者数量超出堆叠上限
-            var itemCount = _itemCurrentSize;
+            var itemCount = _itemCount;
             if (itemCount < 1)
             {
                 itemCount = 1;
@@ -237,7 +284,12 @@ namespace TlbbGmTool.ViewModels
                 pArray[4] = -1;
                 pArray[5] = -1;
                 pArray[6] |= 0xFFFF;
-                var bagType = _isMaterial ? SaveItemService.BagType.MaterialBag : SaveItemService.BagType.ItemBag;
+                var bagType = SaveItemService.BagType.ItemBag;
+                if (_itemCategory == ItemCategory.Material || _itemCategory == ItemCategory.Gem)
+                {
+                    bagType = SaveItemService.BagType.MaterialBag;
+                }
+
                 itemInfo = await SaveItemService.InsertItemAsync(mySqlConnection, itemType, pArray,
                     _charguid, itemBases, bagType, string.Empty);
             }

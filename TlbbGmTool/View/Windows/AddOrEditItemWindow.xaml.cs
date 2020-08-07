@@ -8,10 +8,11 @@ namespace TlbbGmTool.View.Windows
     public partial class AddOrEditItemWindow : Window
     {
         public AddOrEditItemWindow(MainWindowViewModel mainWindowViewModel,
-            ItemInfo itemInfo, bool isMaterial, int charguid, ObservableCollection<ItemInfo> itemList)
+            ItemInfo itemInfo, AddOrEditItemViewModel.ItemCategory itemCategory, int charguid,
+            ObservableCollection<ItemInfo> itemList)
         {
             InitializeComponent();
-            GetViewModel().InitData(mainWindowViewModel, itemInfo, charguid, isMaterial, itemList, this);
+            GetViewModel().InitData(mainWindowViewModel, itemInfo, charguid, itemCategory, itemList, this);
         }
 
         private AddOrEditItemViewModel GetViewModel()

@@ -57,11 +57,13 @@
                  Text="{Binding ItemMaxSize,Mode=OneWay}" />
         <Label Grid.Row="2" Grid.Column="0">数量</Label>
         <Slider Grid.Row="2" Grid.Column="1"
-                Value="{Binding ItemCurrentSize}"
+                IsEnabled="{Binding CanEditCount}"
+                Value="{Binding ItemCount}"
                 Minimum="1"
                 Maximum="{Binding ItemMaxSize}" />
         <TextBox Grid.Row="2" Grid.Column="2"
-                 Text="{Binding ItemCurrentSize,UpdateSourceTrigger=PropertyChanged}" />
+                 IsEnabled="{Binding CanEditCount}"
+                 Text="{Binding ItemCount,UpdateSourceTrigger=PropertyChanged}" />
         <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
                    HorizontalAlignment="Right" VerticalAlignment="Center">
             <Button Margin="5,0,0,0" Command="{Binding SaveItemCommand}">保存</Button>

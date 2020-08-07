@@ -257,14 +257,16 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <CheckBox Grid.Row="0" IsChecked="{Binding BindStatus}">已绑定</CheckBox>
-                <CheckBox Grid.Row="1" IsChecked="{Binding VerifiedStatus}">已鉴定</CheckBox>
-                <CheckBox Grid.Row="2" IsChecked="{Binding QualificationVerifiedStatus}">资质已鉴定</CheckBox>
-                <CheckBox Grid.Row="3" IsChecked="{Binding EngravedStatus}">已刻铭</CheckBox>
-                <CheckBox Grid.Row="4" IsChecked="{Binding LockStatus}">已锁定</CheckBox>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding BindStatus}">已绑定</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding VerifiedStatus}">已鉴定</CheckBox>
+                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding QualificationVerifiedStatus}">资质已鉴定</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding EngravedStatus}">已刻铭</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding LockStatus}">已锁定</CheckBox>
             </Grid>
         </GroupBox>
         <DockPanel Margin="5" Grid.Row="5" Grid.Column="2">
