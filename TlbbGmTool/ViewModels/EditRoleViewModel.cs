@@ -20,6 +20,7 @@ namespace TlbbGmTool.ViewModels
         #endregion
 
         public AppCommand SaveRoleCommand { get; }
+        public List<ComboBoxNode<int>> MenpaiSelection { get; private set; } = new List<ComboBoxNode<int>>();
 
         public EditRoleViewModel()
         {
@@ -31,6 +32,17 @@ namespace TlbbGmTool.ViewModels
             _editRoleWindowViewModel = editRoleWindowViewModel;
             _mainWindowViewModel = editRoleWindowViewModel.MainWindowViewModel;
             _gameRole = editRoleWindowViewModel.GameRole;
+            MenpaiSelection =
+                _mainWindowViewModel.MenpaiList.Select(
+                    menpaiPair
+                        =>
+                        new ComboBoxNode<int>
+                        {
+                            Title = menpaiPair.Value,
+                            Value = menpaiPair.Key
+                        }
+                ).ToList();
+            RaisePropertyChanged(nameof(MenpaiSelection));
             //初始化属性
             Accname = _gameRole.Accname;
             Charguid = _gameRole.Charguid;

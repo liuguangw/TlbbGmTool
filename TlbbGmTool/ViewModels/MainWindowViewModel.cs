@@ -92,6 +92,10 @@ namespace TlbbGmTool.ViewModels
 
         public Dictionary<int, ItemBase> ItemBases { get; private set; } = new Dictionary<int, ItemBase>();
 
+        public Dictionary<int, string> MenpaiList { get; private set; } = new Dictionary<int, string>();
+        public Dictionary<int, string> Attr1CategoryList = new Dictionary<int, string>();
+        public Dictionary<int, string> Attr2CategoryList = new Dictionary<int, string>();
+
         #endregion
 
         public MainWindowViewModel()
@@ -125,8 +129,10 @@ namespace TlbbGmTool.ViewModels
             var loadCommonItemsTask = TextFileService.LoadCommonItemList();
             var loadGemItemsTask = TextFileService.LoadGemItemList();
             var loadEquipBasesTask = TextFileService.LoadEquipBaseList();
+            var loadCommonConfigTask = CommonConfigService.LoadMenpaiAndAttrAsync();
             //等待配置文件读取完成
-            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask, loadEquipBasesTask);
+            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask, loadEquipBasesTask,
+                loadCommonConfigTask);
             loadPetSkillListTask.Result.ForEach(
                 petSkill => PetSkills.Add(petSkill.Id, petSkill)
             );
@@ -139,6 +145,10 @@ namespace TlbbGmTool.ViewModels
             loadEquipBasesTask.Result.ForEach(
                 itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
             );
+            var (menpaiDictionary, attr1Dictionary, attr2Dictionary) = loadCommonConfigTask.Result;
+            MenpaiList = menpaiDictionary;
+            Attr1CategoryList = attr1Dictionary;
+            Attr2CategoryList = attr2Dictionary;
         }
 
         public void ShowErrorMessage(string title, string content) =>

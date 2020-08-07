@@ -15,14 +15,15 @@ namespace TlbbGmTool.View.Windows
 
         #endregion
 
-        public SelectAttrWindow(IEnumerable<ItemBase> equipBaseList, int itemBaseId,
-            int attr1, int attr2)
+        public SelectAttrWindow(IEnumerable<ItemBase> equipBaseList,
+            Dictionary<int, string> attr1CategoryList, Dictionary<int, string> attr2CategoryList,
+            int attr1, int attr2, int itemBaseId)
         {
             InitializeComponent();
             var equipBaseInfo = (from baseInfo in equipBaseList
                 where baseInfo.Id == itemBaseId
                 select baseInfo).First();
-            GetViewModel().InitData(equipBaseInfo, this, attr1, attr2);
+            GetViewModel().InitData(equipBaseInfo, this, attr1CategoryList, attr2CategoryList, attr1, attr2);
         }
 
         private SelectAttrViewModel GetViewModel()

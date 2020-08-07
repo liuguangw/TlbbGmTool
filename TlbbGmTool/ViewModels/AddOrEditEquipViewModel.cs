@@ -459,7 +459,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem1前两字节 -> p2后两字节
                 pArray[1] = (int) (pArray[1] & 0xffff0000);
-                pArray[1] |= (_gem1 >> 16)&0xffff;
+                pArray[1] |= (_gem1 >> 16) & 0xffff;
                 //Gem1后两字节 -> p1前两字节
                 pArray[0] &= 0xffff;
                 pArray[0] |= (_gem1 & 0xffff) << 16;
@@ -470,7 +470,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem2前两字节 -> p3后两字节
                 pArray[2] = (int) (pArray[2] & 0xffff0000);
-                pArray[2] |= (_gem2 >> 16)&0xffff;
+                pArray[2] |= (_gem2 >> 16) & 0xffff;
                 //Gem2后两字节 -> p2前两字节
                 pArray[1] &= 0xffff;
                 pArray[1] |= (_gem2 & 0xffff) << 16;
@@ -481,7 +481,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem3前两字节 -> p4后两字节
                 pArray[3] = (int) (pArray[3] & 0xffff0000);
-                pArray[3] |= (_gem3 >> 16)&0xffff;
+                pArray[3] |= (_gem3 >> 16) & 0xffff;
                 //Gem3后两字节 -> p3前两字节
                 pArray[2] &= 0xffff;
                 pArray[2] |= (_gem3 & 0xffff) << 16;
@@ -492,7 +492,7 @@ namespace TlbbGmTool.ViewModels
                 gemCount++;
                 //Gem4首字节 -> p17尾字节
                 pArray[16] = (int) (pArray[16] & 0xffffff00);
-                pArray[16] |= (_gem4 >> 24)&0xff;
+                pArray[16] |= (_gem4 >> 24) & 0xff;
                 //Gem4后三字节 -> p16前三字节
                 pArray[15] = pArray[15] & 0xff;
                 pArray[15] += (_gem4 & 0xffffff) << 8;
@@ -571,6 +571,7 @@ namespace TlbbGmTool.ViewModels
             ItemInfo itemInfo;
             if (_itemInfo == null)
             {
+                pArray[3] |= 1 << (4 + 16);
                 var creator = "流光";
                 var equipBaseInfo = itemBases[itemType];
                 //规则ID
@@ -679,7 +680,8 @@ namespace TlbbGmTool.ViewModels
 
         private void SelectAttr()
         {
-            var selectAttrWindow = new SelectAttrWindow(_equipBaseList, _itemBaseId, _attr1, _attr2)
+            var selectAttrWindow = new SelectAttrWindow(_equipBaseList, _mainWindowViewModel.Attr1CategoryList,
+                _mainWindowViewModel.Attr2CategoryList, _attr1, _attr2, _itemBaseId)
             {
                 Owner = _addOrEditEquipWindow
             };

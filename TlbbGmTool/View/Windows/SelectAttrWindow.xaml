@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
         mc:Ignorable="d"
         ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Title="SelectAttrWindow" Height="330" Width="500">
+        Title="SelectAttrWindow" Height="475" Width="700">
     <Window.DataContext>
         <vm:SelectAttrViewModel />
     </Window.DataContext>
@@ -64,13 +64,9 @@
         <WrapPanel Grid.Row="2" HorizontalAlignment="Right">
             <WrapPanel.Resources>
                 <Style TargetType="Button">
-                    <Setter Property="Padding" Value="10,5" />
+                    <Setter Property="Padding" Value="15,5" />
                 </Style>
             </WrapPanel.Resources>
-            <Button Margin="5"
-                    Command="{Binding CancelCommand}">
-                取消
-            </Button>
             <Button Margin="5"
                     Command="{Binding ConfirmCommand}">
                 确定

@@ -132,6 +132,7 @@
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Models\XinFa.cs" />
     <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\CommonConfigService.cs" />
     <Compile Include="Services\DbStringService.cs" />
     <Compile Include="Services\SaveItemService.cs" />
     <Compile Include="Services\ServerService.cs" />
@@ -277,16 +278,16 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="config\text\CommonItem.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="config\text\EquipBase.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="config\text\GemInfo.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="config\text\SkillTemplate_V1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -299,7 +300,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config\servers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\common.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

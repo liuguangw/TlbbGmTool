@@ -7,7 +7,7 @@
       xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
       mc:Ignorable="d"
       Loaded="EditRolePage_OnLoaded"
-       d:DesignWidth="780" d:DesignHeight="450"
+      d:DesignWidth="780" d:DesignHeight="450"
       Title="EditRolePage">
     <Page.DataContext>
         <vm:EditRoleViewModel />
@@ -54,7 +54,12 @@
         <Label Grid.Row="3" Grid.Column="0">Title</Label>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Title}" />
         <Label Grid.Row="4" Grid.Column="0">Menpai</Label>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Menpai}" />
+        <ComboBox Grid.Row="4" Grid.Column="1" Margin="5"
+                  VerticalContentAlignment="Center"
+                  ItemsSource="{Binding MenpaiSelection}"
+                  DisplayMemberPath="Title"
+                  SelectedValuePath="Value"
+                  SelectedValue="{Binding Menpai}" />
         <Label Grid.Row="5" Grid.Column="0">Level</Label>
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Level}" />
         <Label Grid.Row="6" Grid.Column="0">Hp</Label>

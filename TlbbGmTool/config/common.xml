@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<common>
+    <menpai>
+        <item value="0">SHAOLIN</item>
+        <item value="1">MINGJIAO</item>
+        <item value="2">GAIBANG</item>
+        <item value="3">WUDANG</item>
+        <item value="4">EMEI</item>
+        <item value="5">XINGSU</item>
+        <item value="6">DALI</item>
+        <item value="7">TIANSHAN</item>
+        <item value="8">XIAOYAO</item>
+        <item value="9">WUMENPAI</item>
+        <item value="10">GUSU</item>
+        <item value="11">TANGMEN</item>
+        <item value="12">GUIGU</item>
+    </menpai>
+    <attr1>
+        <item value="0">A0</item>
+        <item value="1">A1</item>
+        <item value="2">A2</item>
+        <item value="3">A3</item>
+        <item value="4">A4</item>
+        <item value="5">A5</item>
+        <item value="6">A6</item>
+        <item value="7">A7</item>
+        <item value="8">A8</item>
+        <item value="9">A9</item>
+
+        <item value="10">A10</item>
+        <item value="11">A11</item>
+        <item value="12">A12</item>
+        <item value="13">A13</item>
+        <item value="14">A14</item>
+        <item value="15">A15</item>
+        <item value="16">A16</item>
+        <item value="17">A17</item>
+        <item value="18">A18</item>
+        <item value="19">A19</item>
+
+        <item value="20">A20</item>
+        <item value="21">A21</item>
+        <item value="22">A22</item>
+        <item value="23">A23</item>
+        <item value="24">A24</item>
+        <item value="25">A25</item>
+        <item value="26">A26</item>
+        <item value="27">A27</item>
+        <item value="28">A28</item>
+        <item value="29">A29</item>
+
+        <item value="30">A30</item>
+        <item value="31">A31</item>
+    </attr1>
+    <attr2>
+        <item value="0">B0</item>
+        <item value="1">B1</item>
+        <item value="2">B2</item>
+        <item value="3">B3</item>
+        <item value="4">B4</item>
+        <item value="5">B5</item>
+        <item value="6">B6</item>
+        <item value="7">B7</item>
+        <item value="8">B8</item>
+        <item value="9">B9</item>
+
+        <item value="10">B10</item>
+        <item value="11">B11</item>
+        <item value="12">B12</item>
+        <item value="13">B13</item>
+        <item value="14">B14</item>
+        <item value="15">B15</item>
+        <item value="16">B16</item>
+        <item value="17">B17</item>
+        <item value="18">B18</item>
+        <item value="19">B19</item>
+
+        <item value="20">B20</item>
+        <item value="21">B21</item>
+        <item value="22">B22</item>
+        <item value="23">B23</item>
+        <item value="24">B24</item>
+        <item value="25">B25</item>
+        <item value="26">B26</item>
+        <item value="27">B27</item>
+        <item value="28">B28</item>
+        <item value="29">B29</item>
+
+        <item value="30">B30</item>
+        <item value="31">B31</item>
+    </attr2>
+</common>

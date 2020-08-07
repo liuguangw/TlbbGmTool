@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.View.Windows;
@@ -25,18 +24,18 @@ namespace TlbbGmTool.ViewModels
             = new ObservableCollection<EquipAttributeNode>();
 
         public AppCommand ConfirmCommand { get; }
-        public AppCommand CancelCommand { get; }
 
         #endregion
 
         public SelectAttrViewModel()
         {
             ConfirmCommand = new AppCommand(ConfirmSelect);
-            CancelCommand = new AppCommand(CancelSelect);
         }
 
 
-        public void InitData(ItemBase equipBaseInfo, SelectAttrWindow selectAttrWindow, int attr1, int attr2)
+        public void InitData(ItemBase equipBaseInfo, SelectAttrWindow selectAttrWindow,
+            Dictionary<int, string> attr1CategoryList, Dictionary<int, string> attr2CategoryList,
+            int attr1, int attr2)
         {
             _selectAttrWindow = selectAttrWindow;
             var attr1IndexList = equipBaseInfo.Attr1;
@@ -45,7 +44,7 @@ namespace TlbbGmTool.ViewModels
             {
                 if (attr1IndexList.Contains(i))
                 {
-                    var attributeNode = new EquipAttributeNode($"attr{i}", i);
+                    var attributeNode = new EquipAttributeNode(attr1CategoryList[i], i);
                     var attrIndexValue = attr1;
                     if (i > 0)
                     {
@@ -65,7 +64,7 @@ namespace TlbbGmTool.ViewModels
 
                 if (attr2IndexList.Contains(i))
                 {
-                    var attributeNode = new EquipAttributeNode($"attr{i}", i);
+                    var attributeNode = new EquipAttributeNode(attr2CategoryList[i], i);
                     var attrIndexValue = attr2;
                     if (i > 0)
                     {
@@ -135,12 +134,6 @@ namespace TlbbGmTool.ViewModels
             _selectAttrWindow.Attr1 = attr1Value;
             _selectAttrWindow.Attr2 = attr2Value;
             _selectAttrWindow.DialogResult = true;
-            _selectAttrWindow.Close();
-        }
-
-        private void CancelSelect()
-        {
-            _selectAttrWindow.DialogResult = false;
             _selectAttrWindow.Close();
         }
     }
