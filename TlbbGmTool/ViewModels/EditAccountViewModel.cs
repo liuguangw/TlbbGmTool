@@ -38,12 +38,14 @@ namespace TlbbGmTool.ViewModels
         }
 
         public AppCommand SaveAccountCommand { get; }
+        public AppCommand ShowHashToolCommand { get; }
 
         #endregion
 
         public EditAccountViewModel()
         {
             SaveAccountCommand = new AppCommand(SaveToDatabase);
+            ShowHashToolCommand = new AppCommand(ShowHashTool);
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, UserAccount userAccount,
@@ -145,6 +147,15 @@ namespace TlbbGmTool.ViewModels
 
                 await mySqlCommand.ExecuteNonQueryAsync();
             });
+        }
+
+        private void ShowHashTool()
+        {
+            var hashToolWindow = new HashToolWindow()
+            {
+                Owner = _editAccountWindow
+            };
+            hashToolWindow.ShowDialog();
         }
     }
 }

@@ -148,6 +148,7 @@
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\EditRoleWindowViewModel.cs" />
     <Compile Include="ViewModels\EditXinFaViewModel.cs" />
+    <Compile Include="ViewModels\HashToolViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MaterialItemListViewModel.cs" />
     <Compile Include="ViewModels\PetListViewModel.cs" />
@@ -203,6 +204,9 @@
     <Compile Include="View\Windows\EditXinFaWindow.xaml.cs">
       <DependentUpon>EditXinFaWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Windows\HashToolWindow.xaml.cs">
+      <DependentUpon>HashToolWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Windows\SelectAttrWindow.xaml.cs">
       <DependentUpon>SelectAttrWindow.xaml</DependentUpon>
     </Compile>
@@ -253,6 +257,7 @@
     <Page Include="View\Windows\EditPetWindow.xaml" />
     <Page Include="View\Windows\EditRoleWindow.xaml" />
     <Page Include="View\Windows\EditXinFaWindow.xaml" />
+    <Page Include="View\Windows\HashToolWindow.xaml" />
     <Page Include="View\Windows\SelectAttrWindow.xaml" />
     <Page Include="View\Windows\SelectEquipWindow.xaml" />
     <Page Include="View\Windows\SelectGemWindow.xaml" />
