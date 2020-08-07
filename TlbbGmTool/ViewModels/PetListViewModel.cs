@@ -63,6 +63,9 @@ namespace TlbbGmTool.ViewModels
                 {
                     PetList.Add(item);
                 }
+
+                EditPetCommand.RaiseCanExecuteChanged();
+                EditPetSkillCommand.RaiseCanExecuteChanged();
             }
             catch (Exception e)
             {

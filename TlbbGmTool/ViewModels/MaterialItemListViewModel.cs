@@ -74,6 +74,8 @@ namespace TlbbGmTool.ViewModels
                 {
                     ItemList.Add(item);
                 }
+                EditItemCommand.RaiseCanExecuteChanged();
+                DeleteItemCommand.RaiseCanExecuteChanged();
             }
             catch (Exception e)
             {

@@ -216,7 +216,8 @@ namespace TlbbGmTool.Services
             return new ItemInfo(itemBases)
             {
                 ItemType = itemType,
-                PArray = pArray
+                PArray = pArray,
+                Pos = pos
             };
         }
 

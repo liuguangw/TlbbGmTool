@@ -58,6 +58,8 @@ namespace TlbbGmTool.ViewModels
                 {
                     XinFaList.Add(xinFaInfo);
                 }
+
+                EditXinFaCommand.RaiseCanExecuteChanged();
             }
             catch (Exception e)
             {
