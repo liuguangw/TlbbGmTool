@@ -166,31 +166,9 @@ namespace TlbbGmTool.Services
             var equipVisual = Convert.ToInt32(columns[6]);
             var ruleId = Convert.ToInt32(columns[7]);
             var maxLife = Convert.ToInt32(columns[16]);
-            var attr1List = new List<int>();
-            var attr2List = new List<int>();
-            for (var i = 0; i < 64; i++)
-            {
-                var attrValue = Convert.ToInt32(columns[i + 32]);
-                if (attrValue < 0)
-                {
-                    continue;
-                }
-
-                if (i < 32)
-                {
-                    var attrIndex = i;
-                    attr1List.Add(attrIndex);
-                }
-                else
-                {
-                    var attrIndex = i - 32;
-                    attr2List.Add(attrIndex);
-                }
-            }
-
             return new ItemBase(itemId, itemClass, itemType,
                 name, shortTypeString, description, level, equipPoint, bagCapacity, materialCapacity,
-                equipVisual, ruleId, maxLife, attr1List, attr2List);
+                equipVisual, ruleId, maxLife);
         }
 
         private static (int, int) GetItemClassAndType(int itemId)

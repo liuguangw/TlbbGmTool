@@ -23,8 +23,6 @@ namespace TlbbGmTool.Models
         public int EquipVisual { get; }
         public int RuleId { get; }
         public int MaxLife { get; }
-        public List<int> Attr1;
-        public List<int> Attr2;
 
         //
         public string EquipTitle => $"({Level}级){Name} (ID: {Id})";
@@ -36,24 +34,14 @@ namespace TlbbGmTool.Models
         public ItemBase(int id, int itemClass, int itemType,
             string name, string shortTypeString, string description, int level,
             int equipPoint, int bagCapacity, int materialCapacity,
-            int equipVisual, int ruleId, int maxLife, List<int> attr1, List<int> attr2)
+            int equipVisual, int ruleId, int maxLife):this(id,itemClass,itemType,name,shortTypeString,description,level,1)
         {
-            Id = id;
-            ItemClass = itemClass;
-            ItemType = itemType;
-
-            Name = name;
-            ShortTypeString = shortTypeString;
-            Description = description;
-            Level = level;
             EquipPoint = equipPoint;
             BagCapacity = bagCapacity;
             MaterialCapacity = materialCapacity;
             EquipVisual = equipVisual;
             RuleId = ruleId;
             MaxLife = maxLife;
-            Attr1 = attr1;
-            Attr2 = attr2;
         }
 
         /// <summary>

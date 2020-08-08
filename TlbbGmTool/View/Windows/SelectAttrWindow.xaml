@@ -5,12 +5,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
         xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        xmlns:convert="clr-namespace:TlbbGmTool.Core.Convert"
         mc:Ignorable="d"
         ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Title="SelectAttrWindow" Height="475" Width="700">
+        Title="选择属性类型(最多16条)" Height="540" Width="700">
     <Window.DataContext>
         <vm:SelectAttrViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <convert:CheckedToColorConvert x:Key="CheckedToColorConvert" />
+    </Window.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -19,7 +23,7 @@
         </Grid.RowDefinitions>
         <GroupBox Margin="5,0" Grid.Row="0">
             <GroupBox.Header>
-                <Label>attrA</Label>
+                <Label>属性分组1</Label>
             </GroupBox.Header>
             <Grid>
                 <ItemsControl ItemsSource="{Binding Attr1Selection}">
@@ -33,7 +37,10 @@
                             <CheckBox Margin="10,5"
                                       IsEnabled="{Binding AttributeEnabled}"
                                       IsChecked="{Binding AttributeChecked}"
-                                      Content="{Binding Name}" />
+                                      Background="{Binding AttributeChecked,Converter={StaticResource CheckedToColorConvert}}">
+                                <TextBlock Text="{Binding Name}" Padding="3"
+                                           Background="{Binding AttributeChecked,Converter={StaticResource CheckedToColorConvert}}" />
+                            </CheckBox>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -41,7 +48,7 @@
         </GroupBox>
         <GroupBox Margin="5,0" Grid.Row="1">
             <GroupBox.Header>
-                <Label>attrB</Label>
+                <Label>属性分组2</Label>
             </GroupBox.Header>
             <Grid>
                 <ItemsControl ItemsSource="{Binding Attr2Selection}">
@@ -55,7 +62,10 @@
                             <CheckBox Margin="10,5"
                                       IsEnabled="{Binding AttributeEnabled}"
                                       IsChecked="{Binding AttributeChecked}"
-                                      Content="{Binding Name}" />
+                                      Background="{Binding AttributeChecked,Converter={StaticResource CheckedToColorConvert}}">
+                                <TextBlock Text="{Binding Name}" Padding="3"
+                                           Background="{Binding AttributeChecked,Converter={StaticResource CheckedToColorConvert}}" />
+                            </CheckBox>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

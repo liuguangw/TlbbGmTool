@@ -1,92 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <common>
     <menpai>
-        <item value="0">SHAOLIN</item>
-        <item value="1">MINGJIAO</item>
-        <item value="2">GAIBANG</item>
-        <item value="3">WUDANG</item>
-        <item value="4">EMEI</item>
-        <item value="5">XINGSU</item>
-        <item value="6">DALI</item>
-        <item value="7">TIANSHAN</item>
-        <item value="8">XIAOYAO</item>
-        <item value="9">WUMENPAI</item>
-        <item value="10">GUSU</item>
-        <item value="11">TANGMEN</item>
-        <item value="12">GUIGU</item>
+        <item value="0">少林</item>
+        <item value="1">明教</item>
+        <item value="2">丐帮</item>
+        <item value="3">武当</item>
+        <item value="4">峨嵋</item>
+        <item value="5">心宿</item>
+        <item value="6">天龙</item>
+        <item value="7">天山</item>
+        <item value="8">逍遥</item>
+        <item value="9">无门派</item>
+        <item value="10">慕容</item>
+        <item value="11">唐门</item>
+        <item value="12">鬼谷</item>
     </menpai>
     <attr1>
-        <item value="0">A0</item>
-        <item value="1">A1</item>
-        <item value="2">A2</item>
-        <item value="3">A3</item>
-        <item value="4">A4</item>
-        <item value="5">A5</item>
-        <item value="6">A6</item>
-        <item value="7">A7</item>
-        <item value="8">A8</item>
-        <item value="9">A9</item>
-
-        <item value="10">A10</item>
-        <item value="11">A11</item>
-        <item value="12">A12</item>
-        <item value="13">A13</item>
-        <item value="14">A14</item>
-        <item value="15">A15</item>
-        <item value="16">A16</item>
-        <item value="17">A17</item>
-        <item value="18">A18</item>
-        <item value="19">A19</item>
-
-        <item value="20">A20</item>
-        <item value="21">A21</item>
-        <item value="22">A22</item>
-        <item value="23">A23</item>
-        <item value="24">A24</item>
-        <item value="25">A25</item>
-        <item value="26">A26</item>
-        <item value="27">A27</item>
-        <item value="28">A28</item>
-        <item value="29">A29</item>
-
-        <item value="30">A30</item>
-        <item value="31">A31</item>
+        <item value="0">血上限</item>
+        <item value="1">血上限百分比</item>
+        <item value="2">血回复速度</item>
+        <item value="3">气上限</item>
+        <item value="4">气上限百分比</item>
+        <item value="5">气回复速度</item>
+        <item value="6">冰攻击</item>
+        <item value="7">冰抗</item>
+        <item value="8">迟缓持续时间</item>
+        <item value="9">火攻击</item>
+        <item value="10">火抗</item>
+        <item value="11">弱化持续时间</item>
+        <item value="12">玄攻击</item>
+        <item value="13">玄抗</item>
+        <item value="14">眩晕持续时间</item>
+        <item value="15">毒攻击</item>
+        
+        <item value="16">毒抗</item>
+        <item value="17">中毒持续时间</item>
+        <item value="18">所有抗性</item>
+        <item value="19">外功攻击</item>
+        <item value="20">基础外功攻击百分比</item>
+        <item value="21">武器基础外功攻击百分比</item>
+        <item value="22">外功防御</item>
+        <item value="23">基础外功防御百分比</item>
+        <item value="24">防具基础外功防御百分比</item>
+        <item value="25">抵消外功伤害百分比</item>
+        <item value="26">内功攻击</item>
+        <item value="27">基础内功攻击百分比</item>
+        <item value="28">武器基础内功攻击百分比</item>
+        <item value="29">内功防御</item>
+        <item value="30">基础内功防御百分比</item>
+        <item value="31">防具基础内功防御百分比</item>
     </attr1>
     <attr2>
-        <item value="0">B0</item>
-        <item value="1">B1</item>
-        <item value="2">B2</item>
-        <item value="3">B3</item>
-        <item value="4">B4</item>
-        <item value="5">B5</item>
-        <item value="6">B6</item>
-        <item value="7">B7</item>
-        <item value="8">B8</item>
-        <item value="9">B9</item>
-
-        <item value="10">B10</item>
-        <item value="11">B11</item>
-        <item value="12">B12</item>
-        <item value="13">B13</item>
-        <item value="14">B14</item>
-        <item value="15">B15</item>
-        <item value="16">B16</item>
-        <item value="17">B17</item>
-        <item value="18">B18</item>
-        <item value="19">B19</item>
-
-        <item value="20">B20</item>
-        <item value="21">B21</item>
-        <item value="22">B22</item>
-        <item value="23">B23</item>
-        <item value="24">B24</item>
-        <item value="25">B25</item>
-        <item value="26">B26</item>
-        <item value="27">B27</item>
-        <item value="28">B28</item>
-        <item value="29">B29</item>
-
-        <item value="30">B30</item>
-        <item value="31">B31</item>
+        <item value="0">抵消内功伤害百分比</item>
+        <item value="1">攻击速度</item>
+        <item value="2">冷却时间</item>
+        <item value="3">命中</item>
+        <item value="4">闪避</item>
+        <item value="5">会心</item>
+        <item value="6">几率无视对方防御</item>
+        <item value="7">移动速度</item>
+        <item value="8">反射伤害</item>
+        <item value="9">气抵消伤害</item>
+        <item value="10">力量</item>
+        <item value="11">灵气</item>
+        <item value="12">体力</item>
+        <item value="13">定力</item>
+        <item value="14">身法</item>
+        <item value="15">会心防御</item>
+        
+        <item value="16">所有属性</item>
+        <item value="17">血偷取</item>
+        <item value="18">气偷取</item>
+        <item value="19">增加某个技能等级</item>
+        <item value="20">增加所有技能等级</item>
+        <item value="21">特殊技能发动概率</item>
+        <item value="22">忽略目标冰抗</item>
+        <item value="23">忽略目标火抗</item>
+        <item value="24">忽略目标玄抗</item>
+        <item value="25">忽略目标毒抗</item>
+        <item value="26">基础外功攻击</item>
+        <item value="27">基础内功攻击</item>
+        <item value="28">基础外功防御</item>
+        <item value="29">基础内功防御</item>
+        <item value="30">会心防御</item>
+        <item value="31">基础闪避</item>
     </attr2>
 </common>

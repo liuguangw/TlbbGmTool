@@ -120,6 +120,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\ComboBoxNode.cs" />
+    <Compile Include="Core\Convert\CheckedToColorConvert.cs" />
     <Compile Include="Core\Convert\IsLockToTipConvert.cs" />
     <Compile Include="Core\EquipAttributeNode.cs" />
     <Compile Include="Models\DatabaseConnectionStatus.cs" />

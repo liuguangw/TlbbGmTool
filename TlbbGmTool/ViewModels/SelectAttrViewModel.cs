@@ -38,12 +38,8 @@ namespace TlbbGmTool.ViewModels
             int attr1, int attr2)
         {
             _selectAttrWindow = selectAttrWindow;
-            var attr1IndexList = equipBaseInfo.Attr1;
-            var attr2IndexList = equipBaseInfo.Attr2;
             for (var i = 0; i < 32; i++)
             {
-                if (attr1IndexList.Contains(i))
-                {
                     var attributeNode = new EquipAttributeNode(attr1CategoryList[i], i);
                     var attrIndexValue = attr1;
                     if (i > 0)
@@ -60,12 +56,9 @@ namespace TlbbGmTool.ViewModels
                         }
                     };
                     Attr1Selection.Add(attributeNode);
-                }
-
-                if (attr2IndexList.Contains(i))
-                {
-                    var attributeNode = new EquipAttributeNode(attr2CategoryList[i], i);
-                    var attrIndexValue = attr2;
+                    //
+                    attributeNode = new EquipAttributeNode(attr2CategoryList[i], i);
+                    attrIndexValue = attr2;
                     if (i > 0)
                     {
                         attrIndexValue >>= i;
@@ -80,7 +73,6 @@ namespace TlbbGmTool.ViewModels
                         }
                     };
                     Attr2Selection.Add(attributeNode);
-                }
             }
 
             OnAttributeCheckChange();
