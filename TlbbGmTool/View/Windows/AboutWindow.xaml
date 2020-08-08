@@ -32,7 +32,7 @@
                     </GroupBox.Header>
             <TextBlock>
                 1. 将相关的txt配置文件复制到 config/text 目录下<LineBreak/>
-                2. 点击菜单 - 管理服务器, 添加服务器的数据库配置信息。<LineBreak/><LineBreak/>
+                2. 点击菜单 - 区服管理, 添加服务器的数据库配置信息。<LineBreak/><LineBreak/>
                 <Run Foreground="Red"> 注意: 修改数据时，需要先退出游戏，否则修改可能不会生效。</Run>
             </TextBlock>
             </GroupBox>
