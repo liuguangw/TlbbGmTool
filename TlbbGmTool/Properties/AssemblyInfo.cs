@@ -7,10 +7,10 @@ using System.Windows;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("TlbbGmTool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("天龙八部GM工具")]
+[assembly: AssemblyDescription("天龙八部GM工具")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("流光")]
 [assembly: AssemblyProduct("TlbbGmTool")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

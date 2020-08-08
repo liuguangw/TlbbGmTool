@@ -46,5 +46,14 @@ namespace TlbbGmTool
         {
             Application.Current.Shutdown();
         }
+
+        private void ShowAboutWindow(object sender, RoutedEventArgs e)
+        {
+            var aboutWindow = new AboutWindow()
+            {
+                Owner = this
+            };
+            aboutWindow.ShowDialog();
+        }
     }
 }

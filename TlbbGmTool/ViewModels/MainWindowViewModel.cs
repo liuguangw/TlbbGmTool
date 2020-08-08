@@ -30,7 +30,19 @@ namespace TlbbGmTool.ViewModels
 
         #region Properties
 
-        public string WindowTitle => "天龙八部GM工具 - by 流光";
+        public string WindowTitle
+        {
+            get
+            {
+                var title = "天龙八部GM工具 - by 流光";
+                if (!_allDataLoaded)
+                {
+                    title += "(加载配置中...)";
+                }
+
+                return title;
+            }
+        }
 
         /// <summary>
         /// server list
@@ -71,7 +83,13 @@ namespace TlbbGmTool.ViewModels
         public bool AllDataLoaded
         {
             get => _allDataLoaded;
-            set => SetProperty(ref _allDataLoaded, value);
+            set
+            {
+                if (SetProperty(ref _allDataLoaded, value))
+                {
+                    RaisePropertyChanged(nameof(WindowTitle));
+                }
+            }
         }
 
         /// <summary>

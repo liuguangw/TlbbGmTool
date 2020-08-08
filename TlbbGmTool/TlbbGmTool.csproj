@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>images\icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.3.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
@@ -181,6 +184,9 @@
     <Compile Include="View\Pages\XinFaList.xaml.cs">
       <DependentUpon>XinFaList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Windows\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Windows\AddOrEditEquipWindow.xaml.cs">
       <DependentUpon>AddOrEditEquipWindow.xaml</DependentUpon>
     </Compile>
@@ -250,6 +256,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Pages\XinFaList.xaml" />
+    <Page Include="View\Windows\AboutWindow.xaml" />
     <Page Include="View\Windows\AddOrEditEquipWindow.xaml" />
     <Page Include="View\Windows\AddOrEditItemWindow.xaml" />
     <Page Include="View\Windows\AddOrEditServerWindow.xaml" />
@@ -313,6 +320,12 @@
     <None Include="config\common.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\about.png" />
+    <Resource Include="images\close.png" />
+    <Resource Include="images\icon.ico" />
+    <Resource Include="images\setting.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

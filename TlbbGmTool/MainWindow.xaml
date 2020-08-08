@@ -28,12 +28,24 @@
     <DockPanel IsEnabled="{Binding AllDataLoaded}">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="菜单">
-                <MenuItem Header="区服管理" Click="ShowServerListWindow" />
+                <MenuItem Header="区服管理" Click="ShowServerListWindow">
+                    <MenuItem.Icon>
+                        <Image Source="images/setting.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="退出" Click="DoExit" />
+                <MenuItem Header="退出" Click="DoExit">
+                    <MenuItem.Icon>
+                    <Image Source="images/close.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="帮助">
-                <MenuItem Header="关于" />
+                <MenuItem Header="关于" Click="ShowAboutWindow">
+                    <MenuItem.Icon>
+                        <Image Source="images/about.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Bottom" Margin="5">
