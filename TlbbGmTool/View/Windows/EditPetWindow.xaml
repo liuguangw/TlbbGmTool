@@ -44,59 +44,64 @@
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
         </Grid.Resources>
-        <Label Grid.Row="0" Grid.Column="0">PetName</Label>
+        <Label Grid.Row="0" Grid.Column="0">名称</Label>
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding PetName}" />
-        <Label Grid.Row="1" Grid.Column="0">Level</Label>
+        <Label Grid.Row="1" Grid.Column="0">等级</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Level}" />
-        <Label Grid.Row="2" Grid.Column="0">NeedLevel</Label>
+        <Label Grid.Row="2" Grid.Column="0">携带等级</Label>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding NeedLevel}" />
-        <Label Grid.Row="3" Grid.Column="0">AiType</Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding AiType}" />
-        <Label Grid.Row="4" Grid.Column="0">Life</Label>
+        <Label Grid.Row="3" Grid.Column="0">性格</Label>
+        <ComboBox Grid.Row="3" Grid.Column="1" Margin="5"
+                  VerticalContentAlignment="Center"
+                  ItemsSource="{Binding AiTypeSelection}"
+                  DisplayMemberPath="Title"
+                  SelectedValuePath="Value"
+                  SelectedValue="{Binding AiType}" />
+        <Label Grid.Row="4" Grid.Column="0">寿命</Label>
         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Life}" />
         <Label Grid.Row="5" Grid.Column="0">PetType</Label>
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding PetType}" />
         <Label Grid.Row="6" Grid.Column="0">Genera</Label>
         <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Genera}" />
-        <Label Grid.Row="7" Grid.Column="0">Enjoy</Label>
+        <Label Grid.Row="7" Grid.Column="0">快乐</Label>
         <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Enjoy}" />
         <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <Label Margin="5,0,0,0">Savvy</Label>
+            <Label Margin="5,0,0,0">悟性</Label>
             <TextBox MinWidth="60" Text="{Binding Savvy}" />
-            <Label>Gengu</Label>
+            <Label>根骨</Label>
             <TextBox MinWidth="60" Text="{Binding Gengu}" />
         </StackPanel>
-        <Label Grid.Row="9" Grid.Column="0">Growrate</Label>
+        <Label Grid.Row="9" Grid.Column="0">成长率</Label>
         <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Growrate}" />
-        <Label Grid.Row="10" Grid.Column="0">Repoint</Label>
+        <Label Grid.Row="10" Grid.Column="0">潜能</Label>
         <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Repoint}" />
-        <Label Grid.Row="11" Grid.Column="0">Exp</Label>
+        <Label Grid.Row="11" Grid.Column="0">经验</Label>
         <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Exp}" />
         <!--next column-->
-        <Label Grid.Row="0" Grid.Column="2">Str</Label>
+        <Label Grid.Row="0" Grid.Column="2">力量</Label>
         <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Str}" />
-        <Label Grid.Row="1" Grid.Column="2">Con</Label>
+        <Label Grid.Row="1" Grid.Column="2">灵气</Label>
         <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Con}" />
-        <Label Grid.Row="2" Grid.Column="2">Dex</Label>
+        <Label Grid.Row="2" Grid.Column="2">体力</Label>
         <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Dex}" />
-        <Label Grid.Row="3" Grid.Column="2">Spr</Label>
+        <Label Grid.Row="3" Grid.Column="2">定力</Label>
         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Spr}" />
-        <Label Grid.Row="4" Grid.Column="2">Ipr</Label>
+        <Label Grid.Row="4" Grid.Column="2">身法</Label>
         <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Ipr}" />
-        <Label Grid.Row="5" Grid.Column="2">Strper</Label>
+        <Label Grid.Row="5" Grid.Column="2">力量资质</Label>
         <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding Strper}" />
-        <Label Grid.Row="6" Grid.Column="2">Conper</Label>
+        <Label Grid.Row="6" Grid.Column="2">灵气资质</Label>
         <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding Conper}" />
-        <Label Grid.Row="7" Grid.Column="2">Dexper</Label>
+        <Label Grid.Row="7" Grid.Column="2">体力资质</Label>
         <TextBox Grid.Row="7" Grid.Column="3" Text="{Binding Dexper}" />
-        <Label Grid.Row="8" Grid.Column="2">Sprper</Label>
+        <Label Grid.Row="8" Grid.Column="2">定力资质</Label>
         <TextBox Grid.Row="8" Grid.Column="3" Text="{Binding Sprper}" />
-        <Label Grid.Row="9" Grid.Column="2">Iprper</Label>
+        <Label Grid.Row="9" Grid.Column="2">身法资质</Label>
         <TextBox Grid.Row="9" Grid.Column="3" Text="{Binding Iprper}" />
         <Button Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2"
                 Margin="18,12" Command="{Binding SavePetCommand}">
-            save
+            保存
         </Button>
     </Grid>
 </Window>

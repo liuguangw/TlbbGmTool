@@ -65,7 +65,7 @@ namespace TlbbGmTool.ViewModels
                         break;
                 }
 
-                return "添加" + targetName;
+                return "发放" + targetName;
             }
         }
 
@@ -250,7 +250,7 @@ namespace TlbbGmTool.ViewModels
 
             //更新标题
             RaisePropertyChanged(nameof(WindowTitle));
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", $"保存item信息成功(pos={itemInfo.Pos})");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", $"保存物品信息成功(pos={itemInfo.Pos})");
             _addOrEditItemWindow.Close();
         }
 

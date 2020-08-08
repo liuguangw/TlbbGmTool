@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
         mc:Ignorable="d"
         ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Title="SelectGemWindow" Height="500" Width="520">
+        Title="物品选择" Height="500" Width="520">
     <Window.DataContext>
         <vm:SelectItemViewModel />
     </Window.DataContext>

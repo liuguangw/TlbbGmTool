@@ -22,24 +22,24 @@
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
-            <TabItem Header="role">
+            <TabItem Header="角色">
                 <Frame Content="{StaticResource EditRolePage}" />
             </TabItem>
-            <TabItem Header="xinfa">
+            <TabItem Header="心法">
                 <Frame Content="{StaticResource XinFaList}" />
             </TabItem>
-            <TabItem Header="pet">
+            <TabItem Header="珍兽">
                 <Frame Content="{StaticResource PetList}" />
             </TabItem>
-            <TabItem Header="bag">
+            <TabItem Header="道具栏">
                 <Frame Content="{StaticResource BagItemList}" />
             </TabItem>
-            <TabItem Header="material">
+            <TabItem Header="材料栏">
                 <Frame Content="{StaticResource MaterialItemList}" />
             </TabItem>
-            <TabItem Header="items">
+            <!--<TabItem Header="items">
                 <Label>test</Label>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
     </DockPanel>
 </Window>

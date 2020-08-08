@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
 using TlbbGmTool.Services;
@@ -16,6 +17,7 @@ namespace TlbbGmTool.ViewModels
         private AddOrEditServerWindow _addOrEditServerWindow;
         private GameServer _gameServerInfo;
         private bool _isAddServer = true;
+        private bool _isConnecting;
 
         #endregion
 
@@ -25,14 +27,17 @@ namespace TlbbGmTool.ViewModels
 
         public AppCommand SaveServerCommand { get; }
 
+        public AppCommand ConnTestCommand { get; }
+
         #endregion
 
         public AddOrEditServerViewModel()
         {
             SaveServerCommand = new AppCommand(SaveServer);
+            ConnTestCommand = new AppCommand(TryToConnect, () => !_isConnecting);
         }
 
-        public void InitData(MainWindowViewModel mainWindowViewModel,GameServer gameServer,
+        public void InitData(MainWindowViewModel mainWindowViewModel, GameServer gameServer,
             AddOrEditServerWindow addOrEditServerWindow)
         {
             _mainWindowViewModel = mainWindowViewModel;
@@ -125,6 +130,44 @@ namespace TlbbGmTool.ViewModels
             }
 
             await ServerService.SaveGameServers(serverList);
+        }
+
+        private async void TryToConnect()
+        {
+            var connectionStringBuilder = new MySqlConnectionStringBuilder
+            {
+                Server = DbHost,
+                Port = DbPort,
+                Database = AccountDbName,
+                UserID = DbUser,
+                Password = DbPassword
+            };
+
+            var mySqlConnection = new MySqlConnection
+            {
+                ConnectionString = connectionStringBuilder.GetConnectionString(true),
+            };
+            _isConnecting = true;
+            ConnTestCommand.RaiseCanExecuteChanged();
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    await mySqlConnection.OpenAsync();
+                    await mySqlConnection.CloseAsync();
+                });
+                _isConnecting = false;
+                ConnTestCommand.RaiseCanExecuteChanged();
+            }
+            catch (Exception e)
+            {
+                _isConnecting = false;
+                ConnTestCommand.RaiseCanExecuteChanged();
+                _mainWindowViewModel.ShowErrorMessage("连接失败", e.Message);
+                return;
+            }
+
+            _mainWindowViewModel.ShowSuccessMessage("连接成功", "连接成功");
         }
     }
 }

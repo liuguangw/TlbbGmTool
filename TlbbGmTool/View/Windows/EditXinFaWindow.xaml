@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanMinimize"
         ShowInTaskbar="False"
-        Title="EditXinFaWindow" Width="282" Height="140">
+        Title="修改心法等级" Width="290" Height="140">
     <Window.DataContext>
         <vm:EditXinFaViewModel />
     </Window.DataContext>

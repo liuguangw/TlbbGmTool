@@ -36,7 +36,7 @@
         </Grid.ColumnDefinitions>
         <Grid.Resources>
             <Style TargetType="Label">
-                <Setter Property="Padding" Value="0,0,0,6" />
+                <Setter Property="Padding" Value="0,0,6,0" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="HorizontalContentAlignment" Value="Right" />
             </Style>
@@ -45,76 +45,76 @@
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
         </Grid.Resources>
-        <Label Grid.Row="0" Grid.Column="0">Charguid</Label>
+        <Label Grid.Row="0" Grid.Column="0">角色ID</Label>
         <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" BorderThickness="0" Text="{Binding Charguid}" />
-        <Label Grid.Row="1" Grid.Column="0">Accname</Label>
+        <Label Grid.Row="1" Grid.Column="0">账号</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Accname}" />
-        <Label Grid.Row="2" Grid.Column="0">Charname</Label>
+        <Label Grid.Row="2" Grid.Column="0">角色名</Label>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Charname}" />
-        <Label Grid.Row="3" Grid.Column="0">Title</Label>
+        <Label Grid.Row="3" Grid.Column="0">称号</Label>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Title}" />
-        <Label Grid.Row="4" Grid.Column="0">Menpai</Label>
+        <Label Grid.Row="4" Grid.Column="0">门派</Label>
         <ComboBox Grid.Row="4" Grid.Column="1" Margin="5"
                   VerticalContentAlignment="Center"
                   ItemsSource="{Binding MenpaiSelection}"
                   DisplayMemberPath="Title"
                   SelectedValuePath="Value"
                   SelectedValue="{Binding Menpai}" />
-        <Label Grid.Row="5" Grid.Column="0">Level</Label>
+        <Label Grid.Row="5" Grid.Column="0">等级</Label>
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Level}" />
-        <Label Grid.Row="6" Grid.Column="0">Hp</Label>
+        <Label Grid.Row="6" Grid.Column="0">当前血量</Label>
         <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Hp}" />
-        <Label Grid.Row="7" Grid.Column="0">Mp</Label>
+        <Label Grid.Row="7" Grid.Column="0">当前气量</Label>
         <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Mp}" />
-        <Label Grid.Row="8" Grid.Column="0">Exp</Label>
+        <Label Grid.Row="8" Grid.Column="0">经验值</Label>
         <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Exp}" />
-        <Label Grid.Row="9" Grid.Column="0">Scene</Label>
+        <Label Grid.Row="9" Grid.Column="0">场景ID</Label>
         <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal">
             <TextBox MinWidth="60" Text="{Binding Scene}" />
             <Button Padding="12,5" Margin="5" Command="{Binding GoHomeCommand}">回城</Button>
         </StackPanel>
-        <Label Grid.Row="10" Grid.Column="0">pos</Label>
+        <Label Grid.Row="10" Grid.Column="0">坐标</Label>
         <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal">
             <TextBox MinWidth="60" Text="{Binding Xpos}" />
             <TextBox MinWidth="60" Text="{Binding Zpos}" />
         </StackPanel>
         <!--next column-->
-        <Label Grid.Row="0" Grid.Column="2">Str</Label>
+        <Label Grid.Row="0" Grid.Column="2">力量</Label>
         <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Str}" />
-        <Label Grid.Row="1" Grid.Column="2">Spr</Label>
+        <Label Grid.Row="1" Grid.Column="2">灵气</Label>
         <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Spr}" />
-        <Label Grid.Row="2" Grid.Column="2">Con</Label>
+        <Label Grid.Row="2" Grid.Column="2">体力</Label>
         <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Con}" />
-        <Label Grid.Row="3" Grid.Column="2">Ipr</Label>
+        <Label Grid.Row="3" Grid.Column="2">定力</Label>
         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Ipr}" />
-        <Label Grid.Row="4" Grid.Column="2">Dex</Label>
+        <Label Grid.Row="4" Grid.Column="2">身法</Label>
         <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Dex}" />
-        <Label Grid.Row="5" Grid.Column="2">Points</Label>
+        <Label Grid.Row="5" Grid.Column="2">潜能</Label>
         <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding Points}" />
-        <Label Grid.Row="6" Grid.Column="2">Enegry</Label>
+        <Label Grid.Row="6" Grid.Column="2">精力</Label>
         <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding Enegry}" />
-        <Label Grid.Row="7" Grid.Column="2">Energymax</Label>
+        <Label Grid.Row="7" Grid.Column="2">精力上限</Label>
         <TextBox Grid.Row="7" Grid.Column="3" Text="{Binding Energymax}" />
-        <Label Grid.Row="8" Grid.Column="2">Vigor</Label>
+        <Label Grid.Row="8" Grid.Column="2">活力</Label>
         <TextBox Grid.Row="8" Grid.Column="3" Text="{Binding Vigor}" />
-        <Label Grid.Row="9" Grid.Column="2">MaxVigor</Label>
+        <Label Grid.Row="9" Grid.Column="2">活力上限</Label>
         <TextBox Grid.Row="9" Grid.Column="3" Text="{Binding Maxvigor}" />
-        <Label Grid.Row="10" Grid.Column="2">PkValue</Label>
+        <Label Grid.Row="10" Grid.Column="2">Pk值</Label>
         <TextBox Grid.Row="10" Grid.Column="3" Text="{Binding Pkvalue}" />
         <!--next column-->
-        <Label Grid.Row="0" Grid.Column="4">vMoney</Label>
+        <Label Grid.Row="0" Grid.Column="4">金币</Label>
         <TextBox Grid.Row="0" Grid.Column="5" Text="{Binding Vmoney}" />
-        <Label Grid.Row="1" Grid.Column="4">bankMoney</Label>
+        <Label Grid.Row="1" Grid.Column="4">仓库金币</Label>
         <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Bankmoney}" />
-        <Label Grid.Row="2" Grid.Column="4">yuanbao</Label>
+        <Label Grid.Row="2" Grid.Column="4">元宝</Label>
         <TextBox Grid.Row="2" Grid.Column="5" Text="{Binding Yuanbao}" />
-        <Label Grid.Row="3" Grid.Column="4">Zengdian</Label>
+        <Label Grid.Row="3" Grid.Column="4">赠点</Label>
         <TextBox Grid.Row="3" Grid.Column="5" Text="{Binding Zengdian}" />
-        <Label Grid.Row="4" Grid.Column="4">Menpaipoint</Label>
+        <Label Grid.Row="4" Grid.Column="4">门贡</Label>
         <TextBox Grid.Row="4" Grid.Column="5" Text="{Binding Menpaipoint}" />
         <Button Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2"
                 Margin="30,12" Command="{Binding SaveRoleCommand}">
-            save
+            保存
         </Button>
     </Grid>
 </Page>

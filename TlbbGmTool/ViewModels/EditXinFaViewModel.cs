@@ -52,7 +52,7 @@ namespace TlbbGmTool.ViewModels
 
             //只能修改level
             _xinFaInfo.Xinfalvl = Xinfalvl;
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存level信息成功");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存心法等级成功");
             _editXinFaWindow.Close();
         }
 

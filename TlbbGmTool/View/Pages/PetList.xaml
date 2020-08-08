@@ -15,13 +15,13 @@
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding PetList}">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="3*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="ID" Binding="{Binding PetGuid}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="4*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="名称" Binding="{Binding PetName}" />
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="PetName" Binding="{Binding PetName}" />
-                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="Level" Binding="{Binding Level}" />
-                <DataGridTemplateColumn Width="*" Header="管理">
+                                    Header="等级" Binding="{Binding Level}" />
+                <DataGridTemplateColumn Width="240" Header="管理">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <WrapPanel Margin="5">
@@ -37,7 +37,14 @@
                                         RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType={x:Type DataGrid}}}"
                                         CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
-                                    修改skill
+                                    修改技能
+                                </Button>
+                                <Button Padding="5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.DeletePetCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    删除珍兽
                                 </Button>
                             </WrapPanel>
                         </DataTemplate>

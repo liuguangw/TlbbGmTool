@@ -61,7 +61,7 @@ namespace TlbbGmTool.ViewModels
 
         #region Properties
 
-        public string WindowTitle => _isAddEquip ? "添加装备" : $"修改装备 {ItemName})";
+        public string WindowTitle => _isAddEquip ? "发放装备" : $"修改装备 {ItemName})";
 
         public int ItemBaseId
         {
@@ -445,7 +445,7 @@ namespace TlbbGmTool.ViewModels
 
             //更新标题
             RaisePropertyChanged(nameof(WindowTitle));
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", $"保存equip信息成功(pos={itemInfo.Pos})");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", $"保存装备信息成功(pos={itemInfo.Pos})");
             _addOrEditEquipWindow.Close();
         }
 

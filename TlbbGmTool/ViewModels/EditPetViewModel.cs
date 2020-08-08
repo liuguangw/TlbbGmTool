@@ -24,9 +24,22 @@ namespace TlbbGmTool.ViewModels
 
         public string WindowTitle => $"修改 {PetName} (ID: {PetGuid})";
 
+        /// <summary>
+        /// 性格选择
+        /// </summary>
+        public List<ComboBoxNode<int>> AiTypeSelection { get; }
+
         public EditPetViewModel()
         {
             SavePetCommand = new AppCommand(SavePet);
+            AiTypeSelection = new List<ComboBoxNode<int>>
+            {
+                new ComboBoxNode<int> {Title = "胆小", Value = 0},
+                new ComboBoxNode<int> {Title = "谨慎", Value = 1},
+                new ComboBoxNode<int> {Title = "忠诚", Value = 2},
+                new ComboBoxNode<int> {Title = "精明", Value = 3},
+                new ComboBoxNode<int> {Title = "勇猛", Value = 4},
+            };
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, Pet petInfo,

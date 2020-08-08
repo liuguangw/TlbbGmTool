@@ -57,7 +57,7 @@
         <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Answer}" />
         <Label Grid.Row="5" Grid.Column="0">邮箱</Label>
         <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Email}" />
-        <Label Grid.Row="6" Grid.Column="0">点数</Label>
+        <Label Grid.Row="6" Grid.Column="0">充值点数</Label>
         <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Point}" />
         <Label Grid.Row="7" Grid.Column="0">状态</Label>
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2"

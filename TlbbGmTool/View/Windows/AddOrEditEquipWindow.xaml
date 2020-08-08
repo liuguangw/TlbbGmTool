@@ -80,7 +80,7 @@
         </GroupBox>
         <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="0" Grid.RowSpan="3">
             <GroupBox.Header>
-                <Label>Gem</Label>
+                <Label>宝石</Label>
             </GroupBox.Header>
             <Grid>
                 <Grid.Resources>
@@ -113,7 +113,7 @@
         </GroupBox>
         <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
             <GroupBox.Header>
-                <Label>attr</Label>
+                <Label>属性种类</Label>
             </GroupBox.Header>
             <Grid>
                 <Grid.Resources>
@@ -208,39 +208,39 @@
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="5*" />
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0">Qualification1:</Label>
+                <Label Grid.Row="0" Grid.Column="0">外功资质:</Label>
                 <Label Content="{Binding Qualification1}" MinWidth="25"
                        Grid.Row="0" Grid.Column="1" />
                 <Slider Value="{Binding Qualification1}"
                         Grid.Row="0" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
-                <Label Grid.Row="0" Grid.Column="3">Qualification2:</Label>
+                <Label Grid.Row="0" Grid.Column="3">内功资质:</Label>
                 <Label Content="{Binding Qualification2}" MinWidth="25"
                        Grid.Row="0" Grid.Column="4" />
                 <Slider Value="{Binding Qualification2}"
                         Grid.Row="0" Grid.Column="5"
                         Style="{StaticResource CommonSlider}" />
                 <!--next row-->
-                <Label Grid.Row="1" Grid.Column="0">Qualification3:</Label>
+                <Label Grid.Row="1" Grid.Column="0">外防资质:</Label>
                 <Label Content="{Binding Qualification3}" MinWidth="25"
                        Grid.Row="1" Grid.Column="1" />
                 <Slider Value="{Binding Qualification3}"
                         Grid.Row="1" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
-                <Label Grid.Row="1" Grid.Column="3">Qualification4:</Label>
+                <Label Grid.Row="1" Grid.Column="3">内防资质:</Label>
                 <Label Content="{Binding Qualification4}" MinWidth="25"
                        Grid.Row="1" Grid.Column="4" />
                 <Slider Value="{Binding Qualification4}"
                         Grid.Row="1" Grid.Column="5"
                         Style="{StaticResource CommonSlider}" />
                 <!--next row-->
-                <Label Grid.Row="2" Grid.Column="0">Qualification5:</Label>
+                <Label Grid.Row="2" Grid.Column="0">闪避资质:</Label>
                 <Label Content="{Binding Qualification5}" MinWidth="25"
                        Grid.Row="2" Grid.Column="1" />
                 <Slider Value="{Binding Qualification5}"
                         Grid.Row="2" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
-                <Label Grid.Row="2" Grid.Column="3">Qualification6:</Label>
+                <Label Grid.Row="2" Grid.Column="3">命中资质:</Label>
                 <Label Content="{Binding Qualification6}" MinWidth="25"
                        Grid.Row="2" Grid.Column="4" />
                 <Slider Value="{Binding Qualification6}"

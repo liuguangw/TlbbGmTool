@@ -18,27 +18,27 @@
                     <Setter Property="Padding" Value="10,5" />
                 </Style>
             </WrapPanel.Resources>
-            <Button Command="{Binding AddMaterialCommand}">add material</Button>
-            <Button Command="{Binding AddGemCommand}" Margin="6,0,0,0">add gem</Button>
+            <Button Command="{Binding AddMaterialCommand}">发放材料</Button>
+            <Button Command="{Binding AddGemCommand}" Margin="6,0,0,0">发放宝石</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding ItemList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="50" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
-                                    Header="Pos" Binding="{Binding Pos}" SortDirection="Ascending" />
+                                    Header="位置" Binding="{Binding Pos}" SortDirection="Ascending" />
                 <DataGridTextColumn Width="3*" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
-                                    Header="ID" Binding="{Binding ItemType}" />
+                                    Header="物品ID" Binding="{Binding ItemType}" />
                 <DataGridTextColumn Width="4*" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="名称" Binding="{Binding Name}" />
                 <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
-                                    Header="Level" Binding="{Binding Level}" />
+                                    Header="等级" Binding="{Binding Level}" />
                 <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
-                                    Header="Count" Binding="{Binding ItemCount}" />
+                                    Header="数量" Binding="{Binding ItemCount}" />
                 <DataGridTemplateColumn Width="150" Header="管理"
                                         CellTemplate="{StaticResource AdminItemTemplate}" />
             </DataGrid.Columns>

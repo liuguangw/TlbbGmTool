@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
-        Title="MainWindow" Height="480" Width="800">
+        Title="{Binding WindowTitle}" Height="480" Width="800">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -25,12 +25,12 @@
         <pages:AccountList x:Key="AccountListPage" />
         <pages:RoleList x:Key="RoleListPage" />
     </Window.Resources>
-    <DockPanel>
+    <DockPanel IsEnabled="{Binding AllDataLoaded}">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="菜单">
                 <MenuItem Header="区服管理" Click="ShowServerListWindow" />
                 <Separator />
-                <MenuItem Header="退出" />
+                <MenuItem Header="退出" Click="DoExit" />
             </MenuItem>
             <MenuItem Header="帮助">
                 <MenuItem Header="关于" />
@@ -42,25 +42,25 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <WrapPanel Grid.Row="0">
-                <Label Content="server" />
+                <Label Content="区服" />
                 <ComboBox MinWidth="156" Margin="10,0,0,0"
                           VerticalContentAlignment="Center"
                           IsEnabled="{Binding CanSelectServer}"
                           ItemsSource="{Binding ServerList}"
                           SelectedItem="{Binding SelectedServer}"
                           DisplayMemberPath="ServerName" />
-                <Button Margin="10,0,0,0" Command="{Binding ConnectCommand}">
-                    connect
+                <Button Margin="10,0,0,0" Padding="12,5" Command="{Binding ConnectCommand}">
+                    连接
                 </Button>
-                <Button Margin="10,0,0,0" Command="{Binding DisconnectCommand}">
-                    disconnect
+                <Button Margin="10,0,0,0" Padding="12,5" Command="{Binding DisconnectCommand}">
+                    断开
                 </Button>
             </WrapPanel>
             <TabControl Grid.Row="1" Margin="0,5,0,0" IsEnabled="{Binding CanDisconnectServer}">
-                <TabItem Header="account">
+                <TabItem Header="账号管理">
                     <Frame Content="{StaticResource AccountListPage}" />
                 </TabItem>
-                <TabItem Header="roles">
+                <TabItem Header="角色管理">
                     <Frame Content="{StaticResource RoleListPage}" />
                 </TabItem>
             </TabControl>

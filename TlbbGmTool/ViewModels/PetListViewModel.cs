@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using MySql.Data.MySqlClient;
 using TlbbGmTool.Core;
 using TlbbGmTool.Models;
@@ -26,6 +27,8 @@ namespace TlbbGmTool.ViewModels
             new ObservableCollection<Pet>();
 
         public AppCommand EditPetCommand { get; }
+        
+        public AppCommand DeletePetCommand { get; }
 
         public AppCommand EditPetSkillCommand { get; }
 
@@ -35,6 +38,7 @@ namespace TlbbGmTool.ViewModels
         {
             EditPetCommand = new AppCommand(ShowEditPetDialog);
             EditPetSkillCommand = new AppCommand(ShowEditPetSkillDialog);
+            DeletePetCommand = new AppCommand(ProcessDelete);
         }
 
         public void InitData(MainWindowViewModel mainWindowViewModel, int charguid, EditRoleWindow editRoleWindow)
@@ -147,6 +151,51 @@ namespace TlbbGmTool.ViewModels
                 Owner = _editRoleWindow
             };
             editPetSkillWindow.ShowDialog();
+        }
+        
+        private async void ProcessDelete(object parameter)
+        {
+            var petInfo = parameter as Pet;
+            var tipName = $"{petInfo.PetName}(ID={petInfo.PetGuid})";
+            //删除确认
+            if (MessageBox.Show(_editRoleWindow, $"确定要删除 {tipName}吗?",
+                "删除提示", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await DoProcessDelete(petInfo.Charguid, petInfo.PetGuid);
+            }
+            catch (Exception e)
+            {
+                _mainWindowViewModel.ShowErrorMessage("删除失败", e.Message);
+                return;
+            }
+
+            //删除成功后,将petInfo从列表移出
+            PetList.Remove(petInfo);
+            _mainWindowViewModel.ShowSuccessMessage("删除成功",
+                $"删除 {tipName}成功");
+        }
+
+        private async Task DoProcessDelete(int charguid, int petGuid)
+        {
+            var sql = $"DELETE FROM t_pet WHERE charguid={charguid} AND lpetguid={petGuid}";
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            await Task.Run(async () =>
+            {
+                var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+                if (mySqlConnection.Database != gameDbName)
+                {
+                    // 切换数据库
+                    await mySqlConnection.ChangeDataBaseAsync(gameDbName);
+                }
+
+                await mySqlCommand.ExecuteNonQueryAsync();
+            });
         }
     }
 }

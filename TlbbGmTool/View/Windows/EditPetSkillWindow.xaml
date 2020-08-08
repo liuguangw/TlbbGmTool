@@ -34,15 +34,15 @@
                       ItemsSource="{Binding SkillSelection}"
                       SelectedItem="{Binding SelectedSkill}"
                       DisplayMemberPath="Name" />
-            <Button Margin="5,0,0,0" Command="{Binding AddPetSkillCommand}">add skill</Button>
+            <Button Margin="5,0,0,0" Padding="5,0" Command="{Binding AddPetSkillCommand}">添加技能</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="0,10,0,0" ItemsSource="{Binding SkillList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="ID" Binding="{Binding Id}" />
+                                    Header="技能ID" Binding="{Binding Id}" />
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="name" Binding="{Binding Name}" />
+                                    Header="技能名称" Binding="{Binding Name}" />
                 <DataGridTemplateColumn Header="管理" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

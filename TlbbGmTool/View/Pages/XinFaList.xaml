@@ -18,7 +18,7 @@
                 <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="ID" Binding="{Binding Xinfaid}" SortDirection="Ascending" />
                 <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="Level" Binding="{Binding Xinfalvl}" />
+                                    Header="等级" Binding="{Binding Xinfalvl}" />
                 <DataGridTemplateColumn Width="*" Header="管理">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

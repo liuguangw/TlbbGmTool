@@ -32,7 +32,7 @@ namespace TlbbGmTool.ViewModels
         public AppCommand SavePetSkillCommand { get; }
 
         public string WindowTitle =>
-            _petInfo == null ? string.Empty : $"修改 {_petInfo.PetName}(ID: {_petInfo.PetGuid}) Skill";
+            _petInfo == null ? string.Empty : $"修改 {_petInfo.PetName}(ID: {_petInfo.PetGuid}) 技能列表";
 
         public ObservableCollection<PetSkill> SkillList { get; }
             = new ObservableCollection<PetSkill>();

@@ -24,9 +24,13 @@ namespace TlbbGmTool.ViewModels
         /// </summary>
         private MySqlConnection _mySqlConnection;
 
+        private bool _allDataLoaded;
+
         #endregion
 
         #region Properties
+
+        public string WindowTitle => "天龙八部GM工具 - by 流光";
 
         /// <summary>
         /// server list
@@ -63,6 +67,12 @@ namespace TlbbGmTool.ViewModels
             ServerList.Count > 0 && _connectionStatus == DatabaseConnectionStatus.NoConnection;
 
         public bool CanDisconnectServer => _connectionStatus == DatabaseConnectionStatus.Connected;
+
+        public bool AllDataLoaded
+        {
+            get => _allDataLoaded;
+            set => SetProperty(ref _allDataLoaded, value);
+        }
 
         /// <summary>
         /// 连接命令
@@ -148,6 +158,7 @@ namespace TlbbGmTool.ViewModels
             GameRole.MenpaiList = menpaiDictionary;
             Attr1CategoryList = attr1Dictionary;
             Attr2CategoryList = attr2Dictionary;
+            AllDataLoaded = true;
         }
 
         public void ShowErrorMessage(string title, string content) =>

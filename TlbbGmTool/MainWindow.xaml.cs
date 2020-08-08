@@ -41,5 +41,10 @@ namespace TlbbGmTool
             };
             serverListWindow.ShowDialog();
         }
+
+        private void DoExit(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

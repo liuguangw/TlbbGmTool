@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
         mc:Ignorable="d"
         ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Title="SelectEquipWindow" Height="500" Width="520">
+        Title="装备选择" Height="500" Width="520">
     <Window.DataContext>
         <vm:SelectEquipViewModel />
     </Window.DataContext>

@@ -14,8 +14,7 @@
     </Window.DataContext>
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="90" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -33,24 +32,35 @@
                 <Setter Property="Margin" Value="0,2" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,8,0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="15,5" />
+            </Style>
         </Grid.Resources>
-        <Label Grid.Row="0" Grid.Column="0">server name</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding ServerName}" />
-        <Label Grid.Row="1" Grid.Column="0">host</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbHost}" />
-        <Label Grid.Row="2" Grid.Column="0">port</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbPort}" />
-        <Label Grid.Row="3" Grid.Column="0">account db</Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding AccountDbName}" />
-        <Label Grid.Row="4" Grid.Column="0">game db</Label>
-        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding GameDbName}" />
-        <Label Grid.Row="5" Grid.Column="0">user</Label>
-        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbUser}" />
-        <Label Grid.Row="6" Grid.Column="0">password</Label>
-        <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding DbPassword}" />
-        <Button Grid.Row="7" Grid.Column="2" Margin="0,3"
-                Command="{Binding SaveServerCommand}">
-            保存
-        </Button>
+        <Label Grid.Row="0" Grid.Column="0">名称</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ServerName}" />
+        <Label Grid.Row="1" Grid.Column="0">服务器IP</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DbHost}" />
+        <Label Grid.Row="2" Grid.Column="0">数据库端口</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DbPort}" />
+        <Label Grid.Row="3" Grid.Column="0">账号数据库</Label>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding AccountDbName}" />
+        <Label Grid.Row="4" Grid.Column="0">游戏数据库</Label>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding GameDbName}" />
+        <Label Grid.Row="5" Grid.Column="0">数据库用户名</Label>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DbUser}" />
+        <Label Grid.Row="6" Grid.Column="0">数据库密码</Label>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding DbPassword}" />
+        <WrapPanel Grid.Row="7" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button Command="{Binding ConnTestCommand}">测试连接</Button>
+            <Button Margin="8,0,0,0"
+                    Command="{Binding SaveServerCommand}">
+                保存
+            </Button>
+        </WrapPanel>
     </Grid>
 </Window>

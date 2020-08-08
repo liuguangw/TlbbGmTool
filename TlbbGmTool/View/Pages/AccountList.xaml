@@ -22,10 +22,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Margin="0,5">
-            <Label Content="username" />
+            <Label Content="账号关键词" />
             <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
-            <Button Margin="10,0,0,0" Padding="8,0" Command="{Binding SearchCommand}">search</Button>
+            <Button Margin="10,0,0,0" Padding="10,0" Command="{Binding SearchCommand}">搜索</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10,0" ItemsSource="{Binding AccountList}">
