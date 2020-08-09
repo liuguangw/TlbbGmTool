@@ -245,7 +245,6 @@ namespace TlbbGmTool.ViewModels
                 _itemInfo.ItemType = itemInfo.ItemType;
                 _itemInfo.PArray = itemInfo.PArray;
                 _itemInfo.RaiseItemCountChange();
-                _itemInfo.Creator = itemInfo.Creator;
             }
 
             //更新标题

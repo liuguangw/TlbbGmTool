@@ -31,6 +31,8 @@ namespace TlbbGmTool.ViewModels
 
         public AppCommand EditItemCommand { get; }
 
+        public AppCommand CopyItemCommand { get; }
+
         public AppCommand DeleteItemCommand { get; }
 
         #endregion
@@ -40,11 +42,13 @@ namespace TlbbGmTool.ViewModels
             AddMaterialCommand = new AppCommand(ShowAddMaterialDialog, CanAddItem);
             AddGemCommand = new AppCommand(ShowAddGemDialog, CanAddItem);
             EditItemCommand = new AppCommand(ShowEditDialog, CanEditItem);
+            CopyItemCommand = new AppCommand(ProcessCopy, CanCopyItem);
             DeleteItemCommand = new AppCommand(ProcessDelete);
             ItemList.CollectionChanged += (sender, e) =>
             {
                 AddMaterialCommand.RaiseCanExecuteChanged();
                 AddGemCommand.RaiseCanExecuteChanged();
+                CopyItemCommand.RaiseCanExecuteChanged();
             };
         }
 
@@ -75,6 +79,7 @@ namespace TlbbGmTool.ViewModels
                     ItemList.Add(item);
                 }
                 EditItemCommand.RaiseCanExecuteChanged();
+                CopyItemCommand.RaiseCanExecuteChanged();
                 DeleteItemCommand.RaiseCanExecuteChanged();
             }
             catch (Exception e)
@@ -226,6 +231,45 @@ namespace TlbbGmTool.ViewModels
 
                 await mySqlCommand.ExecuteNonQueryAsync();
             });
+        }
+
+        /// <summary>
+        /// 复制物品的条件
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        private bool CanCopyItem(object parameter) => CanEditItem(parameter) && CanAddItem();
+
+        private async void ProcessCopy(object parameter)
+        {
+            var itemInfo = parameter as ItemInfo;
+            var bagType = SaveItemService.BagType.MaterialBag;
+            try
+            {
+                itemInfo = await DoProcessCopy(itemInfo, bagType);
+            }
+            catch (Exception e)
+            {
+                _mainWindowViewModel.ShowErrorMessage("复制失败", e.Message);
+                return;
+            }
+
+            //计算插入列表的位置
+            var (startPos, _) = SaveItemService.GetBagItemIndexRange(bagType);
+            var insertIndex = itemInfo.Pos - startPos;
+            ItemList.Insert(insertIndex, itemInfo);
+            _mainWindowViewModel.ShowSuccessMessage("复制成功",
+                $"复制成功(新位置: {itemInfo.Pos})");
+        }
+
+        private async Task<ItemInfo> DoProcessCopy(ItemInfo sourceItem, SaveItemService.BagType bagType)
+        {
+            //获取数据库数据连接
+            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
+            var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
+            await SaveItemService.PrepareConnection(mySqlConnection, gameDbName);
+            //copy
+            return await SaveItemService.CopyItemAsync(mySqlConnection, _mainWindowViewModel.ItemBases, sourceItem, bagType);
         }
     }
 }

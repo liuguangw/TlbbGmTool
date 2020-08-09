@@ -171,7 +171,8 @@ namespace TlbbGmTool.Services
                 Server = intDictionary["server"],
                 ItemType = itemType,
                 Pos = intDictionary["pos"],
-                PArray = pArray
+                PArray = pArray,
+                Creator = creator
             };
         }
 
@@ -218,6 +219,73 @@ namespace TlbbGmTool.Services
                 ItemType = itemType,
                 PArray = pArray,
                 Pos = pos
+            };
+        }
+
+        public static async Task<ItemInfo> CopyItemAsync(MySqlConnection mySqlConnection,
+            Dictionary<int, ItemBase> itemBases, ItemInfo sourceItem, BagType itemBagType)
+        {
+            var charguid = sourceItem.Charguid;
+            var pos = await GetNextPos(mySqlConnection, charguid, itemBagType);
+            var guid = await GetNextGuid(mySqlConnection);
+            var intDictionary = new Dictionary<string, int>()
+            {
+                ["charguid"] = charguid,
+                ["guid"] = guid,
+                ["world"] = sourceItem.World,
+                ["server"] = sourceItem.Server,
+                ["itemtype"] = sourceItem.ItemType,
+                ["pos"] = pos,
+            };
+            var pArray = sourceItem.PArray;
+            for (var i = 0; i < pArray.Length; i++)
+            {
+                intDictionary.Add($"p{i + 1}", pArray[i]);
+            }
+
+            var fieldNames = intDictionary.Keys.ToList();
+            fieldNames.AddRange(new[]
+            {
+                "creator",
+                "fixattr",
+                "var"
+            });
+            var sql = "INSERT INTO t_iteminfo";
+            sql += "(" + string.Join(", ", fieldNames) + ") VALUES";
+            var fieldValueTemplates = (from fieldName in fieldNames
+                select "@" + fieldName);
+            sql += " (" + string.Join(", ", fieldValueTemplates) + ")";
+            //构造参数
+            var mySqlParameters = (from intParameter in intDictionary
+                select new MySqlParameter("@" + intParameter.Key, MySqlDbType.Int32)
+                {
+                    Value = intParameter.Value
+                }).ToList();
+            mySqlParameters.Add(new MySqlParameter("@creator", MySqlDbType.String)
+            {
+                Value = DbStringService.ToDbString(sourceItem.Creator)
+            });
+            mySqlParameters.Add(new MySqlParameter("@fixattr", MySqlDbType.String)
+            {
+                Value = string.Empty
+            });
+            mySqlParameters.Add(new MySqlParameter("@var", MySqlDbType.String)
+            {
+                Value = string.Empty
+            });
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            mySqlParameters.ForEach(mySqlParameter => mySqlCommand.Parameters.Add(mySqlParameter));
+            await Task.Run(async () => { await mySqlCommand.ExecuteNonQueryAsync(); });
+            return new ItemInfo(itemBases)
+            {
+                Charguid = charguid,
+                Guid = guid,
+                World = intDictionary["world"],
+                Server = intDictionary["server"],
+                ItemType = sourceItem.ItemType,
+                Pos = intDictionary["pos"],
+                PArray = pArray,
+                Creator = sourceItem.Creator
             };
         }
 

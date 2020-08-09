@@ -60,6 +60,13 @@
                     修改
                 </Button>
                 <Button Padding="10,5" Margin="5,0,0,0"
+                        Command="{Binding DataContext.CopyItemCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                    复制
+                </Button>
+                <Button Padding="10,5" Margin="5,0,0,0"
                         Command="{Binding DataContext.DeleteItemCommand, 
                                         RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType={x:Type DataGrid}}}"

@@ -440,7 +440,6 @@ namespace TlbbGmTool.ViewModels
                 //更新属性
                 _itemInfo.ItemType = itemInfo.ItemType;
                 _itemInfo.PArray = itemInfo.PArray;
-                _itemInfo.Creator = itemInfo.Creator;
             }
 
             //更新标题

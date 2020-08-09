@@ -39,7 +39,7 @@
                 <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="数量" Binding="{Binding ItemCount}" />
-                <DataGridTemplateColumn Width="150" Header="管理"
+                <DataGridTemplateColumn Width="188" Header="管理"
                                         CellTemplate="{StaticResource AdminItemTemplate}" />
             </DataGrid.Columns>
         </DataGrid>
