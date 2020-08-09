@@ -122,7 +122,7 @@ namespace TlbbGmTool.ViewModels
                             Server = rd.GetInt32("server"),
                             ItemType = rd.GetInt32("itemtype"),
                             Pos = rd.GetInt32("pos"),
-                            Creator = rd.GetString("creator")
+                            Creator = DbStringService.ToCommonString(rd.GetString("creator"))
                         };
                         var pArray = new int[17];
                         for (var i = 0; i < pArray.Length; i++)
