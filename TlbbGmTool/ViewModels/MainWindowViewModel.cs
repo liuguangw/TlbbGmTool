@@ -25,6 +25,7 @@ namespace TlbbGmTool.ViewModels
         private MySqlConnection _mySqlConnection;
 
         private bool _allDataLoaded;
+        private string _dbVersion;
 
         #endregion
 
@@ -38,6 +39,11 @@ namespace TlbbGmTool.ViewModels
                 if (!_allDataLoaded)
                 {
                     title += "(加载配置中...)";
+                }
+
+                if (!string.IsNullOrEmpty(_dbVersion))
+                {
+                    title += $"(MySQL: {_dbVersion})";
                 }
 
                 return title;
@@ -86,6 +92,17 @@ namespace TlbbGmTool.ViewModels
             set
             {
                 if (SetProperty(ref _allDataLoaded, value))
+                {
+                    RaisePropertyChanged(nameof(WindowTitle));
+                }
+            }
+        }
+
+        private string DbVersion
+        {
+            set
+            {
+                if (SetProperty(ref _dbVersion, value))
                 {
                     RaisePropertyChanged(nameof(WindowTitle));
                 }
@@ -209,6 +226,8 @@ namespace TlbbGmTool.ViewModels
             {
                 ConnectionStatus = DatabaseConnectionStatus.Pending;
                 await Task.Run(async () => await mySqlConnection.OpenAsync());
+                //获取数据库版本信息
+                DbVersion = await LoadDbVersionAsync(mySqlConnection);
             }
             catch (Exception e)
             {
@@ -221,6 +240,19 @@ namespace TlbbGmTool.ViewModels
             SelectedServer.Connected = true;
         }
 
+        private static async Task<string> LoadDbVersionAsync(MySqlConnection mySqlConnection)
+        {
+            const string sql = "SELECT version() AS v";
+            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
+            string version = null;
+            await Task.Run(async () =>
+            {
+                var rd = await mySqlCommand.ExecuteScalarAsync();
+                version = rd.ToString();
+            });
+            return version;
+        }
+
         private async void DisconnectServer()
         {
             if (SelectedServer == null)
@@ -228,6 +260,7 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
+            DbVersion = null;
             try
             {
                 ConnectionStatus = DatabaseConnectionStatus.Pending;
