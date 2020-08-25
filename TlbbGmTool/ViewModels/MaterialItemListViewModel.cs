@@ -18,6 +18,7 @@ namespace TlbbGmTool.ViewModels
         private MainWindowViewModel _mainWindowViewModel;
         private EditRoleWindow _editRoleWindow;
         private int _charguid;
+        private bool _itemListLoaded;
 
         #endregion
 
@@ -57,9 +58,13 @@ namespace TlbbGmTool.ViewModels
             _mainWindowViewModel = mainWindowViewModel;
             _editRoleWindow = editRoleWindow;
             _charguid = charguid;
+            if (_itemListLoaded)
+            {
+                return;
+            }
 
-            // 每次切换到此页面时都重新加载
             LoadItemList();
+            _itemListLoaded = true;
         }
 
         private async void LoadItemList()
@@ -70,7 +75,6 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            ItemList.Clear();
             try
             {
                 var itemList = await DoLoadItemList();
@@ -78,6 +82,7 @@ namespace TlbbGmTool.ViewModels
                 {
                     ItemList.Add(item);
                 }
+
                 EditItemCommand.RaiseCanExecuteChanged();
                 CopyItemCommand.RaiseCanExecuteChanged();
                 DeleteItemCommand.RaiseCanExecuteChanged();
@@ -269,7 +274,8 @@ namespace TlbbGmTool.ViewModels
             var gameDbName = _mainWindowViewModel.SelectedServer.GameDbName;
             await SaveItemService.PrepareConnection(mySqlConnection, gameDbName);
             //copy
-            return await SaveItemService.CopyItemAsync(mySqlConnection, _mainWindowViewModel.ItemBases, sourceItem, bagType);
+            return await SaveItemService.CopyItemAsync(mySqlConnection, _mainWindowViewModel.ItemBases, sourceItem,
+                bagType);
         }
     }
 }

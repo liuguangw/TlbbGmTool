@@ -18,6 +18,7 @@ namespace TlbbGmTool.ViewModels
         private MainWindowViewModel _mainWindowViewModel;
         private EditRoleWindow _editRoleWindow;
         private int _charguid;
+        private bool _petListLoaded;
 
         #endregion
 
@@ -27,7 +28,7 @@ namespace TlbbGmTool.ViewModels
             new ObservableCollection<Pet>();
 
         public AppCommand EditPetCommand { get; }
-        
+
         public AppCommand DeletePetCommand { get; }
 
         public AppCommand EditPetSkillCommand { get; }
@@ -47,8 +48,13 @@ namespace TlbbGmTool.ViewModels
             _editRoleWindow = editRoleWindow;
             _charguid = charguid;
 
-            // 每次切换到此页面时都重新加载
+            if (_petListLoaded)
+            {
+                return;
+            }
+
             LoadPetList();
+            _petListLoaded = true;
         }
 
         private async void LoadPetList()
@@ -59,7 +65,6 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            PetList.Clear();
             try
             {
                 var itemList = await DoLoadPetList();
@@ -152,7 +157,7 @@ namespace TlbbGmTool.ViewModels
             };
             editPetSkillWindow.ShowDialog();
         }
-        
+
         private async void ProcessDelete(object parameter)
         {
             var petInfo = parameter as Pet;

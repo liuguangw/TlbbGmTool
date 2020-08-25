@@ -120,7 +120,7 @@ namespace TlbbGmTool.ViewModels
             _petInfo.Ipr = Ipr;
             //更新标题
             RaisePropertyChanged(nameof(WindowTitle));
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存pet信息成功");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存珍兽信息成功");
             _editPetWindow.Close();
         }
 

@@ -18,6 +18,7 @@ namespace TlbbGmTool.ViewModels
         private MainWindowViewModel _mainWindowViewModel;
         private EditRoleWindow _editRoleWindow;
         private int _charguid;
+        private bool _itemListLoaded;
 
         #endregion
 
@@ -58,8 +59,13 @@ namespace TlbbGmTool.ViewModels
             _editRoleWindow = editRoleWindow;
             _charguid = charguid;
 
-            // 每次切换到此页面时都重新加载
+            if (_itemListLoaded)
+            {
+                return;
+            }
+
             LoadItemList();
+            _itemListLoaded = true;
         }
 
         private async void LoadItemList()
@@ -70,7 +76,6 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            ItemList.Clear();
             try
             {
                 var itemList = await DoLoadItemList();
@@ -78,6 +83,7 @@ namespace TlbbGmTool.ViewModels
                 {
                     ItemList.Add(item);
                 }
+
                 EditItemCommand.RaiseCanExecuteChanged();
                 CopyItemCommand.RaiseCanExecuteChanged();
                 DeleteItemCommand.RaiseCanExecuteChanged();

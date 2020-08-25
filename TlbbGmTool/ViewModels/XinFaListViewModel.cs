@@ -16,6 +16,7 @@ namespace TlbbGmTool.ViewModels
         private MainWindowViewModel _mainWindowViewModel;
         private int _charguid;
         private EditRoleWindow _editRoleWindow;
+        private bool _xinFaListLoaded;
 
         #endregion
 
@@ -38,8 +39,13 @@ namespace TlbbGmTool.ViewModels
             _mainWindowViewModel = mainWindowViewModel;
             _editRoleWindow = editRoleWindow;
             _charguid = charguid;
-            // 每次切换到此页面时都重新加载
+            if (_xinFaListLoaded)
+            {
+                return;
+            }
+
             LoadXinFaList();
+            _xinFaListLoaded = true;
         }
 
         private async void LoadXinFaList()
@@ -50,7 +56,6 @@ namespace TlbbGmTool.ViewModels
                 return;
             }
 
-            XinFaList.Clear();
             try
             {
                 var xinFaList = await DoLoadXinFaList();

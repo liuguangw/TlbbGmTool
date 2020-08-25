@@ -193,13 +193,13 @@ namespace TlbbGmTool.ViewModels
             const int maxSkillCount = 12;
             if (SkillList.Count >= maxSkillCount)
             {
-                _mainWindowViewModel.ShowSuccessMessage("出错了", $"skill总个数不能超过{maxSkillCount}个");
+                _mainWindowViewModel.ShowSuccessMessage("出错了", $"技能总个数不能超过{maxSkillCount}个");
                 return;
             }
 
             if (skillExists)
             {
-                _mainWindowViewModel.ShowSuccessMessage("出错了", $"skill {_selectedSkill.Name}已存在");
+                _mainWindowViewModel.ShowSuccessMessage("出错了", $"技能 {_selectedSkill.Name}已存在");
                 return;
             }
 
@@ -233,7 +233,7 @@ namespace TlbbGmTool.ViewModels
             }
 
             _petInfo.Skill = skillString;
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存skill信息成功");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", "保存技能信息成功");
             _editPetSkillWindow.Close();
         }
 
