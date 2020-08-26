@@ -39,19 +39,35 @@
                                     Header="门派" Binding="{Binding MenpaiTip}" />
                 <DataGridTextColumn Width="50" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="等级" Binding="{Binding Level}" />
-                <DataGridTextColumn Width="120" ElementStyle="{StaticResource TextColumnStyle}"
+                <DataGridTextColumn Width="80" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="元宝" Binding="{Binding Yuanbao}" />
-                <DataGridTemplateColumn Header="管理" Width="90">
+                <DataGridTemplateColumn Header="管理" Width="130">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button
-                                Margin="3" Padding="3,5"
-                                Command="{Binding DataContext.EditRoleCommand, 
-                                RelativeSource={RelativeSource FindAncestor, 
-                                AncestorType={x:Type DataGrid}}}"
-                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
-                                修改
-                            </Button>
+                            <WrapPanel>
+                                <WrapPanel.Resources>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Margin" Value="3" />
+                                        <Setter Property="Padding" Value="5" />
+                                    </Style>
+                                </WrapPanel.Resources>
+                                <Button
+                                    Content="修改"
+                                    Command="{Binding DataContext.EditRoleCommand, 
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}" />
+                                <Button Content="封禁"
+                                        Command="{Binding DataContext.BanRoleCommand, 
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}" />
+                                <Button Content="解封"
+                                        Command="{Binding DataContext.UnBanRoleCommand, 
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}" />
+                            </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
