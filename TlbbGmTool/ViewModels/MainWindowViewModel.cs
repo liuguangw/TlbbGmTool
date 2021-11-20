@@ -213,9 +213,9 @@ namespace TlbbGmTool.ViewModels
             {
                 Server = _selectedServer.DbHost,
                 Port = _selectedServer.DbPort,
-                Database = _selectedServer.AccountDbName,
                 UserID = _selectedServer.DbUser,
-                Password = _selectedServer.DbPassword
+                Password = _selectedServer.DbPassword,
+                Keepalive = 30
             };
 
             var mySqlConnection = new MySqlConnection

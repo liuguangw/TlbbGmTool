@@ -92,7 +92,7 @@ namespace TlbbGmTool.ViewModels
                 _mainWindowViewModel.ServerList.Add(gameServerInfo);
             }
 
-            _mainWindowViewModel.ShowSuccessMessage("保存成功", (_isAddServer ? "添加" : "修改") + "server成功");
+            _mainWindowViewModel.ShowSuccessMessage("保存成功", (_isAddServer ? "添加" : "修改") + "服务器成功");
             _addOrEditServerWindow.Close();
         }
 
