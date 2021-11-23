@@ -215,6 +215,8 @@ namespace TlbbGmTool.ViewModels
                 Port = _selectedServer.DbPort,
                 UserID = _selectedServer.DbUser,
                 Password = _selectedServer.DbPassword,
+                MinimumPoolSize = 3,
+                ConnectionLifeTime = 4 * 60,
                 Keepalive = 30
             };
 
