@@ -24,7 +24,7 @@
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Style="{StaticResource BoldBlock}">本工具由流光开发,QQ:67579722,仅用于技术研究，使用本工具的任何后果与本作者无关。</TextBlock>
+        <TextBlock Grid.Row="0" Style="{StaticResource BoldBlock}">本工具由流光开发,仅用于技术研究，使用本工具的任何后果与本作者无关。</TextBlock>
         <TextBlock Grid.Row="1" Style="{StaticResource BoldBlock}"> 项目主页：<Hyperlink NavigateUri="https://github.com/liuguangw/TlbbGmTool" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/liuguangw/TlbbGmTool</Hyperlink></TextBlock>
         <GroupBox Grid.Row="2" Margin="20,0,20,20" Padding="15">
                     <GroupBox.Header>
