@@ -12,13 +12,13 @@ public class AccountListViewModel : ViewModelBase
 {
     #region Fields
     private bool _isSearching = false;
-    #endregion
-
-    #region Properties
     /// <summary>
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
+    #endregion
+
+    #region Properties
     public ObservableCollection<UserAccountViewModel> AccountList { get; } = new();
 
     public string SearchText { get; set; } = string.Empty;

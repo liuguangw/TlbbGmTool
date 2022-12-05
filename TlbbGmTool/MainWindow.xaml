@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels" 
         xmlns:account="clr-namespace:liuguang.TlbbGmTool.Views.Account"
+        xmlns:role="clr-namespace:liuguang.TlbbGmTool.Views.Role"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded" Closed="Window_Closed"
@@ -22,6 +23,7 @@
             <Setter Property="Height" Value="25" />
         </Style>
         <account:AccountListPage  x:Key="accountListPage"/>
+        <role:RoleListPage x:Key="roleListPage"/>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -34,7 +36,7 @@
                 <Separator />
                 <MenuItem Header="退出" Command="{Binding ExitCommand}">
                     <MenuItem.Icon>
-                    <Image Source="images/close.png"/>
+                        <Image Source="images/close.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -70,7 +72,8 @@
                 <TabItem Header="账号管理">
                     <Frame Content="{StaticResource accountListPage}"/>
                 </TabItem>
-                <TabItem Header="角色管理" IsEnabled="{Binding GameDataLoaded}">
+                <TabItem Header="角色管理">
+                    <Frame Content="{StaticResource roleListPage}" IsEnabled="{Binding GameDataLoaded}"/>
                 </TabItem>
             </TabControl>
         </Grid>

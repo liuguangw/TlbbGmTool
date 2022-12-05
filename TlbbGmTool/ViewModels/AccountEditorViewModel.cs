@@ -11,12 +11,12 @@ public class AccountEditorViewModel : ViewModelBase
     #region Fields
     private bool _isSaving = false;
     private UserAccountViewModel? _inputUserAccount;
-    #endregion
-    #region Properties
     /// <summary>
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
+    #endregion
+    #region Properties
     public UserAccountViewModel InputUserAccount
     {
         set
@@ -28,8 +28,6 @@ public class AccountEditorViewModel : ViewModelBase
         }
     }
     public UserAccountViewModel UserAccount { get; } = new(new());
-
-
 
     public List<ComboBoxNode<bool>> StatusSelectionList { get; } = new() {
         new("正常",false),
