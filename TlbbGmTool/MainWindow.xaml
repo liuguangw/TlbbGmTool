@@ -1,14 +1,13 @@
-﻿<Window x:Class="TlbbGmTool.MainWindow"
+﻿<Window x:Class="liuguang.TlbbGmTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TlbbGmTool"
-        xmlns:pages="clr-namespace:TlbbGmTool.View.Pages"
-        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels" 
+        xmlns:account="clr-namespace:liuguang.TlbbGmTool.Views.Account"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Loaded="MainWindow_OnLoaded"
+        Loaded="MainWindow_OnLoaded" Closed="Window_Closed"
         Title="{Binding WindowTitle}" Height="480" Width="800">
     <Window.DataContext>
         <vm:MainWindowViewModel />
@@ -22,26 +21,25 @@
         <Style TargetType="MenuItem">
             <Setter Property="Height" Value="25" />
         </Style>
-        <pages:AccountList x:Key="AccountListPage" />
-        <pages:RoleList x:Key="RoleListPage" />
+        <account:AccountListPage  x:Key="accountListPage"/>
     </Window.Resources>
-    <DockPanel IsEnabled="{Binding AllDataLoaded}">
+    <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="菜单">
-                <MenuItem Header="区服管理" Click="ShowServerListWindow">
+                <MenuItem Header="区服管理" Command="{Binding ServerListCommand}">
                     <MenuItem.Icon>
                         <Image Source="images/setting.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="退出" Click="DoExit">
+                <MenuItem Header="退出" Command="{Binding ExitCommand}">
                     <MenuItem.Icon>
                     <Image Source="images/close.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="帮助">
-                <MenuItem Header="关于" Click="ShowAboutWindow">
+                <MenuItem Header="关于" Command="{Binding AboutCommand}">
                     <MenuItem.Icon>
                         <Image Source="images/about.png"/>
                     </MenuItem.Icon>
@@ -57,23 +55,22 @@
                 <Label Content="区服" />
                 <ComboBox MinWidth="156" Margin="10,0,0,0"
                           VerticalContentAlignment="Center"
-                          IsEnabled="{Binding CanSelectServer}"
+                          IsEnabled="{Binding CanConnServer}"
                           ItemsSource="{Binding ServerList}"
                           SelectedItem="{Binding SelectedServer}"
                           DisplayMemberPath="ServerName" />
                 <Button Margin="10,0,0,0" Padding="12,5" Command="{Binding ConnectCommand}">
                     连接
                 </Button>
-                <Button Margin="10,0,0,0" Padding="12,5" Command="{Binding DisconnectCommand}">
+                <Button Margin="10,0,0,0" Padding="12,5" Command="{Binding DisConnectCommand}">
                     断开
                 </Button>
             </WrapPanel>
-            <TabControl Grid.Row="1" Margin="0,5,0,0" IsEnabled="{Binding CanDisconnectServer}">
+            <TabControl Grid.Row="1" Margin="0,5,0,0" IsEnabled="{Binding CanDisConnServer}">
                 <TabItem Header="账号管理">
-                    <Frame Content="{StaticResource AccountListPage}" />
+                    <Frame Content="{StaticResource accountListPage}"/>
                 </TabItem>
-                <TabItem Header="角色管理">
-                    <Frame Content="{StaticResource RoleListPage}" />
+                <TabItem Header="角色管理" IsEnabled="{Binding GameDataLoaded}">
                 </TabItem>
             </TabControl>
         </Grid>

@@ -1,59 +1,32 @@
-﻿using System;
-using System.Windows;
-using TlbbGmTool.View.Windows;
-using TlbbGmTool.ViewModels;
+﻿using System.Windows;
+using liuguang.TlbbGmTool.ViewModels;
 
-namespace TlbbGmTool
+namespace liuguang.TlbbGmTool;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// MainWindow.xaml 的交互逻辑
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+    }
+    private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+    {
+        var vm = DataContext as MainWindowViewModel;
+        if (vm != null)
         {
-            InitializeComponent();
+            await vm.LoadDataAsync();
         }
+    }
 
-        private MainWindowViewModel GetViewModel()
+    private async void Window_Closed(object sender, System.EventArgs e)
+    {
+        var vm = DataContext as MainWindowViewModel;
+        if (vm != null)
         {
-            return DataContext as MainWindowViewModel;
-        }
-
-        private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            var vm = GetViewModel();
-            try
-            {
-                await vm.LoadApplicationData();
-            }
-            catch (Exception e1)
-            {
-                MessageBox.Show(e1.Message, "出错了", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ShowServerListWindow(object sender, RoutedEventArgs e)
-        {
-            var serverListWindow = new ServerListWindow(GetViewModel())
-            {
-                Owner = this
-            };
-            serverListWindow.ShowDialog();
-        }
-
-        private void DoExit(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-        private void ShowAboutWindow(object sender, RoutedEventArgs e)
-        {
-            var aboutWindow = new AboutWindow()
-            {
-                Owner = this
-            };
-            aboutWindow.ShowDialog();
+            await vm.FreeResourceAsync();
         }
     }
 }

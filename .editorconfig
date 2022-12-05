@@ -1,0 +1,10 @@
+root=true
+
+[*.cs]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+csharp_style_namespace_declarations = file_scoped
+
+[*.{xaml,xml}]
+end_of_line = lf

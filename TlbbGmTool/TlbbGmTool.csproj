@@ -1,286 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{55BD7B76-4993-4AAF-B51C-8A64B12D867A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TlbbGmTool</RootNamespace>
-    <AssemblyName>TlbbGmTool</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworks>net7.0-windows;net48</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>liuguang.TlbbGmTool</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>images\icon.ico</ApplicationIcon>
+    <AssemblyTitle>天龙八部GM工具</AssemblyTitle>
+    <Description>一个普通的GM工具</Description>
+    <Company>流光</Company>
+    <Product>TlbbGmTool</Product>
+    <Copyright>MIT License</Copyright>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <StartupObject>liuguang.TlbbGmTool.App</StartupObject>
+    <RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="MySql.Data, Version=6.10.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
-      <HintPath>..\packages\MySql.Data.6.10.7\lib\net452\MySql.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Core\ComboBoxNode.cs" />
-    <Compile Include="Core\Convert\CheckedToColorConvert.cs" />
-    <Compile Include="Core\Convert\IsLockToTipConvert.cs" />
-    <Compile Include="Core\EquipAttributeNode.cs" />
-    <Compile Include="Models\DatabaseConnectionStatus.cs" />
-    <Compile Include="Models\ItemBase.cs" />
-    <Compile Include="Models\GameRole.cs" />
-    <Compile Include="Models\GameServer.cs" />
-    <Compile Include="Models\ItemInfo.cs" />
-    <Compile Include="Models\Pet.cs" />
-    <Compile Include="Models\PetSkill.cs" />
-    <Compile Include="Models\UserAccount.cs" />
-    <Compile Include="Models\XinFa.cs" />
-    <Compile Include="Services\AccountService.cs" />
-    <Compile Include="Services\CommonConfigService.cs" />
-    <Compile Include="Services\DbStringService.cs" />
-    <Compile Include="Services\SaveItemService.cs" />
-    <Compile Include="Services\ServerService.cs" />
-    <Compile Include="Services\TextFileService.cs" />
-    <Compile Include="ViewModels\AccountListViewModel.cs" />
-    <Compile Include="ViewModels\AddOrEditEquipViewModel.cs" />
-    <Compile Include="ViewModels\AddOrEditItemViewModel.cs" />
-    <Compile Include="ViewModels\AddOrEditServerViewModel.cs" />
-    <Compile Include="ViewModels\BagItemListViewModel.cs" />
-    <Compile Include="ViewModels\EditAccountViewModel.cs" />
-    <Compile Include="ViewModels\EditPetSkillViewModel.cs" />
-    <Compile Include="ViewModels\EditPetViewModel.cs" />
-    <Compile Include="ViewModels\EditRoleViewModel.cs" />
-    <Compile Include="ViewModels\EditRoleWindowViewModel.cs" />
-    <Compile Include="ViewModels\EditXinFaViewModel.cs" />
-    <Compile Include="ViewModels\HashToolViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\MaterialItemListViewModel.cs" />
-    <Compile Include="ViewModels\PetListViewModel.cs" />
-    <Compile Include="ViewModels\RoleListViewModel.cs" />
-    <Compile Include="ViewModels\SelectAttrViewModel.cs" />
-    <Compile Include="ViewModels\SelectEquipViewModel.cs" />
-    <Compile Include="ViewModels\SelectGemViewModel.cs" />
-    <Compile Include="ViewModels\SelectItemViewModel.cs" />
-    <Compile Include="ViewModels\ServerListViewModel.cs" />
-    <Compile Include="ViewModels\XinFaListViewModel.cs" />
-    <Compile Include="View\Pages\AccountList.xaml.cs">
-      <DependentUpon>AccountList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Pages\BagItemList.xaml.cs">
-      <DependentUpon>BagItemList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Pages\EditRolePage.xaml.cs">
-      <DependentUpon>EditRolePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Pages\MaterialItemList.xaml.cs">
-      <DependentUpon>MaterialItemList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Pages\PetList.xaml.cs">
-      <DependentUpon>PetList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Pages\RoleList.xaml.cs">
-      <DependentUpon>RoleList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Pages\XinFaList.xaml.cs">
-      <DependentUpon>XinFaList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\AddOrEditEquipWindow.xaml.cs">
-      <DependentUpon>AddOrEditEquipWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\AddOrEditItemWindow.xaml.cs">
-      <DependentUpon>AddOrEditItemWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\AddOrEditServerWindow.xaml.cs">
-      <DependentUpon>AddOrEditServerWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\EditAccountWindow.xaml.cs">
-      <DependentUpon>EditAccountWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\EditPetSkillWindow.xaml.cs">
-      <DependentUpon>EditPetSkillWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\EditPetWindow.xaml.cs">
-      <DependentUpon>EditPetWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\EditRoleWindow.xaml.cs">
-      <DependentUpon>EditRoleWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\EditXinFaWindow.xaml.cs">
-      <DependentUpon>EditXinFaWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\HashToolWindow.xaml.cs">
-      <DependentUpon>HashToolWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\SelectAttrWindow.xaml.cs">
-      <DependentUpon>SelectAttrWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\SelectEquipWindow.xaml.cs">
-      <DependentUpon>SelectEquipWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\SelectGemWindow.xaml.cs">
-      <DependentUpon>SelectGemWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\SelectItemWindow.xaml.cs">
-      <DependentUpon>SelectItemWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Windows\ServerListWindow.xaml.cs">
-      <DependentUpon>ServerListWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\AppCommand.cs" />
-    <Compile Include="Core\BindDataBase.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\Pages\AccountList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Pages\BagItemList.xaml" />
-    <Page Include="View\Pages\EditRolePage.xaml" />
-    <Page Include="View\Pages\MaterialItemList.xaml" />
-    <Page Include="View\Pages\PetList.xaml" />
-    <Page Include="View\Pages\RoleList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Pages\XinFaList.xaml" />
-    <Page Include="View\Windows\AboutWindow.xaml" />
-    <Page Include="View\Windows\AddOrEditEquipWindow.xaml" />
-    <Page Include="View\Windows\AddOrEditItemWindow.xaml" />
-    <Page Include="View\Windows\AddOrEditServerWindow.xaml" />
-    <Page Include="View\Windows\EditAccountWindow.xaml" />
-    <Page Include="View\Windows\EditPetSkillWindow.xaml" />
-    <Page Include="View\Windows\EditPetWindow.xaml" />
-    <Page Include="View\Windows\EditRoleWindow.xaml" />
-    <Page Include="View\Windows\EditXinFaWindow.xaml" />
-    <Page Include="View\Windows\HashToolWindow.xaml" />
-    <Page Include="View\Windows\SelectAttrWindow.xaml" />
-    <Page Include="View\Windows\SelectEquipWindow.xaml" />
-    <Page Include="View\Windows\SelectGemWindow.xaml" />
-    <Page Include="View\Windows\SelectItemWindow.xaml" />
-    <Page Include="View\Windows\ServerListWindow.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="config\text\CommonItem.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="config\text\EquipBase.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="config\text\GemInfo.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="config\text\SkillTemplate_V1.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\LICENSE">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\servers.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\common.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
   <ItemGroup>
     <Resource Include="images\about.png" />
     <Resource Include="images\close.png" />
     <Resource Include="images\icon.ico" />
     <Resource Include="images\setting.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="config\servers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="config\common.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.31" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\axp\axp.csproj" />
+    <ProjectReference Include="..\dbc\dbc.csproj" />
+  </ItemGroup>
+
 </Project>

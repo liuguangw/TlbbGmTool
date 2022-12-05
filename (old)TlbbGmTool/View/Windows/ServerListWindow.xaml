@@ -1,0 +1,51 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.ServerListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="服务器列表" Width="400" Height="450">
+    <Window.DataContext>
+        <vm:ServerListViewModel />
+    </Window.DataContext>
+    <DockPanel Margin="10">
+        <WrapPanel DockPanel.Dock="Top">
+            <Button Command="{Binding AddServerCommand}" Padding="15,5">添加服务器</Button>
+        </WrapPanel>
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  Margin="0,10,0,0" ItemsSource="{Binding ServerList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="名称" Binding="{Binding ServerName}" />
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="IP" Binding="{Binding DbHost}" />
+                <DataGridTemplateColumn Header="管理" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <WrapPanel Margin="5">
+                                <Button Padding="10,5"
+                                        Command="{Binding DataContext.EditServerCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    修改
+                                </Button>
+                                <Button Padding="10,5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.DeleteServerCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    删除
+                                </Button>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

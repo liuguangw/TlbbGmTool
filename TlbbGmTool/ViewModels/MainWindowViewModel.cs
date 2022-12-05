@@ -1,280 +1,298 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using MySql.Data.MySqlClient;
-using TlbbGmTool.Core;
-using TlbbGmTool.Models;
-using TlbbGmTool.Services;
+using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Models;
+using liuguang.TlbbGmTool.Services;
+using liuguang.TlbbGmTool.Views.About;
+using liuguang.TlbbGmTool.Views.Server;
 
-namespace TlbbGmTool.ViewModels
+namespace liuguang.TlbbGmTool.ViewModels;
+
+public class MainWindowViewModel : ViewModelBase
 {
-    public class MainWindowViewModel : BindDataBase
+    #region Fields
+    private MainWindowModel _mainWindowModel = new();
+    public GameServerViewModel? _selectedServer;
+    private DbStatus _currentDbStatus = DbStatus.NotConnect;
+    #endregion
+
+    #region Properties
+    public override Window? OwnedWindow => Application.Current.MainWindow;
+    /// <summary>
+    /// 供Page调用
+    /// </summary>
+    public MainWindowModel MainModel => _mainWindowModel;
+    public string WindowTitle
     {
-        #region Fields
-
-        private GameServer _selectedServer;
-
-        private DatabaseConnectionStatus _connectionStatus = DatabaseConnectionStatus.NoConnection;
-
-        /// <summary>
-        /// MySQL连接
-        /// </summary>
-        private MySqlConnection _mySqlConnection;
-
-        private bool _allDataLoaded;
-        private string _dbVersion;
-
-        #endregion
-
-        #region Properties
-
-        public string WindowTitle
+        get
         {
-            get
+            var title = "天龙八部GM工具 - by 流光";
+#if DEBUG
+            title = "[debug]" + title;
+#endif
+            if (!string.IsNullOrEmpty(_mainWindowModel.DbVersion))
             {
-                var title = "天龙八部GM工具 - by 流光";
-                if (!_allDataLoaded)
-                {
-                    title += "(加载配置中...)";
-                }
+                title += $"(MySQL: {_mainWindowModel.DbVersion})";
+            }
 
-                if (!string.IsNullOrEmpty(_dbVersion))
-                {
-                    title += $"(MySQL: {_dbVersion})";
-                }
+            if (_mainWindowModel.DataStatus == DataStatus.Loading)
+            {
+                title += "(加载配置中...)";
+            }
 
-                return title;
+            return title;
+        }
+    }
+
+    private DataStatus DataStatus
+    {
+        set
+        {
+            if (SetProperty(ref _mainWindowModel.DataStatus, value))
+            {
+                RaisePropertyChanged(nameof(WindowTitle));
+                RaisePropertyChanged(nameof(GameDataLoaded));
             }
         }
+    }
 
-        /// <summary>
-        /// server list
-        /// </summary>
-        public ObservableCollection<GameServer> ServerList { get; } = new ObservableCollection<GameServer>();
+    /// <summary>
+    /// 游戏数据是否已经完成加载
+    /// </summary>
+    public bool GameDataLoaded
+        => _mainWindowModel.DataStatus == DataStatus.Loaded;
 
-        /// <summary>
-        /// selected server
-        /// </summary>
-        public GameServer SelectedServer
+    public GameServerViewModel? SelectedServer
+    {
+        get => _selectedServer;
+        set
         {
-            get => _selectedServer;
-            set => SetProperty(ref _selectedServer, value);
-        }
-
-        public DatabaseConnectionStatus ConnectionStatus
-        {
-            get => _connectionStatus;
-            private set
+            if (SetProperty(ref _selectedServer, value))
             {
-                if (!SetProperty(ref _connectionStatus, value))
-                {
-                    return;
-                }
-
-                RaisePropertyChanged(nameof(CanSelectServer));
-                RaisePropertyChanged(nameof(CanDisconnectServer));
-                ConnectCommand?.RaiseCanExecuteChanged();
-                DisconnectCommand?.RaiseCanExecuteChanged();
-            }
-        }
-
-        public bool CanSelectServer =>
-            ServerList.Count > 0 && _connectionStatus == DatabaseConnectionStatus.NoConnection;
-
-        public bool CanDisconnectServer => _connectionStatus == DatabaseConnectionStatus.Connected;
-
-        public bool AllDataLoaded
-        {
-            get => _allDataLoaded;
-            set
-            {
-                if (SetProperty(ref _allDataLoaded, value))
-                {
-                    RaisePropertyChanged(nameof(WindowTitle));
-                }
-            }
-        }
-
-        private string DbVersion
-        {
-            set
-            {
-                if (SetProperty(ref _dbVersion, value))
-                {
-                    RaisePropertyChanged(nameof(WindowTitle));
-                }
-            }
-        }
-
-        /// <summary>
-        /// 连接命令
-        /// </summary>
-        public AppCommand ConnectCommand { get; }
-
-        /// <summary>
-        /// 断开命令
-        /// </summary>
-        public AppCommand DisconnectCommand { get; }
-
-        public MySqlConnection MySqlConnection
-        {
-            get => _mySqlConnection;
-            private set
-            {
-                if (SetProperty(ref _mySqlConnection, value))
-                {
-                    ConnectionStatus = value == null
-                        ? DatabaseConnectionStatus.NoConnection
-                        : DatabaseConnectionStatus.Connected;
-                }
-            }
-        }
-
-        public Dictionary<int, PetSkill> PetSkills { get; private set; } = new Dictionary<int, PetSkill>();
-
-        public Dictionary<int, ItemBase> ItemBases { get; private set; } = new Dictionary<int, ItemBase>();
-
-        public Dictionary<int, string> Attr1CategoryList = new Dictionary<int, string>();
-        public Dictionary<int, string> Attr2CategoryList = new Dictionary<int, string>();
-
-        #endregion
-
-        public MainWindowViewModel()
-        {
-            ConnectCommand = new AppCommand(ConnectServer,
-                () => CanSelectServer);
-            DisconnectCommand = new AppCommand(DisconnectServer,
-                () => CanDisconnectServer);
-            ServerList.CollectionChanged += (sender, e)
-                =>
-            {
-                RaisePropertyChanged(nameof(CanSelectServer));
+                RaisePropertyChanged(nameof(CanConnServer));
                 ConnectCommand.RaiseCanExecuteChanged();
-            };
-        }
-
-        public async Task LoadApplicationData()
-        {
-            var servers = await ServerService.LoadGameServers();
-            foreach (var server in servers)
-            {
-                ServerList.Add(server);
             }
+        }
+    }
 
-            if (ServerList.Count > 0)
+    public ObservableCollection<GameServerViewModel> ServerList => _mainWindowModel.ServerList;
+
+    private DbStatus CurrentDbStatus
+    {
+        set
+        {
+            if(_selectedServer is null)
+            {
+                return;
+            }
+            if(SetProperty(ref _currentDbStatus,value))
+            {
+                _selectedServer.DbStatus = value;
+                RaisePropertyChanged(nameof(CanConnServer));
+                RaisePropertyChanged(nameof(CanDisConnServer));
+                ConnectCommand.RaiseCanExecuteChanged();
+                DisConnectCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 是否可以连接
+    /// </summary>
+    /// <returns></returns>
+    public bool CanConnServer
+    {
+        get
+        {
+            if (_selectedServer is null)
+            {
+                return false;
+            }
+            return _selectedServer.DbStatus == DbStatus.NotConnect;
+        }
+    }
+
+
+    /// <summary>
+    /// 是否可以断开
+    /// </summary>
+    public bool CanDisConnServer
+    {
+        get
+        {
+            if (_selectedServer is null)
+            {
+                return false;
+            }
+            return _selectedServer.DbStatus == DbStatus.Connected;
+        }
+    }
+
+    public Command ConnectCommand { get; }
+
+    public Command DisConnectCommand { get; }
+
+    public Command ExitCommand { get; }
+
+    public Command ServerListCommand { get; }
+
+    public Command AboutCommand { get; }
+    #endregion
+
+
+    public MainWindowViewModel()
+    {
+        ConnectCommand = new(ConnectDbAsync, () => CanConnServer);
+        DisConnectCommand = new(DisConnectDb, () => CanDisConnServer);
+        ExitCommand = new(Application.Current.Shutdown);
+        ServerListCommand = new(ShowServerListWindow);
+        AboutCommand = new(ShowAboutWindow);
+        ServerList.CollectionChanged += (sender, e) =>
+        {
+            if (ServerList.Count == 0)
+            {
+                return;
+            }
+            //默认选择第一个
+            if (_selectedServer is null || !ServerList.Contains(_selectedServer))
             {
                 SelectedServer = ServerList.First();
             }
+        };
+    }
 
-            var loadPetSkillListTask = TextFileService.LoadPetSkillList();
-            var loadCommonItemsTask = TextFileService.LoadCommonItemList();
-            var loadGemItemsTask = TextFileService.LoadGemItemList();
-            var loadEquipBasesTask = TextFileService.LoadEquipBaseList();
-            var loadCommonConfigTask = CommonConfigService.LoadMenpaiAndAttrAsync();
-            //等待配置文件读取完成
-            await Task.WhenAll(loadPetSkillListTask, loadCommonItemsTask, loadGemItemsTask, loadEquipBasesTask,
-                loadCommonConfigTask);
-            loadPetSkillListTask.Result.ForEach(
-                petSkill => PetSkills.Add(petSkill.Id, petSkill)
-            );
-            loadCommonItemsTask.Result.ForEach(
-                itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
-            );
-            loadGemItemsTask.Result.ForEach(
-                itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
-            );
-            loadEquipBasesTask.Result.ForEach(
-                itemInfo => ItemBases.Add(itemInfo.Id, itemInfo)
-            );
-            var (menpaiDictionary, attr1Dictionary, attr2Dictionary) = loadCommonConfigTask.Result;
-            GameRole.MenpaiList = menpaiDictionary;
-            Attr1CategoryList = attr1Dictionary;
-            Attr2CategoryList = attr2Dictionary;
-            AllDataLoaded = true;
-        }
-
-        public void ShowErrorMessage(string title, string content) =>
-            MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Error);
-
-        public void ShowSuccessMessage(string title, string content) =>
-            MessageBox.Show(content, title, MessageBoxButton.OK, MessageBoxImage.Information);
-
-        private async void ConnectServer()
+    public async void ConnectDbAsync()
+    {
+        if (_selectedServer is null)
         {
-            if (SelectedServer == null)
-            {
-                return;
-            }
-
-            var connectionStringBuilder = new MySqlConnectionStringBuilder
-            {
-                Server = _selectedServer.DbHost,
-                Port = _selectedServer.DbPort,
-                UserID = _selectedServer.DbUser,
-                Password = _selectedServer.DbPassword,
-                MinimumPoolSize = 3,
-                ConnectionLifeTime = 4 * 60,
-                Keepalive = 30
-            };
-
-            var mySqlConnection = new MySqlConnection
-            {
-                ConnectionString = connectionStringBuilder.GetConnectionString(true),
-            };
-            try
-            {
-                ConnectionStatus = DatabaseConnectionStatus.Pending;
-                await Task.Run(async () => await mySqlConnection.OpenAsync());
-                //获取数据库版本信息
-                DbVersion = await LoadDbVersionAsync(mySqlConnection);
-            }
-            catch (Exception e)
-            {
-                ConnectionStatus = DatabaseConnectionStatus.NoConnection;
-                ShowErrorMessage("连接数据库出错", e.Message);
-                return;
-            }
-
-            MySqlConnection = mySqlConnection;
-            SelectedServer.Connected = true;
+            return;
         }
-
-        private static async Task<string> LoadDbVersionAsync(MySqlConnection mySqlConnection)
+        CurrentDbStatus = DbStatus.Connecting;
+        try
         {
-            const string sql = "SELECT version() AS v";
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            string version = null;
             await Task.Run(async () =>
             {
-                var rd = await mySqlCommand.ExecuteScalarAsync();
-                version = rd.ToString();
+                await _mainWindowModel.Connection.OpenAsync(_selectedServer.AsServer());
+                _mainWindowModel.DbVersion = await _mainWindowModel.Connection.CheckVersionAsync();
             });
-            return version;
+            RaisePropertyChanged(nameof(WindowTitle));
         }
-
-        private async void DisconnectServer()
+        catch (Exception e)
         {
-            if (SelectedServer == null)
-            {
-                return;
-            }
-
-            DbVersion = null;
-            try
-            {
-                ConnectionStatus = DatabaseConnectionStatus.Pending;
-                await _mySqlConnection.CloseAsync();
-            }
-            catch (Exception e)
-            {
-                ShowErrorMessage("断开连接出错", e.Message);
-            }
-
-            MySqlConnection = null;
-            SelectedServer.Connected = false;
+            CurrentDbStatus = DbStatus.NotConnect;
+            ShowErrorMessage("连接数据库失败", e);
+            return;
         }
+        CurrentDbStatus = DbStatus.Connected;
+        //数据库连接成功过
+        //从客户端的axp文件中加载数据
+        this.DataStatus = DataStatus.Loading;
+        _mainWindowModel.ItemBaseMap.Clear();
+        try
+        {
+            await Task.Run(async () =>
+            {
+                var axpPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config.axp");
+                await AxpService.LoadDataAsync(axpPath, _mainWindowModel.ItemBaseMap);
+            });
+            this.DataStatus = DataStatus.Loaded;
+        }
+        catch (Exception e)
+        {
+            this.DataStatus = DataStatus.NotLoad;
+            ShowErrorMessage("加载axp文件失败", e, true);
+        }
+    }
+
+    public async void DisConnectDb()
+    {
+        if (_selectedServer is null)
+        {
+            return;
+        }
+        try
+        {
+            await _mainWindowModel.Connection.CloseAsync();
+        }
+        catch (Exception e)
+        {
+            ShowErrorMessage("断开数据库失败", e);
+        }
+        _mainWindowModel.DbVersion = string.Empty;
+        RaisePropertyChanged(nameof(WindowTitle));
+        CurrentDbStatus = DbStatus.NotConnect;
+        this.DataStatus = DataStatus.NotLoad;
+    }
+
+    /// <summary>
+    /// 关闭之前,释放资源
+    /// </summary>
+    /// <returns></returns>
+    public async Task FreeResourceAsync()
+    {
+        if (_selectedServer != null)
+        {
+            if (_selectedServer.DbStatus == DbStatus.Connected)
+            {
+                try
+                {
+                    await _mainWindowModel.Connection.CloseAsync();
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 加载数据
+    /// </summary>
+    /// <returns></returns>
+    public async Task LoadDataAsync()
+    {
+        var taskList = new Task[]{
+            LoadServerListAsync(),
+            CommonConfigService.LoadConfigAsync(_mainWindowModel.MenpaiMap, _mainWindowModel.Attr1Map, _mainWindowModel.Attr2Map)
+        };
+        try
+        {
+            await Task.WhenAll(taskList);
+        }
+        catch (Exception e)
+        {
+            ShowErrorMessage("加载配置出错", e);
+        }
+    }
+
+    /// <summary>
+    /// 加载区服配置列表
+    /// </summary>
+    /// <returns></returns>
+    private async Task LoadServerListAsync()
+    {
+        var servers = await ServerService.LoadServersAsync();
+        foreach (var item in servers)
+        {
+            var server = new GameServerViewModel(item);
+            ServerList.Add(server);
+        }
+    }
+
+    private void ShowServerListWindow()
+    {
+        ShowDialog(new ServerListWindow(), (ServerListViewModel vm) =>
+        {
+            vm.ServerList = ServerList;
+        });
+    }
+
+    private void ShowAboutWindow()
+    {
+        ShowDialog(new AboutWindow());
     }
 }

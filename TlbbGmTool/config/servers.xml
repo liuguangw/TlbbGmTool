@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <servers>
-    <server name="server1">
-        <host>127.0.0.1</host>
-        <port>3306</port>
-        <accountDb>web</accountDb>
-        <gameDb>tlbbdb</gameDb>
-        <user>root</user>
-        <password>root</password>
-    </server>
-    <server name="server2">
-        <host>192.168.200.3</host>
-        <port>3306</port>
-        <accountDb>web</accountDb>
-        <gameDb>tlbbdb</gameDb>
-        <user>root</user>
-        <password>123456</password>
-    </server>
+  <server name="本地开发服">
+    <host>127.0.0.1</host>
+    <port>3306</port>
+    <accountDb>web</accountDb>
+    <gameDb>tlbbdb</gameDb>
+    <user>root</user>
+    <password>root</password>
+    <client_path>G:\服务端\天龙八部\天龙八部085原版\TLBB_0.85.0600</client_path>
+  </server>
+  <server name="虚拟机服">
+    <host>192.168.200.3</host>
+    <port>3306</port>
+    <accountDb>web</accountDb>
+    <gameDb>tlbbdb</gameDb>
+    <user>root</user>
+    <password>123456</password>
+    <client_path>G:\服务端\天龙八部\天龙八部085原版\TLBB_0.85.0600</client_path>
+  </server>
 </servers>

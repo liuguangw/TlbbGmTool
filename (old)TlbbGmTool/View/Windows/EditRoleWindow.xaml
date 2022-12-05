@@ -1,0 +1,45 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.EditRoleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        xmlns:pages="clr-namespace:TlbbGmTool.View.Pages"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Title="{Binding WindowTitle}" Height="480" Width="800">
+    <Window.DataContext>
+        <vm:EditRoleWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <pages:EditRolePage x:Key="EditRolePage" />
+        <pages:XinFaList x:Key="XinFaList" />
+        <pages:PetList x:Key="PetList" />
+        <pages:BagItemList x:Key="BagItemList" />
+        <pages:MaterialItemList x:Key="MaterialItemList" />
+    </Window.Resources>
+    <DockPanel>
+        <TabControl Margin="5">
+            <TabItem Header="角色">
+                <Frame Content="{StaticResource EditRolePage}" />
+            </TabItem>
+            <TabItem Header="心法">
+                <Frame Content="{StaticResource XinFaList}" />
+            </TabItem>
+            <TabItem Header="珍兽">
+                <Frame Content="{StaticResource PetList}" />
+            </TabItem>
+            <TabItem Header="道具栏">
+                <Frame Content="{StaticResource BagItemList}" />
+            </TabItem>
+            <TabItem Header="材料栏">
+                <Frame Content="{StaticResource MaterialItemList}" />
+            </TabItem>
+            <!--<TabItem Header="items">
+                <Label>test</Label>
+            </TabItem>-->
+        </TabControl>
+    </DockPanel>
+</Window>

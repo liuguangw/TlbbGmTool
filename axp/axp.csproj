@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net7.0-windows;net48</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>liuguang.Axp</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyTitle>axp文件读取库</AssemblyTitle>
+    <Company>流光</Company>
+    <Product>TlbbGmTool(axp)</Product>
+    <Copyright>MIT License</Copyright>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+</Project>

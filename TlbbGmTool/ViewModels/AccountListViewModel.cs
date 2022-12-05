@@ -1,161 +1,140 @@
-﻿using System;
+using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Models;
+using liuguang.TlbbGmTool.Views.Account;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using TlbbGmTool.Core;
-using TlbbGmTool.Models;
-using TlbbGmTool.View.Windows;
 
-namespace TlbbGmTool.ViewModels
+namespace liuguang.TlbbGmTool.ViewModels;
+public class AccountListViewModel : ViewModelBase
 {
-    public class AccountListViewModel : BindDataBase
+    #region Fields
+    private bool _isSearching = false;
+    #endregion
+
+    #region Properties
+    /// <summary>
+    /// 数据库连接
+    /// </summary>
+    public DbConnection? Connection;
+    public ObservableCollection<UserAccountViewModel> AccountList { get; } = new();
+
+    public string SearchText { get; set; } = string.Empty;
+
+    public Command SearchCommand { get; }
+
+    public bool IsSearching
     {
-        #region Fields
-
-        private string _searchText = string.Empty;
-        private MainWindowViewModel _mainWindowViewModel;
-        private MainWindow _mainWindow;
-
-        #endregion
-
-
-        /// <summary>
-        /// account list
-        /// </summary>
-        public ObservableCollection<UserAccount> AccountList { get; } =
-            new ObservableCollection<UserAccount>();
-
-        #region Properties
-
-        /// <summary>
-        /// 搜索文本
-        /// </summary>
-        public string SearchText
+        set
         {
-            get => _searchText;
-            set => SetProperty(ref _searchText, value);
-        }
-
-        /// <summary>
-        /// 搜索命令
-        /// </summary>
-        public AppCommand SearchCommand { get; }
-
-        /// <summary>
-        /// 编辑账号命令
-        /// </summary>
-        public AppCommand EditAccountCommand { get; }
-
-        #endregion
-
-        public AccountListViewModel()
-        {
-            SearchCommand = new AppCommand(SearchAccount);
-            EditAccountCommand = new AppCommand(ShowEditAccountDialog);
-        }
-
-        public void InitData(MainWindowViewModel mainWindowViewModel, MainWindow mainWindow)
-        {
-            _mainWindowViewModel = mainWindowViewModel;
-            _mainWindow = mainWindow;
-        }
-
-        /// <summary>
-        /// 执行搜索
-        /// </summary>
-        private async void SearchAccount()
-        {
-            if (_mainWindowViewModel.ConnectionStatus != DatabaseConnectionStatus.Connected)
+            if (SetProperty(ref _isSearching, value))
             {
-                _mainWindowViewModel.ShowErrorMessage("出错了", "数据库未连接");
-                return;
-            }
-
-            AccountList.Clear();
-            try
-            {
-                var accountList = await DoSearchAccount();
-                foreach (var accountInfo in accountList)
-                {
-                    AccountList.Add(accountInfo);
-                }
-            }
-            catch (Exception e)
-            {
-                _mainWindowViewModel.ShowErrorMessage("搜索出错", e.Message);
+                SearchCommand.RaiseCanExecuteChanged();
             }
         }
+    }
+    public Command EditAccountCommand { get; }
+    #endregion
 
-        private async Task<List<UserAccount>> DoSearchAccount()
+    public AccountListViewModel()
+    {
+        SearchCommand = new(SearchAccount, () => !_isSearching);
+        EditAccountCommand = new(ShowAccountEditorDialog);
+    }
+
+    private async void SearchAccount()
+    {
+        if (Connection is null)
         {
-            var accountList = new List<UserAccount>();
-            var mySqlConnection = _mainWindowViewModel.MySqlConnection;
-            var sql = "SELECT * FROM account";
-            if (_searchText != string.Empty)
-            {
-                sql += " WHERE name like @searchText";
-            }
+            return;
+        }
+        AccountList.Clear();
+        IsSearching = true;
+        try
+        {
 
-            sql += " ORDER BY id ASC LIMIT 50";
-            var mySqlCommand = new MySqlCommand(sql, mySqlConnection);
-            if (_searchText != string.Empty)
+            var itemList = await Task.Run(async () =>
             {
-                var searchParam = new MySqlParameter("@searchText", MySqlDbType.String)
-                {
-                    Value = $"%{_searchText}%"
-                };
-                mySqlCommand.Parameters.Add(searchParam);
-            }
-
-            await Task.Run(async () =>
-            {
-                var accountDbName = _mainWindowViewModel.SelectedServer.AccountDbName;
-                if (mySqlConnection.Database != accountDbName)
-                {
-                    // 切换数据库
-                    await mySqlConnection.ChangeDataBaseAsync(accountDbName);
-                }
-
-                using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
-                {
-                    while (await rd.ReadAsync())
-                    {
-                        var userAccount = new UserAccount
-                        {
-                            Id = rd.GetInt32("id"),
-                            Name = rd.GetString("name"),
-                            Password = rd.GetString("password"),
-                            //Question = rd.GetString("question"),
-                            //Answer = rd.GetString("answer"),
-                            //Email = rd.GetString("email"),
-                            Point = rd.GetInt32("point")
-                        };
-                        //可能为null的列
-                        var ordinal = rd.GetOrdinal("question");
-                        userAccount.Question = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
-                        ordinal = rd.GetOrdinal("answer");
-                        userAccount.Answer = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
-                        ordinal = rd.GetOrdinal("email");
-                        userAccount.Email = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
-                        ordinal = rd.GetOrdinal("id_card");
-                        userAccount.IdCard = rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal);
-                        //add to list
-                        accountList.Add(userAccount);
-                    }
-                }
+                return await DoSearchAccountAsync(Connection, SearchText);
             });
-            return accountList;
+            foreach (var item in itemList)
+            {
+                AccountList.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("搜索出错", ex);
+        }
+        finally
+        {
+            IsSearching = false;
+        }
+    }
+
+    private async Task<List<UserAccountViewModel>> DoSearchAccountAsync(DbConnection dbConnection, string searchText)
+    {
+        var itemList = new List<UserAccountViewModel>();
+        var sql = "SELECT * FROM account";
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            sql += " WHERE name like @searchText";
         }
 
-        private void ShowEditAccountDialog(object parameter)
+        sql += " ORDER BY id ASC LIMIT 50";
+        var mySqlCommand = new MySqlCommand(sql, dbConnection.Conn);
+        if (!string.IsNullOrEmpty(searchText))
         {
-            var userAccount = parameter as UserAccount;
-            var editAccountWindow = new EditAccountWindow(_mainWindowViewModel, userAccount)
+            var searchParam = new MySqlParameter("@searchText", MySqlDbType.String)
             {
-                Owner = _mainWindow
+                Value = $"%{searchText}%"
             };
-            editAccountWindow.ShowDialog();
+            mySqlCommand.Parameters.Add(searchParam);
         }
+        // 切换数据库
+        await dbConnection.SwitchAccountDbAsync();
+        var getOptionString = (MySqlDataReader reader, string fieldName) =>
+        {
+            var ordinal = reader.GetOrdinal(fieldName);
+            return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
+        };
+
+        using var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader;
+        if (rd != null)
+        {
+            while (await rd.ReadAsync())
+            {
+                var userAccount = new UserAccount
+                {
+                    Id = rd.GetInt32("id"),
+                    Name = rd.GetString("name"),
+                    Password = rd.GetString("password"),
+                    Question = getOptionString(rd, "question"),
+                    Answer = getOptionString(rd, "answer"),
+                    Email = getOptionString(rd, "email"),
+                    IdCard = getOptionString(rd, "id_card"),
+                    Point = rd.GetInt32("point")
+                };
+                //add to list
+                itemList.Add(new(userAccount));
+            }
+        }
+        return itemList;
+    }
+
+    private void ShowAccountEditorDialog(object? parameter)
+    {
+        var accountInfo = parameter as UserAccountViewModel;
+        if (accountInfo is null)
+        {
+            return;
+        }
+        ShowDialog(new AccountEditorWindow(), (AccountEditorViewModel vm) =>
+        {
+            vm.InputUserAccount = accountInfo;
+            vm.Connection = Connection;
+        });
     }
 }

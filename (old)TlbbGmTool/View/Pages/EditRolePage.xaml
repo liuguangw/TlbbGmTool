@@ -1,0 +1,120 @@
+﻿<Page x:Class="TlbbGmTool.View.Pages.EditRolePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
+      xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+      mc:Ignorable="d"
+      Loaded="EditRolePage_OnLoaded"
+      d:DesignWidth="780" d:DesignHeight="450"
+      Title="EditRolePage">
+    <Page.DataContext>
+        <vm:EditRoleViewModel />
+    </Page.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,6,0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0" Grid.Column="0">角色ID</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" BorderThickness="0" Text="{Binding Charguid}" />
+        <Label Grid.Row="1" Grid.Column="0">账号</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Accname}" />
+        <Label Grid.Row="2" Grid.Column="0">角色名</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Charname}" />
+        <Label Grid.Row="3" Grid.Column="0">称号</Label>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Title}" />
+        <Label Grid.Row="4" Grid.Column="0">门派</Label>
+        <ComboBox Grid.Row="4" Grid.Column="1" Margin="5"
+                  VerticalContentAlignment="Center"
+                  ItemsSource="{Binding MenpaiSelection}"
+                  DisplayMemberPath="Title"
+                  SelectedValuePath="Value"
+                  SelectedValue="{Binding Menpai}" />
+        <Label Grid.Row="5" Grid.Column="0">等级</Label>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Level}" />
+        <Label Grid.Row="6" Grid.Column="0">当前血量</Label>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Hp}" />
+        <Label Grid.Row="7" Grid.Column="0">当前气量</Label>
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Mp}" />
+        <Label Grid.Row="8" Grid.Column="0">经验值</Label>
+        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Exp}" />
+        <Label Grid.Row="9" Grid.Column="0">场景ID</Label>
+        <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal">
+            <TextBox MinWidth="60" Text="{Binding Scene}" />
+            <Button Padding="12,5" Margin="5" Command="{Binding GoHomeCommand}">回城</Button>
+        </StackPanel>
+        <Label Grid.Row="10" Grid.Column="0">坐标</Label>
+        <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal">
+            <TextBox MinWidth="60" Text="{Binding Xpos}" />
+            <TextBox MinWidth="60" Text="{Binding Zpos}" />
+        </StackPanel>
+        <!--next column-->
+        <Label Grid.Row="0" Grid.Column="2">力量</Label>
+        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding Str}" />
+        <Label Grid.Row="1" Grid.Column="2">灵气</Label>
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Spr}" />
+        <Label Grid.Row="2" Grid.Column="2">体力</Label>
+        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Con}" />
+        <Label Grid.Row="3" Grid.Column="2">定力</Label>
+        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Ipr}" />
+        <Label Grid.Row="4" Grid.Column="2">身法</Label>
+        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Dex}" />
+        <Label Grid.Row="5" Grid.Column="2">潜能</Label>
+        <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding Points}" />
+        <Label Grid.Row="6" Grid.Column="2">精力</Label>
+        <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding Enegry}" />
+        <Label Grid.Row="7" Grid.Column="2">精力上限</Label>
+        <TextBox Grid.Row="7" Grid.Column="3" Text="{Binding Energymax}" />
+        <Label Grid.Row="8" Grid.Column="2">活力</Label>
+        <TextBox Grid.Row="8" Grid.Column="3" Text="{Binding Vigor}" />
+        <Label Grid.Row="9" Grid.Column="2">活力上限</Label>
+        <TextBox Grid.Row="9" Grid.Column="3" Text="{Binding Maxvigor}" />
+        <Label Grid.Row="10" Grid.Column="2">Pk值</Label>
+        <TextBox Grid.Row="10" Grid.Column="3" Text="{Binding Pkvalue}" />
+        <!--next column-->
+        <Label Grid.Row="0" Grid.Column="4">金币</Label>
+        <TextBox Grid.Row="0" Grid.Column="5" Text="{Binding Vmoney}" />
+        <Label Grid.Row="1" Grid.Column="4">仓库金币</Label>
+        <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Bankmoney}" />
+        <Label Grid.Row="2" Grid.Column="4">元宝</Label>
+        <TextBox Grid.Row="2" Grid.Column="5" Text="{Binding Yuanbao}" />
+        <Label Grid.Row="3" Grid.Column="4">赠点</Label>
+        <TextBox Grid.Row="3" Grid.Column="5" Text="{Binding Zengdian}" />
+        <Label Grid.Row="4" Grid.Column="4">门贡</Label>
+        <TextBox Grid.Row="4" Grid.Column="5" Text="{Binding Menpaipoint}" />
+        <Button Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2"
+                Margin="30,12" Command="{Binding SaveRoleCommand}">
+            保存
+        </Button>
+    </Grid>
+</Page>

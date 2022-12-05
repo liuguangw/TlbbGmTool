@@ -1,0 +1,63 @@
+﻿<Page x:Class="TlbbGmTool.View.Pages.AccountList"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
+      xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+      xmlns:convert="clr-namespace:TlbbGmTool.Core.Convert"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Loaded="AccountList_OnLoaded"
+      Title="AccountList">
+    <Page.DataContext>
+        <vm:AccountListViewModel />
+    </Page.DataContext>
+    <Page.Resources>
+        <convert:IsLockToTipConvert x:Key="IsLockToTipConvert" />
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0" Margin="0,5">
+            <Label Content="账号关键词" />
+            <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
+            <Button Margin="10,0,0,0" Padding="10,0" Command="{Binding SearchCommand}">搜索</Button>
+        </WrapPanel>
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  Margin="10,0" ItemsSource="{Binding AccountList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="45" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="ID" Binding="{Binding Id}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="150" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="账号" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="密码" Binding="{Binding Password}" />
+                <DataGridTextColumn Width="140" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="邮箱" Binding="{Binding Email}" />
+                <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="点数" Binding="{Binding Point}" />
+                <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="状态"
+                                    Binding="{Binding IsLock,Converter={StaticResource IsLockToTipConvert}}" />
+                <DataGridTemplateColumn Header="管理" Width="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Margin="3" Padding="3,5"
+                                Command="{Binding DataContext.EditAccountCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type DataGrid}}}"
+                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                修改
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

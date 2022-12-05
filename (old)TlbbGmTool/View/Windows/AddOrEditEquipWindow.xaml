@@ -1,0 +1,276 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.AddOrEditEquipWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Title="{Binding WindowTitle}" Height="450" Width="800">
+    <Window.DataContext>
+        <vm:AddOrEditEquipViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="Slider" x:Key="CommonSlider">
+            <Setter Property="Margin" Value="3,0,0,0" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="TickPlacement" Value="BottomRight" />
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="Maximum" Value="255" />
+            <Setter Property="TickFrequency" Value="1" />
+            <Setter Property="IsSnapToTickEnabled" Value="True" />
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
+        <GroupBox Margin="5,0" Grid.ColumnSpan="4">
+            <GroupBox.Header>
+                <Label>基本信息</Label>
+            </GroupBox.Header>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Height" Value="23" />
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Height" Value="23" />
+                    </Style>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
+                </StackPanel.Resources>
+                <Label>名称:</Label>
+                <TextBox MinWidth="100" Text="{Binding ItemName,Mode=OneWay}"
+                         IsReadOnly="True" BorderThickness="0"
+                         VerticalAlignment="Center" Height="22" />
+                <Button Margin="2,0,0,0" Command="{Binding SelectEquipCommand}">修改</Button>
+                <Label Margin="8,0,0,0">星级:</Label>
+                <ComboBox ItemsSource="{Binding StarSection}"
+                          DisplayMemberPath="Title"
+                          SelectedValuePath="Value"
+                          SelectedValue="{Binding StarCount}" />
+                <Label>孔数:</Label>
+                <ComboBox ItemsSource="{Binding SlotSelection}"
+                          DisplayMemberPath="Title"
+                          SelectedValuePath="Value"
+                          SelectedValue="{Binding SlotCount}" />
+                <Label>外形:</Label>
+                <Label MinWidth="100" Content="{Binding EquipVisualName,Mode=OneWay}" />
+                <Button Command="{Binding SelectVisualCommand}">切换</Button>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="0" Grid.RowSpan="3">
+            <GroupBox.Header>
+                <Label>宝石</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="2" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Gem1Name,Mode=OneWay}" />
+                <Button Grid.Row="0" Grid.Column="1" Command="{Binding SelectGem1Command}">选择</Button>
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Gem2Name,Mode=OneWay}" />
+                <Button Grid.Row="1" Grid.Column="1" Command="{Binding SelectGem2Command}">选择</Button>
+                <Label Grid.Row="2" Grid.Column="0" Content="{Binding Gem3Name,Mode=OneWay}" />
+                <Button Grid.Row="2" Grid.Column="1" Command="{Binding SelectGem3Command}">选择</Button>
+                <Label Grid.Row="3" Grid.Column="0" Content="{Binding Gem4Name,Mode=OneWay}" />
+                <Button Grid.Row="3" Grid.Column="1" Command="{Binding SelectGem4Command}">选择</Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
+            <GroupBox.Header>
+                <Label>属性种类</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="2" />
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Attr1Tip,Mode=OneWay}" />
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Attr2Tip,Mode=OneWay}" />
+                <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                        Command="{Binding SelectAttrCommand}">
+                    修改
+                </Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="5,0" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
+            <GroupBox.Header>
+                <Label>其他</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="2" />
+                    </Style>
+                    <Style TargetType="Slider">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Orientation" Value="Horizontal" />
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                        <Setter Property="TickPlacement" Value="BottomRight" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0">强化:</Label>
+                <Label Content="{Binding EnhanceCount}" MinWidth="25"
+                       Grid.Row="0" Grid.Column="1" />
+                <Slider Margin="3,0,0,0" Value="{Binding EnhanceCount}" MinWidth="100"
+                        Grid.Row="0" Grid.Column="2"
+                        Minimum="0" Maximum="99"
+                        TickFrequency="1" IsSnapToTickEnabled="True" />
+                <Label Grid.Row="1" Grid.Column="0">浮动值:</Label>
+                <Label Content="{Binding FloatValue}" MinWidth="25"
+                       Grid.Row="1" Grid.Column="1" />
+                <Slider Value="{Binding FloatValue}" Style="{StaticResource CommonSlider}"
+                        Grid.Row="1" Grid.Column="2" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="5,0" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3">
+            <GroupBox.Header>
+                <Label>资质</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="2" />
+                    </Style>
+                    <Style TargetType="Slider">
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Orientation" Value="Horizontal" />
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                        <Setter Property="TickPlacement" Value="BottomRight" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0">外功资质:</Label>
+                <Label Content="{Binding Qualification1}" MinWidth="25"
+                       Grid.Row="0" Grid.Column="1" />
+                <Slider Value="{Binding Qualification1}"
+                        Grid.Row="0" Grid.Column="2"
+                        Style="{StaticResource CommonSlider}" />
+                <Label Grid.Row="0" Grid.Column="3">内功资质:</Label>
+                <Label Content="{Binding Qualification2}" MinWidth="25"
+                       Grid.Row="0" Grid.Column="4" />
+                <Slider Value="{Binding Qualification2}"
+                        Grid.Row="0" Grid.Column="5"
+                        Style="{StaticResource CommonSlider}" />
+                <!--next row-->
+                <Label Grid.Row="1" Grid.Column="0">外防资质:</Label>
+                <Label Content="{Binding Qualification3}" MinWidth="25"
+                       Grid.Row="1" Grid.Column="1" />
+                <Slider Value="{Binding Qualification3}"
+                        Grid.Row="1" Grid.Column="2"
+                        Style="{StaticResource CommonSlider}" />
+                <Label Grid.Row="1" Grid.Column="3">内防资质:</Label>
+                <Label Content="{Binding Qualification4}" MinWidth="25"
+                       Grid.Row="1" Grid.Column="4" />
+                <Slider Value="{Binding Qualification4}"
+                        Grid.Row="1" Grid.Column="5"
+                        Style="{StaticResource CommonSlider}" />
+                <!--next row-->
+                <Label Grid.Row="2" Grid.Column="0">闪避资质:</Label>
+                <Label Content="{Binding Qualification5}" MinWidth="25"
+                       Grid.Row="2" Grid.Column="1" />
+                <Slider Value="{Binding Qualification5}"
+                        Grid.Row="2" Grid.Column="2"
+                        Style="{StaticResource CommonSlider}" />
+                <Label Grid.Row="2" Grid.Column="3">命中资质:</Label>
+                <Label Content="{Binding Qualification6}" MinWidth="25"
+                       Grid.Row="2" Grid.Column="4" />
+                <Slider Value="{Binding Qualification6}"
+                        Grid.Row="2" Grid.Column="5"
+                        Style="{StaticResource CommonSlider}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="5,0" Grid.Row="3" Grid.Column="2" Grid.RowSpan="2">
+            <GroupBox.Header>
+                <Label>状态</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding BindStatus}">已绑定</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding VerifiedStatus}">已鉴定</CheckBox>
+                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding QualificationVerifiedStatus}">资质已鉴定</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding EngravedStatus}">已刻铭</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding LockStatus}">已锁定</CheckBox>
+            </Grid>
+        </GroupBox>
+        <DockPanel Margin="5" Grid.Row="5" Grid.Column="2">
+            <Button Command="{Binding SaveEquipCommand}">保存</Button>
+        </DockPanel>
+    </Grid>
+</Window>

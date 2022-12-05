@@ -1,0 +1,78 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.SelectEquipWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Title="装备选择" Height="500" Width="520">
+    <Window.DataContext>
+        <vm:SelectEquipViewModel />
+    </Window.DataContext>
+    <Grid Margin="5,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0">
+            <Label>类型</Label>
+            <ComboBox VerticalContentAlignment="Center" MinWidth="50" ItemsSource="{Binding ShortTypeSelection}"
+                      DisplayMemberPath="Title"
+                      SelectedValuePath="Value"
+                      SelectedValue="{Binding ShortType}" />
+            <Label Margin="8,0,0,0">最低等级</Label>
+            <TextBox MinWidth="40" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding MinLevel,UpdateSourceTrigger=PropertyChanged}" />
+            <Label Margin="8,0,0,0">名称筛选</Label>
+            <TextBox MinWidth="160" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
+        </WrapPanel>
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  ItemsSource="{Binding CurrentPageItemList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource SelectItemCellStyle}"
+                                    Header="ID" Binding="{Binding Id}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="38" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource SelectItemCellStyle}"
+                                    Header="等级" Binding="{Binding Level}" />
+                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource SelectItemCellStyle}"
+                                    Header="类型" Binding="{Binding ShortTypeString}" />
+                <DataGridTextColumn Width="3*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource SelectItemCellStyle}"
+                                    Header="名称" Binding="{Binding Name}" />
+                <DataGridTemplateColumn Header="管理" Width="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Margin="3"
+                                Padding="2"
+                                Command="{Binding DataContext.ConfirmCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type DataGrid}}}"
+                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                选择
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <WrapPanel Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <WrapPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Padding" Value="10,5" />
+                </Style>
+            </WrapPanel.Resources>
+            <Button Command="{Binding FirstPageCommand}">首页</Button>
+            <Button Margin="5,0" Command="{Binding PrevPageCommand}">上一页</Button>
+            <Label MinWidth="60" Content="{Binding PageTip}" />
+            <Button Margin="5,0" Command="{Binding NextPageCommand}">下一页</Button>
+            <Button Command="{Binding LastPageCommand}">末页</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

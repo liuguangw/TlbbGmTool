@@ -1,93 +1,44 @@
-﻿using TlbbGmTool.Core;
+namespace liuguang.TlbbGmTool.Models;
 
-namespace TlbbGmTool.Models
+public class GameServer
 {
-    public class GameServer : BindDataBase
-    {
-        #region Fields
+    /// <summary>
+    /// 服务器名称
+    /// </summary>
+    public string ServerName = string.Empty;
 
-        private string _serverName = string.Empty;
-        private string _dbHost = string.Empty;
-        private uint _dbPort;
-        private string _accountDbName = string.Empty;
-        private string _gameDbName = string.Empty;
-        private string _dbUser = string.Empty;
-        private string _dbPassword = string.Empty;
-        private bool _connected;
+    /// <summary>
+    /// 主机名
+    /// </summary>
+    public string DbHost = string.Empty;
 
-        #endregion
+    /// <summary>
+    /// 端口
+    /// </summary>
+    public ushort DbPort = 3306;
 
-        #region Properties
+    /// <summary>
+    /// 账号数据库名称
+    /// </summary>
+    public string AccountDbName = "web";
 
-        /// <summary>
-        /// 服务器名称
-        /// </summary>
-        public string ServerName
-        {
-            get => _serverName;
-            set => SetProperty(ref _serverName, value);
-        }
+    /// <summary>
+    /// 游戏数据库名称
+    /// </summary>
+    public string GameDbName = "tlbbdb";
 
-        /// <summary>
-        /// 主机名
-        /// </summary>
-        public string DbHost
-        {
-            get => _dbHost;
-            set => SetProperty(ref _dbHost, value);
-        }
+    /// <summary>
+    /// 数据库用户名
+    /// </summary>
+    public string DbUser = "root";
 
-        /// <summary>
-        /// 端口
-        /// </summary>
-        public uint DbPort
-        {
-            get => _dbPort;
-            set => SetProperty(ref _dbPort, value);
-        }
+    /// <summary>
+    /// 数据库密码
+    /// </summary>
+    public string DbPassword = string.Empty;
 
-        /// <summary>
-        /// 账号数据库名称
-        /// </summary>
-        public string AccountDbName
-        {
-            get => _accountDbName;
-            set => SetProperty(ref _accountDbName, value);
-        }
-
-        /// <summary>
-        /// 游戏数据库名称
-        /// </summary>
-        public string GameDbName
-        {
-            get => _gameDbName;
-            set => SetProperty(ref _gameDbName, value);
-        }
-
-        /// <summary>
-        /// 数据库用户名
-        /// </summary>
-        public string DbUser
-        {
-            get => _dbUser;
-            set => SetProperty(ref _dbUser, value);
-        }
-
-        /// <summary>
-        /// 数据库密码
-        /// </summary>
-        public string DbPassword
-        {
-            get => _dbPassword;
-            set => SetProperty(ref _dbPassword, value);
-        }
-
-        public bool Connected
-        {
-            get => _connected;
-            set => SetProperty(ref _connected, value);
-        }
-
-        #endregion
-    }
+    /// <summary>
+    /// 客户端路径
+    /// </summary>
+    public string ClientPath = string.Empty;
 }

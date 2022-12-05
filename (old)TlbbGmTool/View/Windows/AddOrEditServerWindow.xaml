@@ -1,0 +1,66 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.AddOrEditServerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="{Binding WindowTitle}" Width="360" Height="300">
+    <Window.DataContext>
+        <vm:AddOrEditServerViewModel />
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="0,2" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,8,0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="15,5" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0" Grid.Column="0">名称</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ServerName}" />
+        <Label Grid.Row="1" Grid.Column="0">服务器IP</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DbHost}" />
+        <Label Grid.Row="2" Grid.Column="0">数据库端口</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DbPort}" />
+        <Label Grid.Row="3" Grid.Column="0">账号数据库</Label>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding AccountDbName}" />
+        <Label Grid.Row="4" Grid.Column="0">游戏数据库</Label>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding GameDbName}" />
+        <Label Grid.Row="5" Grid.Column="0">数据库用户名</Label>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DbUser}" />
+        <Label Grid.Row="6" Grid.Column="0">数据库密码</Label>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding DbPassword}" />
+        <WrapPanel Grid.Row="7" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button Command="{Binding ConnTestCommand}">测试连接</Button>
+            <Button Margin="8,0,0,0"
+                    Command="{Binding SaveServerCommand}">
+                保存
+            </Button>
+        </WrapPanel>
+    </Grid>
+</Window>

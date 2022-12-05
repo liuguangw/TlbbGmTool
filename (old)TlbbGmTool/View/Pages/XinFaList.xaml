@@ -1,0 +1,38 @@
+﻿<Page x:Class="TlbbGmTool.View.Pages.XinFaList"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
+      xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+      mc:Ignorable="d"
+      Loaded="XinFaList_OnLoaded"
+      Title="XinFaList" d:DesignWidth="800" d:DesignHeight="450">
+    <Page.DataContext>
+        <vm:XinFaListViewModel />
+    </Page.DataContext>
+    <DockPanel>
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  Margin="10" ItemsSource="{Binding XinFaList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="ID" Binding="{Binding Xinfaid}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="2*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="等级" Binding="{Binding Xinfalvl}" />
+                <DataGridTemplateColumn Width="*" Header="管理">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Margin="20,2" Padding="10,5"
+                                    Command="{Binding DataContext.EditXinFaCommand, 
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                修改
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Page>

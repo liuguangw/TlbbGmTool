@@ -1,0 +1,56 @@
+﻿<Page x:Class="TlbbGmTool.View.Pages.PetList"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TlbbGmTool.View.Pages"
+      xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+      mc:Ignorable="d"
+      Loaded="PetList_OnLoaded"
+      Title="PetList" d:DesignWidth="800" d:DesignHeight="450">
+    <Page.DataContext>
+        <vm:PetListViewModel />
+    </Page.DataContext>
+    <DockPanel>
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  Margin="10" ItemsSource="{Binding PetList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="3*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="ID" Binding="{Binding PetGuid}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="4*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="名称" Binding="{Binding PetName}" />
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="等级" Binding="{Binding Level}" />
+                <DataGridTemplateColumn Width="240" Header="管理">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <WrapPanel Margin="5">
+                                <Button Padding="5"
+                                        Command="{Binding DataContext.EditPetCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    修改属性
+                                </Button>
+                                <Button Padding="5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.EditPetSkillCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    修改技能
+                                </Button>
+                                <Button Padding="5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.DeletePetCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                    删除珍兽
+                                </Button>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Page>

@@ -1,0 +1,72 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.AddOrEditItemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        xmlns:vm="clr-namespace:TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Title="{Binding WindowTitle}" Height="200" Width="400">
+    <Window.DataContext>
+        <vm:AddOrEditItemViewModel />
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,6,0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="13,6" />
+            </Style>
+            <Style TargetType="Slider">
+                <Setter Property="MinWidth" Value="140" />
+                <Setter Property="Orientation" Value="Horizontal" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="TickPlacement" Value="BottomRight" />
+                <Setter Property="TickFrequency" Value="1" />
+                <Setter Property="IsSnapToTickEnabled" Value="True" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0" Grid.Column="0">名称</Label>
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 IsReadOnly="True" BorderThickness="0"
+                 Text="{Binding ItemName,Mode=OneWay}" />
+        <Button Grid.Row="0" Grid.Column="2" Margin="5"
+                Command="{Binding SelectItemCommand}">替换</Button>
+        <Label Grid.Row="1" Grid.Column="0">最大数量</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                 IsReadOnly="True" BorderThickness="0"
+                 Text="{Binding ItemMaxSize,Mode=OneWay}" />
+        <Label Grid.Row="2" Grid.Column="0">数量</Label>
+        <Slider Grid.Row="2" Grid.Column="1"
+                IsEnabled="{Binding CanEditCount}"
+                Value="{Binding ItemCount}"
+                Minimum="1"
+                Maximum="{Binding ItemMaxSize}" />
+        <TextBox Grid.Row="2" Grid.Column="2"
+                 IsEnabled="{Binding CanEditCount}"
+                 Text="{Binding ItemCount,UpdateSourceTrigger=PropertyChanged}" />
+        <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+                   HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button Margin="5,0,0,0" Command="{Binding SaveItemCommand}">保存</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

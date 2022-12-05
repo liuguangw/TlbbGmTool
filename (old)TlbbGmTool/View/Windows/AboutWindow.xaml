@@ -1,0 +1,40 @@
+﻿<Window x:Class="TlbbGmTool.View.Windows.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TlbbGmTool.View.Windows"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanMinimize"
+        Title="关于本程序" Height="450" Width="750">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock" x:Key="BoldBlock">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+            <Style TargetType="TextBlock" x:Key="CommonBlock">
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Style="{StaticResource BoldBlock}">本工具由流光开发,仅用于技术研究，使用本工具的任何后果与本作者无关。</TextBlock>
+        <TextBlock Grid.Row="1" Style="{StaticResource BoldBlock}"> 项目主页：<Hyperlink NavigateUri="https://github.com/liuguangw/TlbbGmTool" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/liuguangw/TlbbGmTool</Hyperlink></TextBlock>
+        <GroupBox Grid.Row="2" Margin="20,0,20,20" Padding="15">
+                    <GroupBox.Header>
+                        <Label>使用说明</Label>
+                    </GroupBox.Header>
+            <TextBlock>
+                1. 将相关的txt配置文件复制到 config/text 目录下<LineBreak/>
+                2. 点击菜单 - 区服管理, 添加服务器的数据库配置信息。<LineBreak/><LineBreak/>
+                <Run Foreground="Red"> 注意: 修改数据时，需要先退出游戏，否则修改可能不会生效。</Run>
+            </TextBlock>
+            </GroupBox>
+    </Grid>
+</Window>
