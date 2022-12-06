@@ -1,7 +1,7 @@
 namespace liuguang.TlbbGmTool.Models;
 
 /// <summary>
-/// 角色数据
+/// 角色数据记录
 /// </summary>
 public class Role
 {

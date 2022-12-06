@@ -1,5 +1,8 @@
 namespace liuguang.TlbbGmTool.Models;
 
+/// <summary>
+/// 从txt中读取的物品基本信息定义
+/// </summary>
 public class ItemBase
 {
     public readonly int Id;

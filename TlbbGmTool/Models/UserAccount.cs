@@ -1,5 +1,8 @@
 namespace liuguang.TlbbGmTool.Models;
 
+/// <summary>
+/// 一条账号记录
+/// </summary>
 public class UserAccount
 {
     public int Id;
