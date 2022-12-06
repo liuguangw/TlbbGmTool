@@ -257,7 +257,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         var taskList = new Task[]{
             LoadServerListAsync(),
-            CommonConfigService.LoadConfigAsync(_mainWindowModel.MenpaiMap, _mainWindowModel.Attr1Map, _mainWindowModel.Attr2Map)
+            CommonConfigService.LoadConfigAsync(RoleViewModel.MenpaiMap, _mainWindowModel.Attr1Map, _mainWindowModel.Attr2Map)
         };
         try
         {

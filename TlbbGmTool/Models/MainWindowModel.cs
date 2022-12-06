@@ -28,11 +28,6 @@ public class MainWindowModel
     public ObservableCollection<GameServerViewModel> ServerList = new();
 
     /// <summary>
-    /// 门派名称
-    /// </summary>
-    public SortedDictionary<int, string> MenpaiMap = new();
-
-    /// <summary>
     /// 攻击属性名称
     /// </summary>
     public SortedDictionary<int, string> Attr1Map = new();

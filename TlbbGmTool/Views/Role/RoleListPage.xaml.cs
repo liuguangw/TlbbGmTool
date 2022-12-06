@@ -27,7 +27,6 @@ public partial class RoleListPage : Page
         var vm = (RoleListViewModel)DataContext;
         vm.OwnedWindow = mainWindow;
         vm.Connection = mainWindowVm.MainModel.Connection;
-        vm.MenpaiMap = mainWindowVm.MainModel.MenpaiMap;
         //MessageBox.Show("bind2");
         mainWindowVm.PropertyChanged += (sender, evt) =>
         {

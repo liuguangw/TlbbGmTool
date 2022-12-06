@@ -1,6 +1,7 @@
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.Services;
+using liuguang.TlbbGmTool.Views.Role;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,6 @@ public class RoleListViewModel : ViewModelBase
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
-
-    /// <summary>
-    /// 门派名称
-    /// </summary>
-    public SortedDictionary<int, string>? MenpaiMap;
     #endregion
 
     #region Properties
@@ -87,10 +83,6 @@ public class RoleListViewModel : ViewModelBase
 
     private async Task<List<RoleViewModel>> DoSearchRoleAsync(DbConnection dbConnection, string roleSearchText, string accountSearchText)
     {
-        if (MenpaiMap is null)
-        {
-            throw new Exception("门派名称配置未加载");
-        }
         var roleList = new List<RoleViewModel>();
         //构造SQL语句
         var sql = "SELECT * FROM t_char";
@@ -170,7 +162,7 @@ public class RoleListViewModel : ViewModelBase
                         ZengDian = rd.GetInt32("zengdian"),
                     };
                     //add to list
-                    roleList.Add(new(roleInfo, MenpaiMap));
+                    roleList.Add(new(roleInfo));
                 }
             }
         }
@@ -179,8 +171,12 @@ public class RoleListViewModel : ViewModelBase
 
     private void ShowRoleWindow(object? parameter)
     {
-        //RoleViewModel? roleInfo = parameter as RoleViewModel;
-        //todo
+        RoleViewModel? roleInfo = parameter as RoleViewModel;
+        ShowDialog(new RoleWindow(), (RoleWindowViewModel vm) =>
+        {
+            vm.RoleInfo= roleInfo;
+            vm.Connection = Connection;
+        });
     }
 
     private async void UpdateRoleBanStatus(object? parameter, bool isBanRole)

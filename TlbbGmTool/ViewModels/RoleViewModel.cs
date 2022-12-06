@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace liuguang.TlbbGmTool.ViewModels;
 public class RoleViewModel : NotifyBase
 {
+    public static readonly SortedDictionary<int, string> MenpaiMap = new();
     #region Fields
     private Role _role;
-    private SortedDictionary<int, string> _menpaiMap;
     #endregion
     #region Properties
     public string AccName
@@ -41,7 +41,7 @@ public class RoleViewModel : NotifyBase
     {
         get
         {
-            if (_menpaiMap.TryGetValue(_role.Menpai, out var menPaiText))
+            if (MenpaiMap.TryGetValue(_role.Menpai, out var menPaiText))
             {
                 return menPaiText;
             }
@@ -152,9 +152,51 @@ public class RoleViewModel : NotifyBase
     }
     #endregion
 
-    public RoleViewModel(Role role, SortedDictionary<int, string> menpaiMap)
+    public RoleViewModel(Role role)
     {
         _role = role;
-        _menpaiMap = menpaiMap;
+    }
+
+    public void CopyFrom(RoleViewModel value)
+    {
+        AccName = value.AccName;
+        CharGuid = value.CharGuid;
+        CharName = value.CharName;
+        Title = value.Title;
+        Menpai = value.Menpai;
+        Level = value.Level;
+
+        //
+        Scene = value.Scene;
+        XPos = value.XPos;
+        ZPos = value.ZPos;
+
+        //
+        Hp = value.Hp;
+        Mp = value.Mp;
+
+        //
+        Str = value.Str;
+        Spr = value.Spr;
+        Con = value.Con;
+        Ipr = value.Ipr;
+        Dex = value.Dex;
+
+        Points = value.Points;
+
+        //
+        Enegry = value.Enegry;
+        EnergyMax = value.EnergyMax;
+        Vigor = value.Vigor;
+        MaxVigor = value.MaxVigor;
+
+        //
+        Exp = value.Exp;
+        PkValue = value.PkValue;
+        VMoney = value.VMoney;
+        BankMoney = value.BankMoney;
+        YuanBao = value.YuanBao;
+        MenpaiPoint = value.MenpaiPoint;
+        ZengDian = value.ZengDian;
     }
 }
