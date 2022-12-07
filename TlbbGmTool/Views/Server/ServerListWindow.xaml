@@ -15,8 +15,7 @@
         <WrapPanel DockPanel.Dock="Top">
             <Button Command="{Binding AddServerCommand}" Padding="15,5">添加服务器</Button>
         </WrapPanel>
-        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                  Margin="0,10,0,0" ItemsSource="{Binding ServerList}">
+        <DataGrid Style="{StaticResource DataGridStyle}" Margin="0,10,0,0" ItemsSource="{Binding ServerList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="名称" Binding="{Binding ServerName}" />

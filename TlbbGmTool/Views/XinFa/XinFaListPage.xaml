@@ -11,8 +11,7 @@
         <vm:XinFaListViewModel />
     </Page.DataContext>
     <DockPanel>
-        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                  Margin="10" ItemsSource="{Binding XinFaList}">
+        <DataGrid Style="{StaticResource DataGridStyle}" Margin="10" ItemsSource="{Binding XinFaList}">
             <DataGrid.Resources>
                 <Style x:Key="ItemCellStyle" TargetType="DataGridCell">
                     <Setter Property="ToolTip">

@@ -11,9 +11,6 @@
     <Page.DataContext>
         <vm:AccountListViewModel/>
     </Page.DataContext>
-    <!--<Page.Resources>
-        <convert:IsLockToTipConvert x:Key="IsLockToTipConvert" />
-    </Page.Resources>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

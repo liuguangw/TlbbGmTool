@@ -40,7 +40,10 @@ public class XinFaListViewModel : ViewModelBase
         }
         try
         {
-            var xinFaList = await DoLoadXinFaListAsync(Connection, CharGuid);
+            var xinFaList = await Task.Run(async () =>
+            {
+                return await DoLoadXinFaListAsync(Connection, CharGuid);
+            });
             XinFaList.Clear();
             foreach (var xinFaInfo in xinFaList)
             {

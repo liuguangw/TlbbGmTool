@@ -6,6 +6,7 @@
         xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
         xmlns:role="clr-namespace:liuguang.TlbbGmTool.Views.Role"
         xmlns:xinfa="clr-namespace:liuguang.TlbbGmTool.Views.XinFa"
+        xmlns:pet="clr-namespace:liuguang.TlbbGmTool.Views.Pet"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
@@ -16,8 +17,8 @@
     <Window.Resources>
         <role:RoleEditorPage x:Key="RoleEditorPage" />
         <xinfa:XinFaListPage x:Key="XinFaListPage" />
-        <!--<pages:PetList x:Key="PetList" />
-        <pages:BagItemList x:Key="BagItemList" />
+        <pet:PetListPage x:Key="PetListPage" />
+        <!--<pages:BagItemList x:Key="BagItemList" />
         <pages:MaterialItemList x:Key="MaterialItemList" />-->
     </Window.Resources>
     <DockPanel>
@@ -29,7 +30,7 @@
                 <Frame Content="{StaticResource XinFaListPage}" />
             </TabItem>
             <TabItem Header="珍兽">
-                <!--<Frame Content="{StaticResource PetList}" />-->
+                <Frame Content="{StaticResource PetListPage}" />
             </TabItem>
             <TabItem Header="道具栏">
                 <!--<Frame Content="{StaticResource BagItemList}" />-->

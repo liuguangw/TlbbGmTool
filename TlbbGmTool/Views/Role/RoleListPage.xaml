@@ -25,8 +25,7 @@
                      Text="{Binding AccountSearchText}" />
             <Button Margin="15,0,0,0" Padding="10,0" Command="{Binding SearchCommand}">搜索</Button>
         </WrapPanel>
-        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                  Margin="10,0" ItemsSource="{Binding RoleList}">
+        <DataGrid Grid.Row="1" Style="{StaticResource DataGridStyle}" Margin="10,0" ItemsSource="{Binding RoleList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="86" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="角色ID" Binding="{Binding CharGuid}" SortDirection="Ascending" />
