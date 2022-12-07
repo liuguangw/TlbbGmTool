@@ -55,9 +55,10 @@ public static class AxpService
     {
         var dbcFile = await ParseFileAsync(stream, axpFile, "EquipBase.txt");
         var valueDbcFile = await ParseFileAsync(stream, axpFile, "ItemSegValue.txt");
+        var segDictionary = ParseItemSegValue(valueDbcFile);
         foreach (var keyValuePair in dbcFile.DataMap)
         {
-            itemBaseMap[keyValuePair.Key] = ParseEquipBaseRow(keyValuePair.Value, valueDbcFile.DataMap);
+            itemBaseMap[keyValuePair.Key] = ParseEquipBaseRow(keyValuePair.Value, segDictionary);
         }
     }
 
@@ -99,7 +100,27 @@ public static class AxpService
         return new(itemId, tClass, tType, name, shortTypeString, description, level, maxSize);
     }
 
-    private static ItemBase ParseEquipBaseRow(List<DbcField> rowFields, SortedDictionary<int, List<DbcField>> valueDataMap)
+    private static Dictionary<int, int[]> ParseItemSegValue(DbcFile dbcFile)
+    {
+        var segValueDictionary = new Dictionary<int, int[]>(dbcFile.DataMap.Count);
+        foreach (var keyPair in dbcFile.DataMap)
+        {
+            var rowFields = keyPair.Value;
+            var itemId = rowFields[0].IntValue;
+            var attrValues = new int[64];
+            for (var i = 0; i < attrValues.Length; i++)
+            {
+                if (i + 1 < rowFields.Count)
+                {
+                    attrValues[i] = rowFields[i + 1].IntValue;
+                }
+            }
+            segValueDictionary[itemId] = attrValues;
+        }
+        return segValueDictionary;
+    }
+
+    private static ItemBase ParseEquipBaseRow(List<DbcField> rowFields, Dictionary<int, int[]> segDictionary)
     {
         var itemId = rowFields[0].IntValue;
         var tClass = rowFields[1].IntValue;
@@ -121,16 +142,9 @@ public static class AxpService
         int[]? equipAttrValues = null;
         if (segIndex > 0)
         {
-            equipAttrValues = new int[32];
-            List<DbcField>? attrFields;
-            if (valueDataMap.TryGetValue(segIndex, out attrFields))
+            if (segDictionary.TryGetValue(segIndex, out var segValues))
             {
-                DbcField? attrField;
-                for (var i = 0; i < equipAttrValues.Length; i++)
-                {
-                    attrField = attrFields.ElementAtOrDefault(i + 1);
-                    equipAttrValues[i] = (attrField is null) ? 0 : attrField.IntValue;
-                }
+                equipAttrValues = segValues;
             }
         }
         return new(itemId, tClass, tType, name, shortTypeString, description, level,
