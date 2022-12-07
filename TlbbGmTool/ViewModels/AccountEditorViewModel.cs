@@ -11,34 +11,34 @@ public class AccountEditorViewModel : ViewModelBase
     #region Fields
     private bool _isSaving = false;
     private UserAccountViewModel? _inputUserAccount;
+    private UserAccountViewModel _userAccount = new(new());
     /// <summary>
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
     #endregion
     #region Properties
-    public UserAccountViewModel InputUserAccount
+    public UserAccountViewModel UserAccount
     {
+        get => _userAccount;
         set
         {
-            if (SetProperty(ref _inputUserAccount, value))
-            {
-                UserAccount.CopyFrom(value);
-            }
+            _inputUserAccount = value;
+            _userAccount.CopyFrom(value);
         }
     }
-    public UserAccountViewModel UserAccount { get; } = new(new());
 
     public List<ComboBoxNode<bool>> StatusSelectionList { get; } = new() {
         new("正常",false),
         new("已锁定",true),
     };
 
-    public bool IsSaving {
+    public bool IsSaving
+    {
         get => _isSaving;
         set
         {
-            if(SetProperty(ref _isSaving, value))
+            if (SetProperty(ref _isSaving, value))
             {
                 SaveCommand.RaiseCanExecuteChanged();
             }
@@ -56,7 +56,7 @@ public class AccountEditorViewModel : ViewModelBase
     }
     private async void SaveAccount()
     {
-        if ((Connection is null)||(_inputUserAccount is null))
+        if ((Connection is null) || (_inputUserAccount is null))
         {
             return;
         }
@@ -66,9 +66,9 @@ public class AccountEditorViewModel : ViewModelBase
 
             await Task.Run(async () =>
             {
-                await DoSaveAccountAsync(Connection);
+                await DoSaveAccountAsync(Connection, _userAccount);
             });
-            _inputUserAccount.CopyFrom(UserAccount);
+            _inputUserAccount.CopyFrom(_userAccount);
             ShowMessage("保存成功", "保存账号信息成功");
             OwnedWindow?.Close();
         }
@@ -82,7 +82,7 @@ public class AccountEditorViewModel : ViewModelBase
         }
     }
 
-    private async Task DoSaveAccountAsync(DbConnection dbConnection)
+    private async Task DoSaveAccountAsync(DbConnection dbConnection, UserAccountViewModel userAccount)
     {
         const string sql =
             "UPDATE account SET name=@name,password=@password" +
@@ -91,12 +91,12 @@ public class AccountEditorViewModel : ViewModelBase
         //字符串参数
         var paramDictionary = new Dictionary<string, string?>
         {
-            ["name"] = UserAccount.Name,
-            ["password"] = UserAccount.Password,
-            ["question"] = UserAccount.Question,
-            ["answer"] = UserAccount.Answer,
-            ["email"] = UserAccount.Email,
-            ["idCard"] = UserAccount.IdCard,
+            ["name"] = userAccount.Name,
+            ["password"] = userAccount.Password,
+            ["question"] = userAccount.Question,
+            ["answer"] = userAccount.Answer,
+            ["email"] = userAccount.Email,
+            ["idCard"] = userAccount.IdCard,
         };
         foreach (var keypair in paramDictionary)
         {
@@ -108,11 +108,11 @@ public class AccountEditorViewModel : ViewModelBase
         //int类型参数
         mySqlCommand.Parameters.Add(new MySqlParameter("@point", MySqlDbType.Int32)
         {
-            Value = UserAccount.Point
+            Value = userAccount.Point
         });
         mySqlCommand.Parameters.Add(new MySqlParameter("@id", MySqlDbType.Int32)
         {
-            Value = UserAccount.Id
+            Value = userAccount.Id
         });
         // 切换数据库
         await dbConnection.SwitchAccountDbAsync();

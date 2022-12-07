@@ -133,7 +133,7 @@ public class AccountListViewModel : ViewModelBase
         }
         ShowDialog(new AccountEditorWindow(), (AccountEditorViewModel vm) =>
         {
-            vm.InputUserAccount = accountInfo;
+            vm.UserAccount = accountInfo;
             vm.Connection = Connection;
         });
     }

@@ -11,7 +11,7 @@ namespace liuguang.TlbbGmTool.ViewModels;
 public class XinFaListViewModel : ViewModelBase
 {
     #region Fields
-    private int _charGuid;
+    public int CharGuid;
     /// <summary>
     /// 数据库连接
     /// </summary>
@@ -22,11 +22,6 @@ public class XinFaListViewModel : ViewModelBase
     #region Properties
 
     public ObservableCollection<XinFaLogViewModel> XinFaList { get; } = new();
-
-    public int CharGuid
-    {
-        get => _charGuid; set => SetProperty(ref _charGuid, value);
-    }
 
     public Command EditXinFaCommand { get; }
 
@@ -45,7 +40,7 @@ public class XinFaListViewModel : ViewModelBase
         }
         try
         {
-            var xinFaList = await DoLoadXinFaListAsync(Connection, _charGuid);
+            var xinFaList = await DoLoadXinFaListAsync(Connection, CharGuid);
             XinFaList.Clear();
             foreach (var xinFaInfo in xinFaList)
             {
