@@ -85,11 +85,11 @@ public class MainWindowViewModel : ViewModelBase
     {
         set
         {
-            if(_selectedServer is null)
+            if (_selectedServer is null)
             {
                 return;
             }
-            if(SetProperty(ref _currentDbStatus,value))
+            if (SetProperty(ref _currentDbStatus, value))
             {
                 _selectedServer.DbStatus = value;
                 RaisePropertyChanged(nameof(CanConnServer));
@@ -197,7 +197,7 @@ public class MainWindowViewModel : ViewModelBase
             await Task.Run(async () =>
             {
                 var axpPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config.axp");
-                await AxpService.LoadDataAsync(axpPath, _mainWindowModel.ItemBaseMap);
+                await AxpService.LoadDataAsync(axpPath, _mainWindowModel.ItemBaseMap, XinFaLogViewModel.XinFaMap);
             });
             this.DataStatus = DataStatus.Loaded;
         }

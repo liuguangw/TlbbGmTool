@@ -11,7 +11,7 @@ namespace liuguang.TlbbGmTool.Services;
 
 public static class AxpService
 {
-    public static async Task LoadDataAsync(string axpFilePath, SortedDictionary<int, ItemBase> itemBaseMap)
+    public static async Task LoadDataAsync(string axpFilePath, SortedDictionary<int, ItemBase> itemBaseMap, Dictionary<int, XinFaBase> xinFaMap)
     {
         using (var fileStream = File.OpenRead(axpFilePath))
         {
@@ -19,6 +19,7 @@ public static class AxpService
             await LoadCommonItemAsync(fileStream, axpFile, itemBaseMap);
             await LoadGemInfoAsync(fileStream, axpFile, itemBaseMap);
             await LoadEquipBaseAsync(fileStream, axpFile, itemBaseMap);
+            await LoadXinFaAsync(fileStream, axpFile, xinFaMap);
         }
     }
 
@@ -57,6 +58,15 @@ public static class AxpService
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             itemBaseMap[keyValuePair.Key] = ParseEquipBaseRow(keyValuePair.Value, valueDbcFile.DataMap);
+        }
+    }
+
+    private static async Task LoadXinFaAsync(Stream stream, AxpFile axpFile, Dictionary<int, XinFaBase> xinFaMap)
+    {
+        var dbcFile = await ParseFileAsync(stream, axpFile, "XinFa_V1.txt");
+        foreach (var keyValuePair in dbcFile.DataMap)
+        {
+            xinFaMap[keyValuePair.Key] = ParseXinFaRow(keyValuePair.Value);
         }
     }
 
@@ -126,5 +136,14 @@ public static class AxpService
         return new(itemId, tClass, tType, name, shortTypeString, description, level,
         equipPoint, bagCapacity, materialCapacity,
         equipVisual, maxLife, equipAttrValues);
+    }
+
+    private static XinFaBase ParseXinFaRow(List<DbcField> rowFields)
+    {
+        var id = rowFields[0].IntValue;
+        var menpai = rowFields[1].IntValue;
+        var name = rowFields[2].StringValue;
+        var description = rowFields[3].StringValue;
+        return new(id, menpai, name, description);
     }
 }

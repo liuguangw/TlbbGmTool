@@ -72,14 +72,21 @@ public class RoleEditorViewModel : ViewModelBase
         {
             return;
         }
-        var dbRoleInfo = await Task.Run(async () =>
+        try
         {
-            return await LoadRoleInfoAsync(Connection, charGuid);
-        });
-        if (dbRoleInfo != null)
+            var dbRoleInfo = await Task.Run(async () =>
+            {
+                return await LoadRoleInfoAsync(Connection, charGuid);
+            });
+            if (dbRoleInfo != null)
+            {
+                _inputRoleInfo?.CopyFrom(dbRoleInfo);
+                _roleInfo.CopyFrom(dbRoleInfo);
+            }
+        }
+        catch (Exception ex)
         {
-            _inputRoleInfo?.CopyFrom(dbRoleInfo);
-            _roleInfo.CopyFrom(dbRoleInfo);
+            ShowErrorMessage("加载出错", ex);
         }
     }
 

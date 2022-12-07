@@ -4,7 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
-        xmlns:pages="clr-namespace:liuguang.TlbbGmTool.Views.Role"
+        xmlns:role="clr-namespace:liuguang.TlbbGmTool.Views.Role"
+        xmlns:xinfa="clr-namespace:liuguang.TlbbGmTool.Views.XinFa"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
@@ -13,9 +14,9 @@
         <vm:RoleWindowViewModel />
     </Window.DataContext>
     <Window.Resources>
-        <pages:RoleEditorPage x:Key="RoleEditorPage" />
-        <!--<pages:XinFaList x:Key="XinFaList" />
-        <pages:PetList x:Key="PetList" />
+        <role:RoleEditorPage x:Key="RoleEditorPage" />
+        <xinfa:XinFaListPage x:Key="XinFaListPage" />
+        <!--<pages:PetList x:Key="PetList" />
         <pages:BagItemList x:Key="BagItemList" />
         <pages:MaterialItemList x:Key="MaterialItemList" />-->
     </Window.Resources>
@@ -25,7 +26,7 @@
                 <Frame Content="{StaticResource RoleEditorPage}" />
             </TabItem>
             <TabItem Header="心法">
-                <!--<Frame Content="{StaticResource XinFaList}" />-->
+                <Frame Content="{StaticResource XinFaListPage}" />
             </TabItem>
             <TabItem Header="珍兽">
                 <!--<Frame Content="{StaticResource PetList}" />-->
