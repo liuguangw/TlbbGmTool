@@ -191,7 +191,10 @@ public class MainWindowViewModel : ViewModelBase
         //数据库连接成功过
         //从客户端的axp文件中加载数据
         this.DataStatus = DataStatus.Loading;
+        //clear
         _mainWindowModel.ItemBaseMap.Clear();
+        XinFaLogViewModel.XinFaMap.Clear();
+        PetSkillEditorViewModel.PetSkillMap.Clear();
         try
         {
             await Task.Run(async () =>
