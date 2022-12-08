@@ -37,7 +37,11 @@ public class PetLogViewModel : NotifyBase
     }
     public int PetType
     {
-        get => _petLog.AiType; set => SetProperty(ref _petLog.AiType, value);
+        get => _petLog.PetType; set => SetProperty(ref _petLog.PetType, value);
+    }
+    public int Genera
+    {
+        get => _petLog.Genera; set => SetProperty(ref _petLog.Genera, value);
     }
     public int Life
     {
@@ -110,6 +114,14 @@ public class PetLogViewModel : NotifyBase
     {
         get => _petLog.DexPer; set => SetProperty(ref _petLog.DexPer, value);
     }
+    public string Skill
+    {
+        get => _petLog.Skill;
+        set
+        {
+            _petLog.Skill = value;
+        }
+    }
     #endregion
 
     public PetLogViewModel(PetLog petLog)
@@ -125,6 +137,7 @@ public class PetLogViewModel : NotifyBase
         NeedLevel = src.NeedLevel;
         AiType = src.AiType;
         PetType = src.PetType;
+        Genera = src.Genera;
         Life = src.Life;
         Enjoy = src.Enjoy;
         Savvy = src.Savvy;
@@ -144,5 +157,7 @@ public class PetLogViewModel : NotifyBase
         ConPer = src.ConPer;
         IprPer = src.IprPer;
         DexPer = src.DexPer;
+        //
+        Skill = src.Skill;
     }
 }

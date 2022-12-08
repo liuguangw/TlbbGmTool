@@ -35,6 +35,10 @@ public class PetLog
     /// </summary>
     public int Life;
     /// <summary>
+    /// Genera
+    /// </summary>
+    public int Genera;
+    /// <summary>
     /// 快乐
     /// </summary>
     public int Enjoy;
@@ -98,4 +102,8 @@ public class PetLog
     /// 身法资质
     /// </summary>
     public int DexPer;
+    /// <summary>
+    /// 技能
+    /// </summary>
+    public string Skill = string.Empty;
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Services;
+using liuguang.TlbbGmTool.Views.Pet;
 using MySql.Data.MySqlClient;
 
 namespace liuguang.TlbbGmTool.ViewModels;
@@ -32,8 +33,8 @@ public class PetListViewModel : ViewModelBase
     public PetListViewModel()
     {
         EditPetCommand = new(ShowPetEditor);
-        EditPetSkillCommand = new(ShowPetEditor);
-        DeletePetCommand = new(ShowPetEditor);
+        EditPetSkillCommand = new(ShowPetSkillEditor);
+        DeletePetCommand = new(AskDeletePet);
     }
 
     public async Task LoadPetListAsync()
@@ -86,6 +87,7 @@ public class PetListViewModel : ViewModelBase
                         NeedLevel = rd.GetInt32("needlevel"),
                         AiType = rd.GetInt32("aitype"),
                         PetType = rd.GetInt32("pettype"),
+                        Genera = rd.GetInt32("genera"),
                         Life = rd.GetInt32("life"),
                         Enjoy = rd.GetInt32("enjoy"),
                         Savvy = rd.GetInt32("savvy"),
@@ -103,6 +105,7 @@ public class PetListViewModel : ViewModelBase
                         ConPer = rd.GetInt32("conper"),
                         IprPer = rd.GetInt32("iprper"),
                         DexPer = rd.GetInt32("dexper"),
+                        Skill = rd.GetString("skill"),
                     }));
                 }
             }
@@ -112,6 +115,73 @@ public class PetListViewModel : ViewModelBase
 
     private void ShowPetEditor(object? parameter)
     {
-        ShowErrorMessage("todo", "todo");
+        var petInfo = parameter as PetLogViewModel;
+        if (petInfo is null)
+        {
+            return;
+        }
+        ShowDialog(new PetEditorWindow(), (PetEditorViewModel vm) =>
+        {
+            vm.PetInfo = petInfo;
+            vm.Connection = Connection;
+        });
+    }
+
+    private void ShowPetSkillEditor(object? parameter)
+    {
+        var petInfo = parameter as PetLogViewModel;
+        if (petInfo is null)
+        {
+            return;
+        }
+        ShowDialog(new PetSkillEditorWindow(), (PetSkillEditorViewModel vm) =>
+        {
+            vm.PetInfo = petInfo;
+            vm.Connection = Connection;
+        });
+    }
+
+    private async void AskDeletePet(object? parameter)
+    {
+        var petInfo = parameter as PetLogViewModel;
+        if (petInfo is null)
+        {
+            return;
+        }
+        if (Connection is null)
+        {
+            return;
+        }
+        if (!Confirm("操作提示", $"你确定要删除珍兽{petInfo.PetName}(ID:{petInfo.Id})吗?"))
+        {
+            return;
+        }
+        try
+        {
+            await Task.Run(async () =>
+            {
+                await DeletePetAsync(Connection, petInfo);
+            });
+            PetList.Remove(petInfo);
+            ShowMessage("删除成功", $"删除珍兽{petInfo.PetName}(ID:{petInfo.Id})成功");
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("删除失败", ex);
+        }
+    }
+
+    private async Task DeletePetAsync(DbConnection connection, PetLogViewModel petInfo)
+    {
+        const string sql = "DELETE FROM t_pet WHERE aid=@aid";
+        var mySqlCommand = new MySqlCommand(sql, connection.Conn);
+        mySqlCommand.Parameters.Add(new MySqlParameter("@aid", MySqlDbType.Int32)
+        {
+            Value = petInfo.Id,
+        });
+        // 切换数据库
+        await connection.SwitchGameDbAsync();
+        //
+        await mySqlCommand.ExecuteNonQueryAsync();
     }
 }

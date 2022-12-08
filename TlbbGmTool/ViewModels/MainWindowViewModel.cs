@@ -197,7 +197,7 @@ public class MainWindowViewModel : ViewModelBase
             await Task.Run(async () =>
             {
                 var axpPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config.axp");
-                await AxpService.LoadDataAsync(axpPath, _mainWindowModel.ItemBaseMap, XinFaLogViewModel.XinFaMap);
+                await AxpService.LoadDataAsync(axpPath, _mainWindowModel.ItemBaseMap, XinFaLogViewModel.XinFaMap, PetSkillEditorViewModel.PetSkillMap);
             });
             this.DataStatus = DataStatus.Loaded;
         }

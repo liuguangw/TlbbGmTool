@@ -6,12 +6,13 @@ using liuguang.TlbbGmTool.Models;
 using System;
 using liuguang.Dbc;
 using System.Linq;
+using liuguang.TlbbGmTool.ViewModels;
 
 namespace liuguang.TlbbGmTool.Services;
 
 public static class AxpService
 {
-    public static async Task LoadDataAsync(string axpFilePath, SortedDictionary<int, ItemBase> itemBaseMap, Dictionary<int, XinFaBase> xinFaMap)
+    public static async Task LoadDataAsync(string axpFilePath, SortedDictionary<int, ItemBase> itemBaseMap, Dictionary<int, XinFaBase> xinFaMap, SortedDictionary<int, PetSkillViewModel> petSkillMap)
     {
         using (var fileStream = File.OpenRead(axpFilePath))
         {
@@ -20,6 +21,7 @@ public static class AxpService
             await LoadGemInfoAsync(fileStream, axpFile, itemBaseMap);
             await LoadEquipBaseAsync(fileStream, axpFile, itemBaseMap);
             await LoadXinFaAsync(fileStream, axpFile, xinFaMap);
+            await LoadPetSkillAsync(fileStream, axpFile, petSkillMap);
         }
     }
 
@@ -68,6 +70,23 @@ public static class AxpService
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             xinFaMap[keyValuePair.Key] = ParseXinFaRow(keyValuePair.Value);
+        }
+    }
+
+    private static async Task LoadPetSkillAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, PetSkillViewModel> petSkillMap)
+    {
+        var dbcFile = await ParseFileAsync(stream, axpFile, "SkillTemplate_V1.txt");
+        foreach (var keyValuePair in dbcFile.DataMap)
+        {
+            var rowFields = keyValuePair.Value;
+            if (rowFields.Count >= 75)
+            {
+                var skillType = rowFields[27].IntValue;
+                if (skillType >= 0)
+                {
+                    petSkillMap[keyValuePair.Key] = ParsePetSkillRow(skillType, rowFields);
+                }
+            }
         }
     }
 
@@ -159,5 +178,13 @@ public static class AxpService
         var name = rowFields[2].StringValue;
         var description = rowFields[3].StringValue;
         return new(id, menpai, name, description);
+    }
+
+    private static PetSkillViewModel ParsePetSkillRow(int skillType, List<DbcField> rowFields)
+    {
+        var id = rowFields[0].IntValue;
+        var name = rowFields[3].StringValue;
+        var description = rowFields[74].StringValue;
+        return new(new(id, skillType, name, description));
     }
 }
