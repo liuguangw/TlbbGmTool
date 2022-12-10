@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace liuguang.TlbbGmTool.ViewModels;
 public class PetSkillEditorViewModel : ViewModelBase
 {
-    public static readonly SortedDictionary<int, PetSkillViewModel> PetSkillMap = new();
     #region Fields
     private bool _isSaving = false;
     private PetLogViewModel? _inputPetInfo;
@@ -23,6 +22,7 @@ public class PetSkillEditorViewModel : ViewModelBase
     private string _searchText = string.Empty;
     private int _searchSkillType = 0;
     private PetSkillViewModel? _selectedSkill;
+    private SortedDictionary<int, PetSkillViewModel> _allSkills;
     /// <summary>
     /// 数据库连接
     /// </summary>
@@ -76,7 +76,7 @@ public class PetSkillEditorViewModel : ViewModelBase
     {
         get
         {
-            return (from skillItem in PetSkillMap.Values
+            return (from skillItem in _allSkills.Values
                         //类别筛选
                     where _searchSkillType == 0 || skillItem.SkillType == (_searchSkillType - 1)
                     //关键词筛选
@@ -111,6 +111,11 @@ public class PetSkillEditorViewModel : ViewModelBase
         SaveCommand = new(SavePetSkill, () => !_isSaving);
         AddPetSkillCommand = new(AddSkillToList, CanAddSkill);
         DeletePetSkillCommand = new(DeletePetSkill);
+        _allSkills = new();
+        foreach (var keyPair in SharedData.PetSkillMap)
+        {
+            _allSkills[keyPair.Key] = new(keyPair.Value);
+        }
     }
 
     /// <summary>
@@ -138,7 +143,7 @@ public class PetSkillEditorViewModel : ViewModelBase
             var hexIdString = skillHex.Substring(offset + 4, 2) +
                               skillHex.Substring(offset + 2, 2);
             var skillId = Convert.ToInt32(hexIdString, 16);
-            if (PetSkillMap.TryGetValue(skillId, out var skillItem))
+            if (_allSkills.TryGetValue(skillId, out var skillItem))
             {
                 SkillList.Add(skillItem);
             }

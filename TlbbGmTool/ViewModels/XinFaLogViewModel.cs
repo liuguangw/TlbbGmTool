@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 
@@ -7,7 +5,6 @@ namespace liuguang.TlbbGmTool.ViewModels;
 
 public class XinFaLogViewModel : NotifyBase
 {
-    public static readonly Dictionary<int, XinFaBase> XinFaMap = new();
     #region Fields
     private XinFaLog _xinFaLog;
     #endregion
@@ -40,7 +37,7 @@ public class XinFaLogViewModel : NotifyBase
     {
         get
         {
-            if (XinFaMap.TryGetValue(_xinFaLog.XinFaId, out var xinFaBaseInfo))
+            if (SharedData.XinFaMap.TryGetValue(_xinFaLog.XinFaId, out var xinFaBaseInfo))
             {
                 return xinFaBaseInfo.Name;
             }
@@ -52,7 +49,7 @@ public class XinFaLogViewModel : NotifyBase
     {
         get
         {
-            if (XinFaMap.TryGetValue(_xinFaLog.XinFaId, out var xinFaBaseInfo))
+            if (SharedData.XinFaMap.TryGetValue(_xinFaLog.XinFaId, out var xinFaBaseInfo))
             {
                 return xinFaBaseInfo.Description;
             }

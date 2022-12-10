@@ -50,7 +50,7 @@ public class RoleEditorViewModel : ViewModelBase
 
     public RoleEditorViewModel()
     {
-        foreach (var keyPair in RoleViewModel.MenpaiMap)
+        foreach (var keyPair in SharedData.MenpaiMap)
         {
             _menpaiSelection.Add(new(keyPair.Value, keyPair.Key));
         }

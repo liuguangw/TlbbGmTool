@@ -5,23 +5,22 @@ using liuguang.Axp;
 using liuguang.TlbbGmTool.Models;
 using System;
 using liuguang.Dbc;
-using System.Linq;
-using liuguang.TlbbGmTool.ViewModels;
+using liuguang.TlbbGmTool.Common;
 
 namespace liuguang.TlbbGmTool.Services;
 
 public static class AxpService
 {
-    public static async Task LoadDataAsync(string axpFilePath, SortedDictionary<int, ItemBase> itemBaseMap, Dictionary<int, XinFaBase> xinFaMap, SortedDictionary<int, PetSkillViewModel> petSkillMap)
+    public static async Task LoadDataAsync(string axpFilePath)
     {
         using (var fileStream = File.OpenRead(axpFilePath))
         {
             var axpFile = await AxpFile.ReadAsync(fileStream);
-            await LoadCommonItemAsync(fileStream, axpFile, itemBaseMap);
-            await LoadGemInfoAsync(fileStream, axpFile, itemBaseMap);
-            await LoadEquipBaseAsync(fileStream, axpFile, itemBaseMap);
-            await LoadXinFaAsync(fileStream, axpFile, xinFaMap);
-            await LoadPetSkillAsync(fileStream, axpFile, petSkillMap);
+            await LoadCommonItemAsync(fileStream, axpFile, SharedData.ItemBaseMap);
+            await LoadGemInfoAsync(fileStream, axpFile, SharedData.ItemBaseMap);
+            await LoadEquipBaseAsync(fileStream, axpFile, SharedData.ItemBaseMap);
+            await LoadXinFaAsync(fileStream, axpFile, SharedData.XinFaMap);
+            await LoadPetSkillAsync(fileStream, axpFile, SharedData.PetSkillMap);
         }
     }
 
@@ -73,7 +72,7 @@ public static class AxpService
         }
     }
 
-    private static async Task LoadPetSkillAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, PetSkillViewModel> petSkillMap)
+    private static async Task LoadPetSkillAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, PetSkillBase> petSkillMap)
     {
         var dbcFile = await ParseFileAsync(stream, axpFile, "SkillTemplate_V1.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
@@ -180,11 +179,11 @@ public static class AxpService
         return new(id, menpai, name, description);
     }
 
-    private static PetSkillViewModel ParsePetSkillRow(int skillType, List<DbcField> rowFields)
+    private static PetSkillBase ParsePetSkillRow(int skillType, List<DbcField> rowFields)
     {
         var id = rowFields[0].IntValue;
         var name = rowFields[3].StringValue;
         var description = rowFields[74].StringValue;
-        return new(new(id, skillType, name, description));
+        return new(id, skillType, name, description);
     }
 }

@@ -1,11 +1,9 @@
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
-using System.Collections.Generic;
 
 namespace liuguang.TlbbGmTool.ViewModels;
 public class RoleViewModel : NotifyBase
 {
-    public static readonly SortedDictionary<int, string> MenpaiMap = new();
     #region Fields
     private Role _role;
     #endregion
@@ -41,7 +39,7 @@ public class RoleViewModel : NotifyBase
     {
         get
         {
-            if (MenpaiMap.TryGetValue(_role.Menpai, out var menPaiText))
+            if (SharedData.MenpaiMap.TryGetValue(_role.Menpai, out var menPaiText))
             {
                 return menPaiText;
             }

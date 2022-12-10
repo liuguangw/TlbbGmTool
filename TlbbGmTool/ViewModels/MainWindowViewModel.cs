@@ -192,15 +192,15 @@ public class MainWindowViewModel : ViewModelBase
         //从客户端的axp文件中加载数据
         this.DataStatus = DataStatus.Loading;
         //clear
-        _mainWindowModel.ItemBaseMap.Clear();
-        XinFaLogViewModel.XinFaMap.Clear();
-        PetSkillEditorViewModel.PetSkillMap.Clear();
+        SharedData.ItemBaseMap.Clear();
+        SharedData.XinFaMap.Clear();
+        SharedData.PetSkillMap.Clear();
         try
         {
             await Task.Run(async () =>
             {
                 var axpPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config.axp");
-                await AxpService.LoadDataAsync(axpPath, _mainWindowModel.ItemBaseMap, XinFaLogViewModel.XinFaMap, PetSkillEditorViewModel.PetSkillMap);
+                await AxpService.LoadDataAsync(axpPath);
             });
             this.DataStatus = DataStatus.Loaded;
         }
@@ -260,7 +260,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         var taskList = new Task[]{
             LoadServerListAsync(),
-            CommonConfigService.LoadConfigAsync(RoleViewModel.MenpaiMap, _mainWindowModel.Attr1Map, _mainWindowModel.Attr2Map)
+            CommonConfigService.LoadConfigAsync(SharedData.MenpaiMap, SharedData.Attr1Map, SharedData.Attr2Map)
         };
         try
         {

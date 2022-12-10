@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         <Style x:Key="TextColumnStyle" TargetType="TextBlock">
+        <Style x:Key="TextColumnStyle" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Padding" Value="5,0,0,0" />
         </Style>
@@ -15,5 +15,68 @@
             <Setter Property="CanUserAddRows" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
         </Style>
+        <!--for item column-->
+        <Style x:Key="ItemCellStyle" TargetType="DataGridCell">
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock>
+                                <Run Foreground="#FF615858">名称:</Run>
+                                <Run Text="{Binding ItemName, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">类型:</Run>
+                                <Run Text="{Binding ItemShortTypeString, Mode=OneWay}"
+                                     Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">等级:</Run>
+                                <Run Text="{Binding ItemLevel, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">最大叠加:</Run>
+                                <Run Text="{Binding ItemMaxSize, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">物品id:</Run>
+                                <Run Text="{Binding ItemBaseId, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">Class:</Run>
+                                <Run Text="{Binding ItemClass, Mode=OneWay}" Foreground="#FFF12679" />
+                                <LineBreak />
+                                <Run Foreground="#FF615858">Type:</Run>
+                                <Run Text="{Binding ItemType, Mode=OneWay}" Foreground="#FFF12679" />
+                            </TextBlock>
+                            <TextBlock Text="{Binding ItemDescription, Mode=OneWay}" MaxWidth="200"
+                                       TextWrapping="Wrap"
+                                       Foreground="#FF4FC32D" />
+                        </StackPanel>
+                    </ToolTip>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--for item admin column-->
+        <DataTemplate x:Key="AdminItemTemplate">
+            <WrapPanel Margin="5">
+                <Button Padding="10,5"
+                        Command="{Binding DataContext.EditItemCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                    修改
+                </Button>
+                <Button Padding="10,5" Margin="5,0,0,0"
+                        Command="{Binding DataContext.CopyItemCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                    复制
+                </Button>
+                <Button Padding="10,5" Margin="5,0,0,0"
+                        Command="{Binding DataContext.DeleteItemCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                    删除
+                </Button>
+            </WrapPanel>
+        </DataTemplate>
     </Application.Resources>
 </Application>

@@ -26,20 +26,4 @@ public class MainWindowModel
     /// server list
     /// </summary>
     public ObservableCollection<GameServerViewModel> ServerList = new();
-
-    /// <summary>
-    /// 攻击属性名称
-    /// </summary>
-    public SortedDictionary<int, string> Attr1Map = new();
-
-    /// <summary>
-    /// 防御属性名称
-    /// </summary>
-    public SortedDictionary<int, string> Attr2Map = new();
-
-    /// <summary>
-    /// 物品定义列表
-    /// </summary>
-    /// <returns></returns>
-    public SortedDictionary<int,ItemBase> ItemBaseMap = new();
 }
