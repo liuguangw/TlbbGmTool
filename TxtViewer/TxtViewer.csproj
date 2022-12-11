@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net7.0-windows;net48</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>liuguang.TxtViewer</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>..\TlbbGmTool\images\icon.ico</ApplicationIcon>
+    <AssemblyTitle>txt表格查看工具</AssemblyTitle>
+    <Description>txt表格查看工具</Description>
+    <Company>流光</Company>
+    <Product>TxtViewer</Product>
+    <Copyright>MIT License</Copyright>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <StartupObject>liuguang.TxtViewer.App</StartupObject>
+    <RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+</Project>
