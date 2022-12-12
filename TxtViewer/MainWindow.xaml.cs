@@ -154,7 +154,7 @@ public partial class MainWindow : Window
     {
         if (_dataTable != null)
         {
-            e.Column.Header = _dataTable.Columns[e.PropertyName].Caption;
+            e.Column.Header = _dataTable.Columns[e.PropertyName]?.Caption ?? e.PropertyName;
         }
     }
 }
