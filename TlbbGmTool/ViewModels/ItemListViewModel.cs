@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Services;
+using liuguang.TlbbGmTool.Views.Item;
 using MySql.Data.MySqlClient;
 
 namespace liuguang.TlbbGmTool.ViewModels;
@@ -151,16 +152,23 @@ public class ItemListViewModel : ViewModelBase
 
     private void ShowItemEditor(object? parameter)
     {
-        /*XinFaLogViewModel? xinFaLog = parameter as XinFaLogViewModel;
-        if (xinFaLog is null)
+        var itemLog = parameter as ItemLogViewModel;
+        if(itemLog is null)
         {
             return;
         }
-        ShowDialog(new XinFaEditorWindow(), (XinFaEditorViewModel vm) =>
+        if(itemLog.ItemClass == 1)
         {
-            vm.XinFaLog = xinFaLog;
-            vm.Connection = Connection;
-        });*/
+            ShowDialog(new EquipEditorWindow(), (EquipEditorViewModel vm) =>
+            {
+                vm.ItemLog = itemLog;
+                vm.Connection = Connection;
+            });
+        }
+        else
+        {
+            ShowErrorMessage("todo", "todo");
+        }
     }
     private void ProcessCopyItem(object? parameter)
     {
