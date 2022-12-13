@@ -182,7 +182,7 @@ public class AttrSelectorViewModel : ViewModelBase
         const int maxAttrCount = 16;
         var attrCount = GetSelectedAttrCount();
         var enabledStatus = attrCount < maxAttrCount;
-        foreach (var attrNode in Attr1Selection)
+        foreach (var attrNode in Attr0Selection)
         {
             attrNode.Enabled =
                 attrNode.Checked || enabledStatus;
