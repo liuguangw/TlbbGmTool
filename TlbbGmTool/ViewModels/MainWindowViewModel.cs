@@ -260,7 +260,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         var taskList = new Task[]{
             LoadServerListAsync(),
-            CommonConfigService.LoadConfigAsync(SharedData.MenpaiMap, SharedData.Attr1Map, SharedData.Attr2Map)
+            CommonConfigService.LoadConfigAsync(SharedData.MenpaiMap, SharedData.Attr0Map, SharedData.Attr1Map)
         };
         try
         {

@@ -82,7 +82,7 @@ public class EquipEditorViewModel : ViewModelBase
         SelectGem1Command = new(() => ShowSelectGemWindow(1), () => _equipData.GemMaxCount > 1);
         SelectGem2Command = new(() => ShowSelectGemWindow(2), () => _equipData.GemMaxCount > 2);
         SelectGem3Command = new(() => ShowSelectGemWindow(3), () => _equipData.GemMaxCount > 3);
-        SelectAttrCommand = new(() => { });
+        SelectAttrCommand = new(ShowSelectAttrWindow, () => _equipData.CanSelectAttr);
         SaveCommand = new(SaveItem, () => !_isSaving);
         for (byte i = 0; i <= 9; i++)
         {
@@ -109,6 +109,10 @@ public class EquipEditorViewModel : ViewModelBase
         {
             RaisePropertyChanged(nameof(WindowTitle));
         }
+        else if (e.PropertyName == nameof(_equipData.CanSelectAttr))
+        {
+            SelectAttrCommand.RaiseCanExecuteChanged();
+        }
     }
 
     /// <summary>
@@ -132,6 +136,12 @@ public class EquipEditorViewModel : ViewModelBase
             {
                 _equipData.ItemBaseId = selectedItem.ItemBaseId;
                 _equipData.VisualId = (ushort)selectedItem.EquipVisualId;
+                //无属性的装备
+                if (!_equipData.CanSelectAttr)
+                {
+                    _equipData.Attr0 = 0;
+                    _equipData.Attr1 = 0;
+                }
             }
         }
     }
@@ -160,6 +170,28 @@ public class EquipEditorViewModel : ViewModelBase
             {
                 _equipData.VisualId = (ushort)selectedItem.EquipVisualId;
             }
+        }
+    }
+
+    /// <summary>
+    /// 展示修改属性种类的窗体
+    /// </summary>
+    private void ShowSelectAttrWindow()
+    {
+        var selectorWindow = new AttrSelectorWindow();
+        var beforeAction = (AttrSelectorViewModel vm) =>
+        {
+            if (_equipData.SegAttrs != null)
+            {
+                vm.EquipValueAttrs = _equipData.SegAttrs;
+                vm.Attr0 = _equipData.Attr0;
+                vm.Attr1 = _equipData.Attr1;
+            }
+        };
+        if (ShowDialog(selectorWindow, beforeAction) == true)
+        {
+            _equipData.Attr0 = selectorWindow.Attr0;
+            _equipData.Attr1 = selectorWindow.Attr1;
         }
     }
     /// <summary>

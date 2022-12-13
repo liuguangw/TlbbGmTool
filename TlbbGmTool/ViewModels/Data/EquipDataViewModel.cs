@@ -15,10 +15,34 @@ public class EquipDataViewModel : NotifyBase
         {
             _itemBaseId = value;
             RaisePropertyChanged(nameof(EquipName));
+            RaisePropertyChanged(nameof(CanSelectAttr));
         }
     }
     public string EquipName => ParseItemName(_itemBaseId);
     public int EquipPoint => ParseItemEquipPoint(_itemBaseId);
+    /// <summary>
+    /// 属性值设置int[64]/null
+    /// </summary>
+    public int[]? SegAttrs => ParseEquipSegAttrs(_itemBaseId);
+    public bool CanSelectAttr
+    {
+        get
+        {
+            var attrValues = SegAttrs;
+            if (attrValues is null)
+            {
+                return false;
+            }
+            foreach (var attrValue in attrValues)
+            {
+                if (attrValue > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
     #endregion
 
     #region EquipFields
@@ -312,6 +336,15 @@ public class EquipDataViewModel : NotifyBase
             return "无";
         }
         return ParseItemName(gemId);
+    }
+
+    private int[]? ParseEquipSegAttrs(int itemBaseId)
+    {
+        if (SharedData.ItemBaseMap.TryGetValue(itemBaseId, out var itemBaseInfo))
+        {
+            return itemBaseInfo.EquipAttrValues;
+        }
+        return null;
     }
 
     /// <summary>

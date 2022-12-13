@@ -16,11 +16,11 @@ public static class SharedData
     /// <summary>
     /// 攻击属性名称
     /// </summary>
-    public static readonly SortedDictionary<int, string> Attr1Map = new();
+    public static readonly SortedDictionary<int, string> Attr0Map = new();
     /// <summary>
     /// 防御属性名称
     /// </summary>
-    public static readonly SortedDictionary<int, string> Attr2Map = new();
+    public static readonly SortedDictionary<int, string> Attr1Map = new();
     /// <summary>
     /// 物品定义列表
     /// </summary>
