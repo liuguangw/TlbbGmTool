@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.Views.Pet;
+using liuguang.TlbbGmTool.ViewModels.Data;
 using MySql.Data.MySqlClient;
 
 namespace liuguang.TlbbGmTool.ViewModels;

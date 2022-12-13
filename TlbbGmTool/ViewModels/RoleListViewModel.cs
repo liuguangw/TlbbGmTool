@@ -1,6 +1,7 @@
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.Services;
+using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Role;
 using MySql.Data.MySqlClient;
 using System;

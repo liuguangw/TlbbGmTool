@@ -1,7 +1,7 @@
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 
-namespace liuguang.TlbbGmTool.ViewModels;
+namespace liuguang.TlbbGmTool.ViewModels.Data;
 
 public class PetLogViewModel : NotifyBase
 {

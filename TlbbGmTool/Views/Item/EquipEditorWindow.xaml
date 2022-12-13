@@ -58,7 +58,7 @@
                     </Style>
                 </StackPanel.Resources>
                 <Label>名称:</Label>
-                <TextBox MinWidth="100" Text="{Binding EquipName,Mode=OneWay}"
+                <TextBox MinWidth="100" Text="{Binding EquipData.EquipName,Mode=OneWay}"
                          IsReadOnly="True" BorderThickness="0"
                          VerticalAlignment="Center" Height="22" />
                 <Button Margin="2,0,0,0" Command="{Binding SelectEquipCommand}">修改</Button>
@@ -66,14 +66,14 @@
                 <ComboBox ItemsSource="{Binding StarSection}"
                           DisplayMemberPath="Title"
                           SelectedValuePath="Value"
-                          SelectedValue="{Binding StarCount}" />
+                          SelectedValue="{Binding EquipData.StarCount}" />
                 <Label>孔数:</Label>
                 <ComboBox ItemsSource="{Binding GemMaxCountSection}"
                           DisplayMemberPath="Title"
                           SelectedValuePath="Value"
-                          SelectedValue="{Binding GemMaxCount}" />
+                          SelectedValue="{Binding EquipData.GemMaxCount}" />
                 <Label>外形:</Label>
-                <Label MinWidth="100" Content="{Binding VisualText,Mode=OneWay}" />
+                <Label MinWidth="100" Content="{Binding EquipData.VisualText,Mode=OneWay}" />
                 <Button Command="{Binding SelectVisualCommand}">切换</Button>
             </StackPanel>
         </GroupBox>
@@ -100,13 +100,13 @@
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Gem0Text,Mode=OneWay}" />
+                <Label Grid.Row="0" Grid.Column="0" Content="{Binding EquipData.Gem0Text,Mode=OneWay}" />
                 <Button Grid.Row="0" Grid.Column="1" Command="{Binding SelectGem0Command}">选择</Button>
-                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Gem1Text,Mode=OneWay}" />
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding EquipData.Gem1Text,Mode=OneWay}" />
                 <Button Grid.Row="1" Grid.Column="1" Command="{Binding SelectGem1Command}">选择</Button>
-                <Label Grid.Row="2" Grid.Column="0" Content="{Binding Gem2Text,Mode=OneWay}" />
+                <Label Grid.Row="2" Grid.Column="0" Content="{Binding EquipData.Gem2Text,Mode=OneWay}" />
                 <Button Grid.Row="2" Grid.Column="1" Command="{Binding SelectGem2Command}">选择</Button>
-                <Label Grid.Row="3" Grid.Column="0" Content="{Binding Gem3Text,Mode=OneWay}" />
+                <Label Grid.Row="3" Grid.Column="0" Content="{Binding EquipData.Gem3Text,Mode=OneWay}" />
                 <Button Grid.Row="3" Grid.Column="1" Command="{Binding SelectGem3Command}">选择</Button>
             </Grid>
         </GroupBox>
@@ -131,8 +131,8 @@
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Attr1Tip,Mode=OneWay}" />
-                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Attr2Tip,Mode=OneWay}" />
+                <Label Grid.Row="0" Grid.Column="0" Content="{Binding EquipData.Attr0Tip,Mode=OneWay}" />
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding EquipData.Attr1Tip,Mode=OneWay}" />
                 <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                         Command="{Binding SelectAttrCommand}">
                     修改
@@ -165,16 +165,16 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0">强化:</Label>
-                <Label Content="{Binding EnhanceLevel}" MinWidth="25"
+                <Label Content="{Binding EquipData.EnhanceLevel}" MinWidth="25"
                        Grid.Row="0" Grid.Column="1" />
-                <Slider Margin="3,0,0,0" Value="{Binding EnhanceLevel}" MinWidth="100"
+                <Slider Margin="3,0,0,0" Value="{Binding EquipData.EnhanceLevel}" MinWidth="100"
                         Grid.Row="0" Grid.Column="2"
                         Minimum="0" Maximum="99"
                         TickFrequency="1" IsSnapToTickEnabled="True" />
                 <Label Grid.Row="1" Grid.Column="0">浮动值:</Label>
-                <Label Content="{Binding HiddenValue}" MinWidth="25"
+                <Label Content="{Binding EquipData.HiddenValue}" MinWidth="25"
                        Grid.Row="1" Grid.Column="1" />
-                <Slider Value="{Binding HiddenValue}" Style="{StaticResource CommonSlider}"
+                <Slider Value="{Binding EquipData.HiddenValue}" Style="{StaticResource CommonSlider}"
                         Grid.Row="1" Grid.Column="2" />
             </Grid>
         </GroupBox>
@@ -208,41 +208,41 @@
                     <ColumnDefinition Width="5*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0">外功资质:</Label>
-                <Label Content="{Binding Aptitude0}" MinWidth="25"
+                <Label Content="{Binding EquipData.Aptitude0}" MinWidth="25"
                        Grid.Row="0" Grid.Column="1" />
-                <Slider Value="{Binding Aptitude0}"
+                <Slider Value="{Binding EquipData.Aptitude0}"
                         Grid.Row="0" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
                 <Label Grid.Row="0" Grid.Column="3">内功资质:</Label>
-                <Label Content="{Binding Aptitude1}" MinWidth="25"
+                <Label Content="{Binding EquipData.Aptitude1}" MinWidth="25"
                        Grid.Row="0" Grid.Column="4" />
-                <Slider Value="{Binding Aptitude1}"
+                <Slider Value="{Binding EquipData.Aptitude1}"
                         Grid.Row="0" Grid.Column="5"
                         Style="{StaticResource CommonSlider}" />
                 <!--next row-->
                 <Label Grid.Row="1" Grid.Column="0">外防资质:</Label>
-                <Label Content="{Binding Aptitude2}" MinWidth="25"
+                <Label Content="{Binding EquipData.Aptitude2}" MinWidth="25"
                        Grid.Row="1" Grid.Column="1" />
-                <Slider Value="{Binding Aptitude2}"
+                <Slider Value="{Binding EquipData.Aptitude2}"
                         Grid.Row="1" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
                 <Label Grid.Row="1" Grid.Column="3">内防资质:</Label>
-                <Label Content="{Binding Aptitude3}" MinWidth="25"
+                <Label Content="{Binding EquipData.Aptitude3}" MinWidth="25"
                        Grid.Row="1" Grid.Column="4" />
-                <Slider Value="{Binding Aptitude3}"
+                <Slider Value="{Binding EquipData.Aptitude3}"
                         Grid.Row="1" Grid.Column="5"
                         Style="{StaticResource CommonSlider}" />
                 <!--next row-->
                 <Label Grid.Row="2" Grid.Column="0">闪避资质:</Label>
-                <Label Content="{Binding Aptitude4}" MinWidth="25"
+                <Label Content="{Binding EquipData.Aptitude4}" MinWidth="25"
                        Grid.Row="2" Grid.Column="1" />
-                <Slider Value="{Binding Aptitude4}"
+                <Slider Value="{Binding EquipData.Aptitude4}"
                         Grid.Row="2" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
                 <Label Grid.Row="2" Grid.Column="3">命中资质:</Label>
-                <Label Content="{Binding Aptitude5}" MinWidth="25"
+                <Label Content="{Binding EquipData.Aptitude5}" MinWidth="25"
                        Grid.Row="2" Grid.Column="4" />
-                <Slider Value="{Binding Aptitude5}"
+                <Slider Value="{Binding EquipData.Aptitude5}"
                         Grid.Row="2" Grid.Column="5"
                         Style="{StaticResource CommonSlider}" />
             </Grid>
@@ -261,11 +261,11 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsBind}">已绑定</CheckBox>
-                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsIden}">已鉴定</CheckBox>
-                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding IsAptitudeIden}">资质已鉴定</CheckBox>
-                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsEngraved}">已刻铭</CheckBox>
-                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsPLock}">已锁定</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding EquipData.IsBind}">已绑定</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding EquipData.IsIden}">已鉴定</CheckBox>
+                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding EquipData.IsAptitudeIden}">资质已鉴定</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding EquipData.IsEngraved}">已刻铭</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding EquipData.IsPLock}">已锁定</CheckBox>
             </Grid>
         </GroupBox>
         <DockPanel Margin="5" Grid.Row="5" Grid.Column="2">
