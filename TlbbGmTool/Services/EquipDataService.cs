@@ -93,14 +93,12 @@ public static class EquipDataService
         return BitConverter.ToInt32(buff, 0);
     }
     /// <summary>
-    /// 将数据写入到itemBaseId和pData中
+    /// 将数据写入到pData中
     /// </summary>
     /// <param name="equipData"></param>
-    /// <param name="itemBaseId"></param>
-    /// <param name="pData"></param>
-    public static void Write(EquipDataViewModel equipData, out int itemBaseId, byte[] pData)
+    /// <param name="pData">17*4长度的字节数组</param>
+    public static void Write(EquipDataViewModel equipData, byte[] pData)
     {
-        itemBaseId = equipData.ItemBaseId;
         int offset = 0;
         var writeNextByte = (byte value) =>
         {
@@ -115,7 +113,7 @@ public static class EquipDataService
         var writeNextInt = (int value) =>
         {
             WriteData(pData, offset, value);
-            offset += 2;
+            offset += 4;
         };
         //重新计算属性条数和嵌入的宝石个数
         equipData.ReloadStoneCount();
@@ -157,6 +155,20 @@ public static class EquipDataService
         //最后一个宝石
         offset += 16;
         writeNextInt(equipData.Gem3);
+    }
+    /// <summary>
+    /// 将字节数组转化为int数组(17个)
+    /// </summary>
+    /// <param name="pData"></param>
+    /// <returns></returns>
+    public static int[] ConvertToPArray(byte[] pData)
+    {
+        var pArray = new int[17];
+        for (var i = 0; i < pArray.Length; i++)
+        {
+            pArray[i] = ReadInt(pData, i * 4);
+        }
+        return pArray;
     }
     private static void WriteData(byte[] destArray, int destIndex, ushort value)
     {

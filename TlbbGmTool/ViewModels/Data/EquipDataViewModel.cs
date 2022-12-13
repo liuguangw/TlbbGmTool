@@ -17,7 +17,8 @@ public class EquipDataViewModel : NotifyBase
             RaisePropertyChanged(nameof(EquipName));
         }
     }
-    public string EquipName => EquipDataViewModel.ParseItemName(_itemBaseId);
+    public string EquipName => ParseItemName(_itemBaseId);
+    public int EquipPoint => ParseItemEquipPoint(_itemBaseId);
     #endregion
 
     #region EquipFields
@@ -296,6 +297,14 @@ public class EquipDataViewModel : NotifyBase
         }
         return $"未知物品(ID: {itemBaseId})";
     }
+    private static int ParseItemEquipPoint(int itemBaseId)
+    {
+        if (SharedData.ItemBaseMap.TryGetValue(itemBaseId, out var itemBaseInfo))
+        {
+            return itemBaseInfo.EquipPoint;
+        }
+        return 0;
+    }
     private static string ParseGemName(int gemId)
     {
         if (gemId == 0)
@@ -305,7 +314,33 @@ public class EquipDataViewModel : NotifyBase
         return ParseItemName(gemId);
     }
 
-    public string ParseItemVisual(int visualId)
+    /// <summary>
+    /// 根据外观id，计算物品id
+    /// </summary>
+    /// <param name="visualId"></param>
+    /// <returns></returns>
+    public int? ParseVisualItemId(int visualId)
+    {
+        //判断外形id是否是装备的默认外形id
+        if (SharedData.ItemBaseMap.TryGetValue(_itemBaseId, out var itemBaseInfo))
+        {
+            if (itemBaseInfo.EquipVisual == visualId)
+            {
+                return _itemBaseId;
+            }
+        }
+        //遍历搜索
+        foreach (var tBaseInfo in SharedData.ItemBaseMap.Values)
+        {
+            if (tBaseInfo.EquipVisual == visualId)
+            {
+                return tBaseInfo.Id;
+            }
+        }
+        return null;
+    }
+
+    private string ParseItemVisual(int visualId)
     {
         //判断外形id是否是装备的默认外形id
         if (SharedData.ItemBaseMap.TryGetValue(_itemBaseId, out var itemBaseInfo))
