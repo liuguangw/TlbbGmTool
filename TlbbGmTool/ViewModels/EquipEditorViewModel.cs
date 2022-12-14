@@ -253,7 +253,7 @@ public class EquipEditorViewModel : ViewModelBase
         var itemBaseId = _equipData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
         EquipDataService.Write(_equipData, pData);
-        var pArray = EquipDataService.ConvertToPArray(pData);
+        var pArray = DataService.ConvertToPArray(pData);
         if (_inputItemLog is null)
         {
             ShowErrorMessage("todo", "todo");
@@ -262,8 +262,10 @@ public class EquipEditorViewModel : ViewModelBase
         {
             try
             {
-
-                await UpdateEquipDataAsync(Connection, _inputItemLog.Id, itemBaseId, pArray);
+                await Task.Run(async () =>
+                {
+                    await UpdateEquipDataAsync(Connection, _inputItemLog.Id, itemBaseId, pArray);
+                });
                 _inputItemLog.ItemBaseId = itemBaseId;
                 _inputItemLog.PData = pData;
                 ShowMessage("修改成功", "修改装备成功");

@@ -1,6 +1,4 @@
-using Google.Protobuf.WellKnownTypes;
 using liuguang.TlbbGmTool.ViewModels.Data;
-using System;
 
 namespace liuguang.TlbbGmTool.Services;
 public static class EquipDataService
@@ -23,13 +21,13 @@ public static class EquipDataService
         };
         var readNextUshort = () =>
         {
-            var value = ReadUshort(pData, offset);
+            var value = DataService.ReadUshort(pData, offset);
             offset += 2;
             return value;
         };
         var readNextInt = () =>
         {
-            var value = ReadInt(pData, offset);
+            var value = DataService.ReadInt(pData, offset);
             offset += 4;
             return value;
         };
@@ -70,28 +68,7 @@ public static class EquipDataService
         offset += 16;
         equipData.Gem3 = readNextInt();
     }
-    private static ushort ReadUshort(byte[] src, int startIndex)
-    {
-        if (BitConverter.IsLittleEndian)
-        {
-            return BitConverter.ToUInt16(src, startIndex);
-        }
-        var buff = new byte[2];
-        Array.Copy(src, startIndex, buff, 0, buff.Length);
-        Array.Reverse(buff);
-        return BitConverter.ToUInt16(buff, 0);
-    }
-    private static int ReadInt(byte[] src, int startIndex)
-    {
-        if (BitConverter.IsLittleEndian)
-        {
-            return BitConverter.ToInt32(src, startIndex);
-        }
-        var buff = new byte[4];
-        Array.Copy(src, startIndex, buff, 0, buff.Length);
-        Array.Reverse(buff);
-        return BitConverter.ToInt32(buff, 0);
-    }
+
     /// <summary>
     /// 将数据写入到pData中
     /// </summary>
@@ -107,12 +84,12 @@ public static class EquipDataService
         };
         var writeNextUshort = (ushort value) =>
         {
-            WriteData(pData, offset, value);
+            DataService.WriteData(pData, offset, value);
             offset += 2;
         };
         var writeNextInt = (int value) =>
         {
-            WriteData(pData, offset, value);
+            DataService.WriteData(pData, offset, value);
             offset += 4;
         };
         //重新计算属性条数和嵌入的宝石个数
@@ -155,37 +132,5 @@ public static class EquipDataService
         //最后一个宝石
         offset += 16;
         writeNextInt(equipData.Gem3);
-    }
-    /// <summary>
-    /// 将字节数组转化为int数组(17个)
-    /// </summary>
-    /// <param name="pData"></param>
-    /// <returns></returns>
-    public static int[] ConvertToPArray(byte[] pData)
-    {
-        var pArray = new int[17];
-        for (var i = 0; i < pArray.Length; i++)
-        {
-            pArray[i] = ReadInt(pData, i * 4);
-        }
-        return pArray;
-    }
-    private static void WriteData(byte[] destArray, int destIndex, ushort value)
-    {
-        byte[] buff = BitConverter.GetBytes(value);
-        if (!BitConverter.IsLittleEndian)
-        {
-            Array.Reverse(buff);
-        }
-        Array.Copy(buff, 0, destArray, destIndex, buff.Length);
-    }
-    private static void WriteData(byte[] destArray, int destIndex, int value)
-    {
-        byte[] buff = BitConverter.GetBytes(value);
-        if (!BitConverter.IsLittleEndian)
-        {
-            Array.Reverse(buff);
-        }
-        Array.Copy(buff, 0, destArray, destIndex, buff.Length);
     }
 }

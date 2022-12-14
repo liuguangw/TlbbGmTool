@@ -113,20 +113,12 @@ public class ItemListViewModel : ViewModelBase
             {
                 while (await rd.ReadAsync())
                 {
-                    var pData = new byte[17 * 4];
-                    int pValue;
-                    byte[] tmpBytes;
-                    for (var i = 0; i < 17; i++)
+                    var pArray = new int[17];
+                    for (var i = 0; i < pArray.Length; i++)
                     {
-                        pValue = rd.GetInt32("p" + (i + 1));
-                        tmpBytes = BitConverter.GetBytes(pValue);
-                        //按小端解析
-                        if (!BitConverter.IsLittleEndian)
-                        {
-                            Array.Reverse(tmpBytes);
-                        }
-                        Array.Copy(tmpBytes, 0, pData, i * 4, 4);
+                        pArray[i] = rd.GetInt32("p" + (i + 1));
                     }
+                    var pData = DataService.ConvertToPData(pArray);
                     itemList.Add(new(new()
                     {
                         Id = rd.GetInt32("aid"),
@@ -154,13 +146,21 @@ public class ItemListViewModel : ViewModelBase
     private void ShowItemEditor(object? parameter)
     {
         var itemLog = parameter as ItemLogViewModel;
-        if(itemLog is null)
+        if (itemLog is null)
         {
             return;
         }
-        if(itemLog.ItemClass == 1)
+        if (itemLog.ItemClass == 1)
         {
             ShowDialog(new EquipEditorWindow(), (EquipEditorViewModel vm) =>
+            {
+                vm.ItemLog = itemLog;
+                vm.Connection = Connection;
+            });
+        }
+        else if ((itemLog.ItemClass >= 2) && (itemLog.ItemClass <= 4))
+        {
+            ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
             {
                 vm.ItemLog = itemLog;
                 vm.Connection = Connection;

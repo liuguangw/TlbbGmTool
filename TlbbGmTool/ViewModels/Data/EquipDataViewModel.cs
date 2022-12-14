@@ -1,4 +1,5 @@
 using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Services;
 
 namespace liuguang.TlbbGmTool.ViewModels.Data;
 public class EquipDataViewModel : NotifyBase
@@ -18,7 +19,7 @@ public class EquipDataViewModel : NotifyBase
             RaisePropertyChanged(nameof(CanSelectAttr));
         }
     }
-    public string EquipName => ParseItemName(_itemBaseId);
+    public string EquipName => ItemService.ParseItemName(_itemBaseId);
     public int EquipPoint => ParseItemEquipPoint(_itemBaseId);
     /// <summary>
     /// 属性值设置int[64]/null
@@ -77,7 +78,7 @@ public class EquipDataViewModel : NotifyBase
             RaisePropertyChanged(nameof(Gem0Text));
         }
     }
-    public string Gem0Text => ParseGemName(_gemIds[0]);
+    public string Gem0Text => ItemService.ParseItemName(_gemIds[0]);
     public int Gem1
     {
         get => _gemIds[1];
@@ -87,7 +88,7 @@ public class EquipDataViewModel : NotifyBase
             RaisePropertyChanged(nameof(Gem1Text));
         }
     }
-    public string Gem1Text => ParseGemName(_gemIds[1]);
+    public string Gem1Text => ItemService.ParseItemName(_gemIds[1]);
     public int Gem2
     {
         get => _gemIds[2];
@@ -97,7 +98,7 @@ public class EquipDataViewModel : NotifyBase
             RaisePropertyChanged(nameof(Gem2Text));
         }
     }
-    public string Gem2Text => ParseGemName(_gemIds[2]);
+    public string Gem2Text => ItemService.ParseItemName(_gemIds[2]);
     public int Gem3
     {
         get => _gemIds[3];
@@ -107,7 +108,7 @@ public class EquipDataViewModel : NotifyBase
             RaisePropertyChanged(nameof(Gem3Text));
         }
     }
-    public string Gem3Text => ParseGemName(_gemIds[3]);
+    public string Gem3Text => ItemService.ParseItemName(_gemIds[3]);
     public byte BindStatus
     {
         get => _bindStatus;
@@ -313,14 +314,7 @@ public class EquipDataViewModel : NotifyBase
         }
     }
     #endregion
-    private static string ParseItemName(int itemBaseId)
-    {
-        if (SharedData.ItemBaseMap.TryGetValue(itemBaseId, out var itemBaseInfo))
-        {
-            return $"{itemBaseInfo.Name}(ID: {itemBaseId})";
-        }
-        return $"未知物品(ID: {itemBaseId})";
-    }
+
     private static int ParseItemEquipPoint(int itemBaseId)
     {
         if (SharedData.ItemBaseMap.TryGetValue(itemBaseId, out var itemBaseInfo))
@@ -328,14 +322,6 @@ public class EquipDataViewModel : NotifyBase
             return itemBaseInfo.EquipPoint;
         }
         return 0;
-    }
-    private static string ParseGemName(int gemId)
-    {
-        if (gemId == 0)
-        {
-            return "无";
-        }
-        return ParseItemName(gemId);
     }
 
     private int[]? ParseEquipSegAttrs(int itemBaseId)
@@ -355,12 +341,10 @@ public class EquipDataViewModel : NotifyBase
     public int? ParseVisualItemId(int visualId)
     {
         //判断外形id是否是装备的默认外形id
-        if (SharedData.ItemBaseMap.TryGetValue(_itemBaseId, out var itemBaseInfo))
+        var currentItem = ItemService.GetItem(_itemBaseId);
+        if (currentItem?.EquipVisual == visualId)
         {
-            if (itemBaseInfo.EquipVisual == visualId)
-            {
-                return _itemBaseId;
-            }
+            return _itemBaseId;
         }
         //遍历搜索
         foreach (var tBaseInfo in SharedData.ItemBaseMap.Values)
@@ -376,12 +360,10 @@ public class EquipDataViewModel : NotifyBase
     private string ParseItemVisual(int visualId)
     {
         //判断外形id是否是装备的默认外形id
-        if (SharedData.ItemBaseMap.TryGetValue(_itemBaseId, out var itemBaseInfo))
+        var currentItem = ItemService.GetItem(_itemBaseId);
+        if (currentItem?.EquipVisual == visualId)
         {
-            if (itemBaseInfo.EquipVisual == visualId)
-            {
-                return $"{itemBaseInfo.Name}(ID: {itemBaseInfo.Id})";
-            }
+            return $"{currentItem.Name}(ID: {currentItem.Id})";
         }
         //遍历搜索
         foreach (var tBaseInfo in SharedData.ItemBaseMap.Values)
