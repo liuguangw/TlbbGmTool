@@ -41,6 +41,10 @@ public partial class DbcFile
         var comparisonType = StringComparison.OrdinalIgnoreCase;
         foreach (var str in fieldTypeStrs)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                continue;
+            }
             if (str.Equals("int", comparisonType))
             {
                 fieldTypes.Add(DbcFieldType.T_INT);
@@ -57,6 +61,10 @@ public partial class DbcFile
             {
                 throw new Exception("未知字段类型" + str);
             }
+        }
+        if (fieldTypes.Count == 0)
+        {
+            throw new Exception("未读取到有效的字段类型");
         }
     }
 
@@ -78,6 +86,10 @@ public partial class DbcFile
             }
             var strItems = lineContent.Split('\t');
             //读取ID
+            if (string.IsNullOrEmpty(strItems[0]))
+            {
+                continue;
+            }
             int rowID = int.Parse(strItems[0]);
             var row = new List<DbcField>(fieldTypes.Count){
                 new(rowID)

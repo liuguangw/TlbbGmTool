@@ -99,15 +99,19 @@ public partial class MainWindow : Window
                 }
                 var columnTypes = firstLine.Split('\t');
                 var columnLabels = labelLine.Split('\t');
-                var columnCount = columnTypes.Length;
-                for (var i = 0; i < columnCount; i++)
+                for (var i = 0; i < columnTypes.Length; i++)
                 {
+                    var columnType = columnTypes[i];
+                    if (string.IsNullOrEmpty(columnType))
+                    {
+                        continue;
+                    }
                     var label = string.Empty;
                     if (i < columnLabels.Length)
                     {
                         label = columnLabels[i];
                     }
-                    columns.Add($"({i},{columnTypes[i]}){label}");
+                    columns.Add($"({i},{columnType}){label}");
                 }
                 //
                 while (true)
@@ -125,16 +129,23 @@ public partial class MainWindow : Window
                     {
                         continue;
                     }
-                    var row = ParseRow(lineContent, columnCount);
-                    rows.Add(row);
+                    var row = ParseRow(lineContent, columns.Count);
+                    if (row != null)
+                    {
+                        rows.Add(row);
+                    }
                 }
             }
         }
     }
 
-    private List<string> ParseRow(string lineContent, int columnCount)
+    private List<string>? ParseRow(string lineContent, int columnCount)
     {
         var fields = lineContent.Split('\t');
+        if (string.IsNullOrEmpty(fields[0]))
+        {
+            return null;
+        }
         var rowFields = new List<string>();
         for (var i = 0; i < columnCount; i++)
         {

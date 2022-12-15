@@ -204,10 +204,11 @@ public class MainWindowViewModel : ViewModelBase
             });
             this.DataStatus = DataStatus.Loaded;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             this.DataStatus = DataStatus.NotLoad;
-            ShowErrorMessage("加载axp文件失败", e, true);
+            var stackTrace = (ex.InnerException ?? ex).StackTrace;
+            ShowErrorMessage("加载axp文件失败", $"{ex.Message}\n{stackTrace}");
         }
     }
 

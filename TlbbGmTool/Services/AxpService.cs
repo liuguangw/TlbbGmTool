@@ -32,7 +32,16 @@ public static class AxpService
             throw new Exception("未找到文件" + filename);
         }
         stream.Seek(blockNode.Value.DataOffset, SeekOrigin.Begin);
-        return await DbcFile.ReadAsync(stream, blockNode.Value.BlockSize);
+        DbcFile fileResult;
+        try
+        {
+            fileResult = await DbcFile.ReadAsync(stream, blockNode.Value.BlockSize);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"解析文件{filename}出错,{ex.Message}", ex);
+        }
+        return fileResult;
     }
 
     private static async Task LoadCommonItemAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, ItemBase> itemBaseMap)
