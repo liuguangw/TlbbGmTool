@@ -20,7 +20,7 @@
         <xinfa:XinFaListPage x:Key="XinFaListPage" />
         <pet:PetListPage x:Key="PetListPage" />
         <item:BagItemListPage x:Key="BagItemListPage" />
-        <!--<pages:MaterialItemList x:Key="MaterialItemList" />-->
+        <item:MaterialItemListPage x:Key="MaterialItemListPage" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
@@ -37,7 +37,7 @@
                 <Frame Content="{StaticResource BagItemListPage}" />
             </TabItem>
             <TabItem Header="材料栏">
-                <!--<Frame Content="{StaticResource MaterialItemList}" />-->
+                <Frame Content="{StaticResource MaterialItemListPage}" />
             </TabItem>
             <!--<TabItem Header="items">
                 <Label>test</Label>
