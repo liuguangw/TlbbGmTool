@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
@@ -21,21 +22,36 @@ public class ItemListViewModel : ViewModelBase
     /// <summary>
     /// 类型 0道具 1材料 2任务
     /// </summary>
-    public int BagType = 0;
+    private int _bagType = 0;
     /// <summary>
     /// 背包开始位置
     /// </summary>
-    public int PosOffset = 0;
+    public int PosOffset = -1;
     /// <summary>
     /// 当前页背包最大容量
     /// </summary>
     public int BagMaxSize = 30;
-
     #endregion
 
     #region Properties
 
     public ObservableCollection<ItemLogViewModel> ItemList { get; } = new();
+    public int BagType
+    {
+        get => _bagType;
+        set
+        {
+            _bagType = value;
+            if (PosOffset < 0)
+            {
+                PosOffset = _bagType * BagMaxSize;
+            }
+            RaisePropertyChanged(nameof(AddEquipVisible));
+            RaisePropertyChanged(nameof(AddGemVisible));
+        }
+    }
+    public Visibility AddEquipVisible => _bagType == 0 ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility AddGemVisible => _bagType == 1 ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>
     /// 弹出物品编辑窗体
@@ -54,6 +70,10 @@ public class ItemListViewModel : ViewModelBase
     /// </summary>
     public Command AddEquipCommand { get; }
     /// <summary>
+    /// 显示发放宝石窗体
+    /// </summary>
+    public Command AddGemCommand { get; }
+    /// <summary>
     /// 显示发放道具窗体
     /// </summary>
     public Command AddItemCommand { get; }
@@ -65,6 +85,7 @@ public class ItemListViewModel : ViewModelBase
         CopyItemCommand = new(ProcessCopyItem);
         DeleteItemCommand = new(ProcessDeleteItem);
         AddEquipCommand = new(ShowAddEquipEditor);
+        AddGemCommand = new(ShowAddGemEditor);
         AddItemCommand = new(ShowAddItemEditor);
     }
 
@@ -164,7 +185,7 @@ public class ItemListViewModel : ViewModelBase
             ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
             {
                 vm.ItemLog = itemLog;
-                vm.BagType = BagType;
+                vm.BagType = _bagType;
                 vm.Connection = Connection;
             });
         }
@@ -190,6 +211,10 @@ public class ItemListViewModel : ViewModelBase
 
     }
     private void ShowAddEquipEditor()
+    {
+
+    }
+    private void ShowAddGemEditor()
     {
 
     }

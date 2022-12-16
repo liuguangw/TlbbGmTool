@@ -20,8 +20,8 @@
         <xinfa:XinFaListPage x:Key="XinFaListPage" />
         <pet:PetListPage x:Key="PetListPage" />
         <item:BagItemListPage x:Key="BagItemListPage" />
-        <item:MaterialItemListPage x:Key="MaterialItemListPage" />
-        <item:TaskItemListPage x:Key="TaskItemListPage" />
+        <item:BagItemListPage BagType="1" x:Key="MaterialItemListPage" />
+        <item:BagItemListPage BagType="2" x:Key="TaskItemListPage" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">

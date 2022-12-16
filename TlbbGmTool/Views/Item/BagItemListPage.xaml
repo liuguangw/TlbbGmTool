@@ -17,8 +17,9 @@
                     <Setter Property="Padding" Value="10,5" />
                 </Style>
             </WrapPanel.Resources>
-            <Button Command="{Binding AddEquipCommand}">发放装备</Button>
-            <Button Command="{Binding AddItemCommand}" Margin="6,0,0,0">发放物品</Button>
+            <Button Command="{Binding AddEquipCommand}" Visibility="{Binding AddEquipVisible}" Margin="0,0,6,0">发放装备</Button>
+            <Button Command="{Binding AddGemCommand}" Visibility="{Binding AddGemVisible}" Margin="0,0,6,0">发放宝石</Button>
+            <Button Command="{Binding AddItemCommand}">发放物品</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   Margin="10" ItemsSource="{Binding ItemList}">
