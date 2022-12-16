@@ -101,8 +101,8 @@ public class AccountListViewModel : ViewModelBase
             return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
         };
 
-        using var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader;
-        if (rd != null)
+        using var reader = await mySqlCommand.ExecuteReaderAsync();
+        if (reader is MySqlDataReader rd)
         {
             while (await rd.ReadAsync())
             {
@@ -126,15 +126,13 @@ public class AccountListViewModel : ViewModelBase
 
     private void ShowAccountEditorDialog(object? parameter)
     {
-        var accountInfo = parameter as UserAccountViewModel;
-        if (accountInfo is null)
+        if (parameter is UserAccountViewModel accountInfo)
         {
-            return;
+            ShowDialog(new AccountEditorWindow(), (AccountEditorViewModel vm) =>
+            {
+                vm.UserAccount = accountInfo;
+                vm.Connection = Connection;
+            });
         }
-        ShowDialog(new AccountEditorWindow(), (AccountEditorViewModel vm) =>
-        {
-            vm.UserAccount = accountInfo;
-            vm.Connection = Connection;
-        });
     }
 }

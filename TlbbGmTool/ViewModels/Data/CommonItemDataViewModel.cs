@@ -18,10 +18,10 @@ public class CommonItemDataViewModel : NotifyBase
         set
         {
             _itemBaseId = value;
-            RaisePropertyChanged(nameof(EquipName));
+            RaisePropertyChanged(nameof(ItemName));
         }
     }
-    public string EquipName => ItemService.ParseItemName(_itemBaseId);
+    public string ItemName => ItemService.ParseItemName(_itemBaseId);
     #endregion
 
     #region ItemFields
@@ -37,10 +37,11 @@ public class CommonItemDataViewModel : NotifyBase
     private byte _targetType = 0xFF;
     private byte _bindStatus;
     private byte _count = 1;
+    private byte[] _itemParams = new byte[3 * 4];
     #endregion
     #region ItemProperties
     public byte RulerId { get => _rulerId; set => _rulerId = value; }
-    public bool CosSelf { get => _cosSelf; set => SetProperty(ref _cosSelf, value); }
+    public bool CosSelf { get => _cosSelf; set => _cosSelf = value; }
     public uint BasePrice { get => _basePrice; set => _basePrice = value; }
     public byte MaxSize { get => _maxSize; set => SetProperty(ref _maxSize, value); }
     public byte Level { get => _level; set => _level = value; }
@@ -51,5 +52,6 @@ public class CommonItemDataViewModel : NotifyBase
     public byte TargetType { get => _targetType; set => _targetType = value; }
     public byte BindStatus { get => _bindStatus; set => _bindStatus = value; }
     public byte Count { get => _count; set => SetProperty(ref _count, value); }
+    public byte[] ItemParams { get => _itemParams; set => _itemParams = value; }
     #endregion
 }

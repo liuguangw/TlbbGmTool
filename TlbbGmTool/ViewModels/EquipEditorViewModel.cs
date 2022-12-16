@@ -1,4 +1,5 @@
 using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Item;
@@ -135,12 +136,19 @@ public class EquipEditorViewModel : ViewModelBase
             if (selectedItem != null)
             {
                 _equipData.ItemBaseId = selectedItem.ItemBaseId;
-                _equipData.VisualId = (ushort)selectedItem.EquipVisualId;
                 //无属性的装备
                 if (!_equipData.CanSelectAttr)
                 {
                     _equipData.Attr0 = 0;
                     _equipData.Attr1 = 0;
+                }
+                if (selectedItem.BaseInfo is ItemBaseEquip equipBaseInfo)
+                {
+                    _equipData.RulerId = equipBaseInfo.RulerId;
+                    _equipData.CurDurPoint = equipBaseInfo.MaxDurPoint;
+                    _equipData.CurDamagePoint = 0;
+                    _equipData.MaxDurPoint = equipBaseInfo.MaxDurPoint;
+                    _equipData.VisualId = equipBaseInfo.EquipVisual;
                 }
             }
         }
@@ -159,8 +167,9 @@ public class EquipEditorViewModel : ViewModelBase
             vm.InitItemId = visualItemId ?? 0;
             vm.ItemList = (from itemBaseInfo in SharedData.ItemBaseMap.Values
                            where itemBaseInfo.TClass == 1
+                           let equipBaseInfo = (ItemBaseEquip)itemBaseInfo
                            //更换外观时,装备位置限制必须相同
-                           where itemBaseInfo.EquipPoint == _equipData.EquipPoint
+                           where equipBaseInfo.EquipPoint == _equipData.EquipPoint
                            select new ItemBaseViewModel(itemBaseInfo)).ToList();
         };
         if (ShowDialog(selectorWindow, beforeAction) == true)
@@ -168,7 +177,11 @@ public class EquipEditorViewModel : ViewModelBase
             var selectedItem = selectorWindow.SelectedItem;
             if (selectedItem != null)
             {
-                _equipData.VisualId = (ushort)selectedItem.EquipVisualId;
+
+                if (selectedItem.BaseInfo is ItemBaseEquip equipBaseInfo)
+                {
+                    _equipData.VisualId = equipBaseInfo.EquipVisual;
+                }
             }
         }
     }

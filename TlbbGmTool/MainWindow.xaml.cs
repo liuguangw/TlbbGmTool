@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using liuguang.TlbbGmTool.ViewModels;
 
 namespace liuguang.TlbbGmTool;
@@ -14,8 +14,7 @@ public partial class MainWindow : Window
     }
     private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-        var vm = DataContext as MainWindowViewModel;
-        if (vm != null)
+        if (DataContext is MainWindowViewModel vm)
         {
             await vm.LoadDataAsync();
         }
@@ -23,8 +22,7 @@ public partial class MainWindow : Window
 
     private async void Window_Closed(object sender, System.EventArgs e)
     {
-        var vm = DataContext as MainWindowViewModel;
-        if (vm != null)
+        if (DataContext is MainWindowViewModel vm)
         {
             await vm.FreeResourceAsync();
         }

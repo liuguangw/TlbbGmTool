@@ -1,4 +1,5 @@
 using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.Services;
 
 namespace liuguang.TlbbGmTool.ViewModels.Data;
@@ -317,7 +318,7 @@ public class EquipDataViewModel : NotifyBase
 
     private static int ParseItemEquipPoint(int itemBaseId)
     {
-        if (SharedData.ItemBaseMap.TryGetValue(itemBaseId, out var itemBaseInfo))
+        if (ItemService.GetItem(itemBaseId) is ItemBaseEquip itemBaseInfo)
         {
             return itemBaseInfo.EquipPoint;
         }
@@ -326,7 +327,7 @@ public class EquipDataViewModel : NotifyBase
 
     private int[]? ParseEquipSegAttrs(int itemBaseId)
     {
-        if (SharedData.ItemBaseMap.TryGetValue(itemBaseId, out var itemBaseInfo))
+        if (ItemService.GetItem(itemBaseId) is ItemBaseEquip itemBaseInfo)
         {
             return itemBaseInfo.EquipAttrValues;
         }
@@ -341,17 +342,22 @@ public class EquipDataViewModel : NotifyBase
     public int? ParseVisualItemId(int visualId)
     {
         //判断外形id是否是装备的默认外形id
-        var currentItem = ItemService.GetItem(_itemBaseId);
-        if (currentItem?.EquipVisual == visualId)
+        if (ItemService.GetItem(_itemBaseId) is ItemBaseEquip currentItem)
         {
-            return _itemBaseId;
+            if (currentItem.EquipVisual == visualId)
+            {
+                return _itemBaseId;
+            }
         }
         //遍历搜索
         foreach (var tBaseInfo in SharedData.ItemBaseMap.Values)
         {
-            if (tBaseInfo.EquipVisual == visualId)
+            if (tBaseInfo is ItemBaseEquip equipBaseInfo)
             {
-                return tBaseInfo.Id;
+                if (equipBaseInfo.EquipVisual == visualId)
+                {
+                    return equipBaseInfo.Id;
+                }
             }
         }
         return null;
@@ -360,19 +366,23 @@ public class EquipDataViewModel : NotifyBase
     private string ParseItemVisual(int visualId)
     {
         //判断外形id是否是装备的默认外形id
-        var currentItem = ItemService.GetItem(_itemBaseId);
-        if (currentItem?.EquipVisual == visualId)
+        if (ItemService.GetItem(_itemBaseId) is ItemBaseEquip currentItem)
         {
-            return $"{currentItem.Name}(ID: {currentItem.Id})";
+            if (currentItem.EquipVisual == visualId)
+            {
+                return $"{currentItem.Name}(ID: {currentItem.Id})";
+            }
         }
         //遍历搜索
         foreach (var tBaseInfo in SharedData.ItemBaseMap.Values)
         {
-            if (tBaseInfo.EquipVisual == visualId)
+            if (tBaseInfo is ItemBaseEquip equipBaseInfo)
             {
-                return $"{tBaseInfo.Name}(ID: {tBaseInfo.Id})";
+                if (equipBaseInfo.EquipVisual == visualId)
+                {
+                    return $"{equipBaseInfo.Name}(ID: {equipBaseInfo.Id})";
+                }
             }
-
         }
         return $"未知外形(visual ID: {visualId})";
     }

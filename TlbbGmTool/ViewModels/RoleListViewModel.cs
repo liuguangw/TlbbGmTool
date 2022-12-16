@@ -124,66 +124,65 @@ public class RoleListViewModel : ViewModelBase
         //切换数据库
         await dbConnection.SwitchGameDbAsync();
 
-        using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+        using var reader = await mySqlCommand.ExecuteReaderAsync();
+        if (reader is MySqlDataReader rd)
         {
-            if (rd != null)
+            while (await rd.ReadAsync())
             {
-
-                while (await rd.ReadAsync())
+                var roleInfo = new Role()
                 {
-                    var roleInfo = new Role()
-                    {
-                        AccName = rd.GetString("accname"),
-                        CharGuid = rd.GetInt32("charguid"),
-                        CharName = DbStringService.ToCommonString(rd.GetString("charname")),
-                        Title = DbStringService.ToCommonString(rd.GetString("title")),
-                        Menpai = rd.GetInt32("menpai"),
-                        Level = rd.GetInt32("level"),
-                        Scene = rd.GetInt32("scene"),
-                        XPos = rd.GetInt32("xpos"),
-                        ZPos = rd.GetInt32("zpos"),
-                        Hp = rd.GetInt32("hp"),
-                        Mp = rd.GetInt32("mp"),
-                        Str = rd.GetInt32("str"),
-                        Spr = rd.GetInt32("spr"),
-                        Con = rd.GetInt32("con"),
-                        Ipr = rd.GetInt32("ipr"),
-                        Dex = rd.GetInt32("dex"),
-                        Points = rd.GetInt32("points"),
-                        Enegry = rd.GetInt32("enegry"),
-                        EnergyMax = rd.GetInt32("energymax"),
-                        Vigor = rd.GetInt32("vigor"),
-                        MaxVigor = rd.GetInt32("maxvigor"),
-                        Exp = rd.GetInt32("exp"),
-                        PkValue = rd.GetInt32("pkvalue"),
-                        VMoney = rd.GetInt32("vmoney"),
-                        BankMoney = rd.GetInt32("bankmoney"),
-                        YuanBao = rd.GetInt32("yuanbao"),
-                        MenpaiPoint = rd.GetInt32("menpaipoint"),
-                        ZengDian = rd.GetInt32("zengdian"),
-                    };
-                    //add to list
-                    roleList.Add(new(roleInfo));
-                }
+                    AccName = rd.GetString("accname"),
+                    CharGuid = rd.GetInt32("charguid"),
+                    CharName = DbStringService.ToCommonString(rd.GetString("charname")),
+                    Title = DbStringService.ToCommonString(rd.GetString("title")),
+                    Menpai = rd.GetInt32("menpai"),
+                    Level = rd.GetInt32("level"),
+                    Scene = rd.GetInt32("scene"),
+                    XPos = rd.GetInt32("xpos"),
+                    ZPos = rd.GetInt32("zpos"),
+                    Hp = rd.GetInt32("hp"),
+                    Mp = rd.GetInt32("mp"),
+                    Str = rd.GetInt32("str"),
+                    Spr = rd.GetInt32("spr"),
+                    Con = rd.GetInt32("con"),
+                    Ipr = rd.GetInt32("ipr"),
+                    Dex = rd.GetInt32("dex"),
+                    Points = rd.GetInt32("points"),
+                    Enegry = rd.GetInt32("enegry"),
+                    EnergyMax = rd.GetInt32("energymax"),
+                    Vigor = rd.GetInt32("vigor"),
+                    MaxVigor = rd.GetInt32("maxvigor"),
+                    Exp = rd.GetInt32("exp"),
+                    PkValue = rd.GetInt32("pkvalue"),
+                    VMoney = rd.GetInt32("vmoney"),
+                    BankMoney = rd.GetInt32("bankmoney"),
+                    YuanBao = rd.GetInt32("yuanbao"),
+                    MenpaiPoint = rd.GetInt32("menpaipoint"),
+                    ZengDian = rd.GetInt32("zengdian"),
+                };
+                //add to list
+                roleList.Add(new(roleInfo));
             }
+
         }
         return roleList;
     }
 
     private void ShowRoleWindow(object? parameter)
     {
-        RoleViewModel? roleInfo = parameter as RoleViewModel;
-        ShowDialog(new RoleWindow(), (RoleWindowViewModel vm) =>
+        if (parameter is RoleViewModel roleInfo)
         {
-            vm.RoleInfo= roleInfo;
-            vm.Connection = Connection;
-        });
+            ShowDialog(new RoleWindow(), (RoleWindowViewModel vm) =>
+            {
+                vm.RoleInfo = roleInfo;
+                vm.Connection = Connection;
+            });
+        }
     }
 
     private async void UpdateRoleBanStatus(object? parameter, bool isBanRole)
     {
-        RoleViewModel? roleInfo = parameter as RoleViewModel;
-        if (roleInfo is null)
+        if (parameter is not RoleViewModel roleInfo)
         {
             return;
         }

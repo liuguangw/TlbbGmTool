@@ -21,6 +21,7 @@
         <pet:PetListPage x:Key="PetListPage" />
         <item:BagItemListPage x:Key="BagItemListPage" />
         <item:MaterialItemListPage x:Key="MaterialItemListPage" />
+        <item:TaskItemListPage x:Key="TaskItemListPage" />
     </Window.Resources>
     <DockPanel>
         <TabControl Margin="5">
@@ -38,6 +39,9 @@
             </TabItem>
             <TabItem Header="材料栏">
                 <Frame Content="{StaticResource MaterialItemListPage}" />
+            </TabItem>
+            <TabItem Header="任务栏">
+                <Frame Content="{StaticResource TaskItemListPage}" />
             </TabItem>
             <!--<TabItem Header="items">
                 <Label>test</Label>

@@ -4,10 +4,10 @@ using System.Windows.Controls;
 
 namespace liuguang.TlbbGmTool.Views.Item;
 
-public partial class MaterialItemListPage : Page
+public partial class TaskItemListPage : Page
 {
     private bool _vmBind = false;
-    public MaterialItemListPage()
+    public TaskItemListPage()
     {
         InitializeComponent();
     }
@@ -21,8 +21,8 @@ public partial class MaterialItemListPage : Page
             var roleWindowVm = (RoleWindowViewModel)roleWindow.DataContext;
             vm.OwnedWindow = roleWindow;
             vm.Connection = roleWindowVm.Connection;
-            vm.PosOffset = 30;
-            vm.BagType = 1;
+            vm.PosOffset = 60;
+            vm.BagType = 2;
             if (roleWindowVm.RoleInfo != null)
             {
                 vm.CharGuid = roleWindowVm.RoleInfo.CharGuid;

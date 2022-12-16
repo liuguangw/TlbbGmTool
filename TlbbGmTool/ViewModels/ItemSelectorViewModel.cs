@@ -25,7 +25,7 @@ public class ItemSelectorViewModel : ViewModelBase
 
     private string _windowTitle = "物品选择器";
     private int _selectedType = 0;
-    private int _minLevel;
+    private byte _minLevel;
     private string _searchText = string.Empty;
 
     /// <summary>
@@ -73,7 +73,7 @@ public class ItemSelectorViewModel : ViewModelBase
             }
         }
     }
-    public int MinLevel
+    public byte MinLevel
     {
         get => _minLevel;
         set
@@ -191,23 +191,21 @@ public class ItemSelectorViewModel : ViewModelBase
     }
     private bool CanConfirmSelect(object? parameter)
     {
-        var itemBaseInfo = parameter as ItemBaseViewModel;
-        if (itemBaseInfo is null)
+        if (parameter is ItemBaseViewModel itemBaseInfo)
         {
-            return false;
+            return itemBaseInfo.ItemBaseId != _initItemId;
+
         }
-        return itemBaseInfo.ItemBaseId != _initItemId;
+        return false;
     }
 
     private void ConfirmSelect(object? parameter)
     {
-        var itemBaseInfo = parameter as ItemBaseViewModel;
-        if (itemBaseInfo is null)
+        if (parameter is not ItemBaseViewModel itemBaseInfo)
         {
             return;
         }
-        var currentWindow = OwnedWindow as ItemSelectorWindow;
-        if (currentWindow is null)
+        if (OwnedWindow is not ItemSelectorWindow currentWindow)
         {
             return;
         }

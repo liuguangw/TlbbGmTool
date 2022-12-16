@@ -97,7 +97,7 @@ public class DbConnection
     /// <returns></returns>
     public async Task<string> CheckVersionAsync()
     {
-        const string sql = "SELECT version() AS v";
+        const string sql = "SELECT version()";
         var mySqlCommand = new MySqlCommand(sql, _conn);
         var rd = await mySqlCommand.ExecuteScalarAsync();
         var version = rd?.ToString() ?? "";

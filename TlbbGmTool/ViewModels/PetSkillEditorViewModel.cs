@@ -247,8 +247,7 @@ public class PetSkillEditorViewModel : ViewModelBase
 
     private void DeletePetSkill(object? parameter)
     {
-        var targetSkill = parameter as PetSkillViewModel;
-        if (targetSkill != null)
+        if (parameter is PetSkillViewModel targetSkill)
         {
             SkillList.Remove(targetSkill);
             NotifyReloadSkillSelection();

@@ -4,7 +4,7 @@ namespace liuguang.TlbbGmTool.Services;
 public static class CommonItemDataService
 {
     /// <summary>
-    /// 读取数据,放入equipData中
+    /// 读取数据,放入itemData中
     /// </summary>
     /// <param name="itemBaseId"></param>
     /// <param name="pData"></param>
@@ -46,6 +46,10 @@ public static class CommonItemDataService
         itemData.TargetType = readNextByte();
         itemData.BindStatus = readNextByte();
         itemData.Count = readNextByte();
+        for (var i = 0; i < itemData.ItemParams.Length; i++)
+        {
+            itemData.ItemParams[i] = readNextByte();
+        }
     }
     /// <summary>
     /// 将数据写入到pData中
@@ -86,5 +90,9 @@ public static class CommonItemDataService
         writeNextByte(itemData.TargetType);
         writeNextByte(itemData.BindStatus);
         writeNextByte(itemData.Count);
+        for (var i = 0; i < itemData.ItemParams.Length; i++)
+        {
+            writeNextByte(itemData.ItemParams[i]);
+        }
     }
 }

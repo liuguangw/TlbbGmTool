@@ -73,42 +73,40 @@ public class PetListViewModel : ViewModelBase
         });
         // 切换数据库
         await connection.SwitchGameDbAsync();
-        using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+        using var reader = await mySqlCommand.ExecuteReaderAsync();
+        if (reader is MySqlDataReader rd)
         {
-            if (rd != null)
+            while (await rd.ReadAsync())
             {
-                while (await rd.ReadAsync())
+                xinFaList.Add(new(new()
                 {
-                    xinFaList.Add(new(new()
-                    {
-                        Id = rd.GetInt32("aid"),
-                        CharGuid = rd.GetInt32("charguid"),
-                        PetName = DbStringService.ToCommonString(rd.GetString("petname")),
-                        Level = rd.GetInt32("level"),
-                        NeedLevel = rd.GetInt32("needlevel"),
-                        AiType = rd.GetInt32("aitype"),
-                        PetType = rd.GetInt32("pettype"),
-                        Genera = rd.GetInt32("genera"),
-                        Life = rd.GetInt32("life"),
-                        Enjoy = rd.GetInt32("enjoy"),
-                        Savvy = rd.GetInt32("savvy"),
-                        Gengu = rd.GetInt32("gengu"),
-                        GrowRate = rd.GetInt32("growrate"),
-                        Repoint = rd.GetInt32("repoint"),
-                        Exp = rd.GetInt32("exp"),
-                        Str = rd.GetInt32("str"),
-                        Spr = rd.GetInt32("spr"),
-                        Con = rd.GetInt32("con"),
-                        Ipr = rd.GetInt32("ipr"),
-                        Dex = rd.GetInt32("dex"),
-                        StrPer = rd.GetInt32("strper"),
-                        SprPer = rd.GetInt32("sprper"),
-                        ConPer = rd.GetInt32("conper"),
-                        IprPer = rd.GetInt32("iprper"),
-                        DexPer = rd.GetInt32("dexper"),
-                        Skill = rd.GetString("skill"),
-                    }));
-                }
+                    Id = rd.GetInt32("aid"),
+                    CharGuid = rd.GetInt32("charguid"),
+                    PetName = DbStringService.ToCommonString(rd.GetString("petname")),
+                    Level = rd.GetInt32("level"),
+                    NeedLevel = rd.GetInt32("needlevel"),
+                    AiType = rd.GetInt32("aitype"),
+                    PetType = rd.GetInt32("pettype"),
+                    Genera = rd.GetInt32("genera"),
+                    Life = rd.GetInt32("life"),
+                    Enjoy = rd.GetInt32("enjoy"),
+                    Savvy = rd.GetInt32("savvy"),
+                    Gengu = rd.GetInt32("gengu"),
+                    GrowRate = rd.GetInt32("growrate"),
+                    Repoint = rd.GetInt32("repoint"),
+                    Exp = rd.GetInt32("exp"),
+                    Str = rd.GetInt32("str"),
+                    Spr = rd.GetInt32("spr"),
+                    Con = rd.GetInt32("con"),
+                    Ipr = rd.GetInt32("ipr"),
+                    Dex = rd.GetInt32("dex"),
+                    StrPer = rd.GetInt32("strper"),
+                    SprPer = rd.GetInt32("sprper"),
+                    ConPer = rd.GetInt32("conper"),
+                    IprPer = rd.GetInt32("iprper"),
+                    DexPer = rd.GetInt32("dexper"),
+                    Skill = rd.GetString("skill"),
+                }));
             }
         }
         return xinFaList;
@@ -116,36 +114,31 @@ public class PetListViewModel : ViewModelBase
 
     private void ShowPetEditor(object? parameter)
     {
-        var petInfo = parameter as PetLogViewModel;
-        if (petInfo is null)
+        if (parameter is PetLogViewModel petInfo)
         {
-            return;
+            ShowDialog(new PetEditorWindow(), (PetEditorViewModel vm) =>
+            {
+                vm.PetInfo = petInfo;
+                vm.Connection = Connection;
+            });
         }
-        ShowDialog(new PetEditorWindow(), (PetEditorViewModel vm) =>
-        {
-            vm.PetInfo = petInfo;
-            vm.Connection = Connection;
-        });
     }
 
     private void ShowPetSkillEditor(object? parameter)
     {
-        var petInfo = parameter as PetLogViewModel;
-        if (petInfo is null)
+        if (parameter is PetLogViewModel petInfo)
         {
-            return;
+            ShowDialog(new PetSkillEditorWindow(), (PetSkillEditorViewModel vm) =>
+            {
+                vm.PetInfo = petInfo;
+                vm.Connection = Connection;
+            });
         }
-        ShowDialog(new PetSkillEditorWindow(), (PetSkillEditorViewModel vm) =>
-        {
-            vm.PetInfo = petInfo;
-            vm.Connection = Connection;
-        });
     }
 
     private async void AskDeletePet(object? parameter)
     {
-        var petInfo = parameter as PetLogViewModel;
-        if (petInfo is null)
+        if (parameter is not PetLogViewModel petInfo)
         {
             return;
         }

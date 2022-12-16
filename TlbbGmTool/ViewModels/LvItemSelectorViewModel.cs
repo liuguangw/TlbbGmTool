@@ -25,7 +25,7 @@ public class LvItemSelectorViewModel : ViewModelBase
 
     private string _windowTitle = "物品选择器";
     private int _selectedType = 0;
-    private int _selectedLevel;
+    private byte _selectedLevel;
     private string _searchText = string.Empty;
 
     /// <summary>
@@ -74,7 +74,7 @@ public class LvItemSelectorViewModel : ViewModelBase
             }
         }
     }
-    public int SelectedLevel
+    public byte SelectedLevel
     {
         get => _selectedLevel;
         set
@@ -100,7 +100,7 @@ public class LvItemSelectorViewModel : ViewModelBase
     public List<ComboBoxNode<int>> ShortTypeSelection { get; } = new() {
         new("全部",0)
     };
-    public List<ComboBoxNode<int>> LevelSelection { get; } = new() {
+    public List<ComboBoxNode<byte>> LevelSelection { get; } = new() {
         new("全部",0)
     };
 
@@ -177,7 +177,7 @@ public class LvItemSelectorViewModel : ViewModelBase
     }
     private void LoadLevelSelection()
     {
-        var levels = new List<int>();
+        var levels = new List<byte>();
         _itemList.ForEach(itemBaseInfo =>
         {
             if (!levels.Contains(itemBaseInfo.ItemLevel))
@@ -211,23 +211,21 @@ public class LvItemSelectorViewModel : ViewModelBase
     }
     private bool CanConfirmSelect(object? parameter)
     {
-        var itemBaseInfo = parameter as ItemBaseViewModel;
-        if (itemBaseInfo is null)
+        if (parameter is ItemBaseViewModel itemBaseInfo)
         {
-            return false;
+            return itemBaseInfo.ItemBaseId != _initItemId;
+
         }
-        return itemBaseInfo.ItemBaseId != _initItemId;
+        return false;
     }
 
     private void ConfirmSelect(object? parameter)
     {
-        var itemBaseInfo = parameter as ItemBaseViewModel;
-        if (itemBaseInfo is null)
+        if (parameter is not ItemBaseViewModel itemBaseInfo)
         {
             return;
         }
-        var currentWindow = OwnedWindow as LvItemSelectorWindow;
-        if (currentWindow is null)
+        if (OwnedWindow is not LvItemSelectorWindow currentWindow)
         {
             return;
         }

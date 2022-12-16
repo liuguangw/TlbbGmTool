@@ -37,26 +37,23 @@ public class ServerListViewModel : ViewModelBase
 
     private bool CanEdit(object? parameter)
     {
-        var serverInfo = parameter as GameServerViewModel;
-        if (serverInfo is null)
+        if (parameter is GameServerViewModel serverInfo)
         {
-            return false;
+            return serverInfo.DbStatus == DbStatus.NotConnect;
         }
-        return serverInfo.DbStatus == DbStatus.NotConnect;
+        return false;
     }
 
     private void ShowEditDialog(object? parameter)
     {
-        var serverInfo = parameter as GameServerViewModel;
-        if (serverInfo is null)
+        if (parameter is GameServerViewModel serverInfo)
         {
-            return;
+            ShowDialog(new ServerEditorWindow(), (ServerEditorViewModel vm) =>
+            {
+                vm.ServerList = _serverList;
+                vm.InputServerInfo = serverInfo;
+            });
         }
-        ShowDialog(new ServerEditorWindow(), (ServerEditorViewModel vm) =>
-        {
-            vm.ServerList = _serverList;
-            vm.InputServerInfo = serverInfo;
-        });
     }
 
     private void ShowAddDialog()
@@ -69,8 +66,7 @@ public class ServerListViewModel : ViewModelBase
 
     private async void ProcessDelete(object? parameter)
     {
-        var serverInfo = parameter as GameServerViewModel;
-        if (serverInfo is null)
+        if (parameter is not GameServerViewModel serverInfo)
         {
             return;
         }

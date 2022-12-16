@@ -8,11 +8,12 @@ public class ItemBaseViewModel
     public string ItemName => _itemBaseInfo.Name;
     public string ItemShortTypeString => _itemBaseInfo.ShortTypeString;
     public string ItemDescription => _itemBaseInfo.Description;
-    public int ItemLevel => _itemBaseInfo.Level;
-    public int ItemMaxSize =>_itemBaseInfo.MaxSize;
+    public byte ItemLevel => _itemBaseInfo.Level;
+    public byte ItemMaxSize => _itemBaseInfo.MaxSize;
     public int ItemClass => _itemBaseInfo.TClass;
     public int ItemType => _itemBaseInfo.TType;
-    public int EquipVisualId => _itemBaseInfo.EquipVisual;
+    public byte RulerId => _itemBaseInfo.RulerId;
+    public ItemBase BaseInfo => _itemBaseInfo;
 
     public ItemBaseViewModel(ItemBase itemBaseInfo)
     {

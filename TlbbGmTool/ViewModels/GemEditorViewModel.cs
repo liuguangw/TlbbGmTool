@@ -11,17 +11,16 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace liuguang.TlbbGmTool.ViewModels;
-public class CommonItemEditorViewModel : ViewModelBase
+public class GemEditorViewModel : ViewModelBase
 {
     #region Fields
     private bool _isSaving = false;
     private ItemLogViewModel? _inputItemLog;
-    private CommonItemDataViewModel _itemData = new();
+    private GemDataViewModel _itemData = new();
     /// <summary>
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
-    public int BagType = 0;
     #endregion
     #region Properties
     public bool IsSaving
@@ -41,9 +40,9 @@ public class CommonItemEditorViewModel : ViewModelBase
         {
             if (_inputItemLog is null)
             {
-                return "发放物品";
+                return "发放宝石";
             }
-            return "修改物品 " + _itemData.ItemName;
+            return "修改宝石 " + _itemData.ItemName;
         }
     }
     public ItemLogViewModel ItemLog
@@ -51,14 +50,10 @@ public class CommonItemEditorViewModel : ViewModelBase
         set
         {
             _inputItemLog = value;
-            CommonItemDataService.Read(value.ItemBaseId, value.PData, _itemData);
+            GemDataService.Read(value.ItemBaseId, value.PData, _itemData);
         }
     }
-    public CommonItemDataViewModel ItemData => _itemData;
-    /// <summary>
-    /// 数量编辑功能的状态
-    /// </summary>
-    public bool CountEditorEnabled => (_itemData.MaxSize > 1);
+    public GemDataViewModel ItemData => _itemData;
     #endregion
 
     #region Commands
@@ -66,7 +61,7 @@ public class CommonItemEditorViewModel : ViewModelBase
     public Command SaveCommand { get; }
     #endregion
 
-    public CommonItemEditorViewModel()
+    public GemEditorViewModel()
     {
         SelectItemCommand = new(ShowSelectItemWindow);
         SaveCommand = new(SaveItem, () => !_isSaving);
@@ -79,10 +74,6 @@ public class CommonItemEditorViewModel : ViewModelBase
         {
             RaisePropertyChanged(nameof(WindowTitle));
         }
-        else if (e.PropertyName == nameof(_itemData.MaxSize))
-        {
-            RaisePropertyChanged(nameof(CountEditorEnabled));
-        }
     }
 
     /// <summary>
@@ -90,14 +81,13 @@ public class CommonItemEditorViewModel : ViewModelBase
     /// </summary>
     private void ShowSelectItemWindow()
     {
-        var selectorWindow = new ItemSelectorWindow();
-        var beforeAction = (ItemSelectorViewModel vm) =>
+        var selectorWindow = new LvItemSelectorWindow();
+        var beforeAction = (LvItemSelectorViewModel vm) =>
         {
-            vm.WindowTitle = "选择物品";
+            vm.WindowTitle = "选择宝石";
             vm.InitItemId = _itemData.ItemBaseId;
-            int[] itemClassArr = { 3, 2, 4 };
             vm.ItemList = (from itemBaseInfo in SharedData.ItemBaseMap.Values
-                           where itemBaseInfo.TClass == itemClassArr[BagType]
+                           where itemBaseInfo.TClass == 5
                            select new ItemBaseViewModel(itemBaseInfo)).ToList();
         };
         if (ShowDialog(selectorWindow, beforeAction) == true)
@@ -106,20 +96,12 @@ public class CommonItemEditorViewModel : ViewModelBase
             if (selectedItem != null)
             {
                 _itemData.ItemBaseId = selectedItem.ItemBaseId;
-                var itemMaxSize = selectedItem.ItemMaxSize;
-                _itemData.Count = Math.Min(_itemData.Count, itemMaxSize);
-                _itemData.MaxSize = itemMaxSize;
-                if (selectedItem.BaseInfo is ItemBaseCommonItem itemBaseInfo)
+                _itemData.RulerId = selectedItem.RulerId;
+                if (selectedItem.BaseInfo is ItemBaseGem gemBaseInfo)
                 {
-                    _itemData.RulerId = itemBaseInfo.RulerId;
-                    _itemData.CosSelf = itemBaseInfo.CosSelf;
-                    _itemData.BasePrice = itemBaseInfo.BasePrice;
-                    _itemData.Level = itemBaseInfo.Level;
-                    _itemData.ReqSkill = itemBaseInfo.ReqSkill;
-                    _itemData.ReqSkillLevel = itemBaseInfo.ReqSkillLevel;
-                    _itemData.ScriptID = itemBaseInfo.ScriptID;
-                    _itemData.SkillID = itemBaseInfo.SkillID;
-                    _itemData.TargetType = itemBaseInfo.TargetType;
+                    _itemData.BasePrice = gemBaseInfo.BasePrice;
+                    _itemData.AttrType = gemBaseInfo.AttrType;
+                    _itemData.AttrValue = gemBaseInfo.AttrValue;
                 }
             }
         }
@@ -127,18 +109,13 @@ public class CommonItemEditorViewModel : ViewModelBase
 
     private async void SaveItem()
     {
-        if ((_itemData.Count < 1) || (_itemData.Count > _itemData.MaxSize))
-        {
-            ShowErrorMessage("数量不正确", "当前数量设置不正确");
-            return;
-        }
         if (Connection is null)
         {
             return;
         }
         var itemBaseId = _itemData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
-        CommonItemDataService.Write(_itemData, pData);
+        GemDataService.Write(_itemData, pData);
         var pArray = DataService.ConvertToPArray(pData);
         if (_inputItemLog is null)
         {
@@ -154,7 +131,7 @@ public class CommonItemEditorViewModel : ViewModelBase
                 });
                 _inputItemLog.ItemBaseId = itemBaseId;
                 _inputItemLog.PData = pData;
-                ShowMessage("修改成功", "修改物品成功");
+                ShowMessage("修改成功", "修改宝石成功");
                 OwnedWindow?.Close();
             }
             catch (Exception ex)

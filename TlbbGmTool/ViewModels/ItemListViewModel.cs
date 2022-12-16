@@ -19,6 +19,10 @@ public class ItemListViewModel : ViewModelBase
     /// </summary>
     public DbConnection? Connection;
     /// <summary>
+    /// 类型 0道具 1材料 2任务
+    /// </summary>
+    public int BagType = 0;
+    /// <summary>
     /// 背包开始位置
     /// </summary>
     public int PosOffset = 0;
@@ -107,37 +111,35 @@ public class ItemListViewModel : ViewModelBase
         });
         // 切换数据库
         await connection.SwitchGameDbAsync();
-        using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+        using var reader = await mySqlCommand.ExecuteReaderAsync();
+        if (reader is MySqlDataReader rd)
         {
-            if (rd != null)
+            while (await rd.ReadAsync())
             {
-                while (await rd.ReadAsync())
+                var pArray = new int[17];
+                for (var i = 0; i < pArray.Length; i++)
                 {
-                    var pArray = new int[17];
-                    for (var i = 0; i < pArray.Length; i++)
-                    {
-                        pArray[i] = rd.GetInt32("p" + (i + 1));
-                    }
-                    var pData = DataService.ConvertToPData(pArray);
-                    itemList.Add(new(new()
-                    {
-                        Id = rd.GetInt32("aid"),
-                        CharGuid = rd.GetInt32("charguid"),
-                        Guid = rd.GetInt32("guid"),
-                        World = rd.GetInt32("world"),
-                        Server = rd.GetInt32("server"),
-                        ItemBaseId = rd.GetInt32("itemtype"),
-                        Pos = rd.GetInt32("pos"),
-                        PData = pData,
-                        Creator = DbStringService.ToCommonString(rd.GetString("creator")),
-                        IsValid = (rd.GetInt32("isvalid") == 1),
-                        DbVersion = rd.GetInt32("dbversion"),
-                        FixAttr = rd.GetString("fixattr"),
-                        TVar = rd.GetString("var"),
-                        VisualId = rd.GetInt32("visualid"),
-                        MaxgemId = rd.GetInt32("maxgemid")
-                    }));
+                    pArray[i] = rd.GetInt32("p" + (i + 1));
                 }
+                var pData = DataService.ConvertToPData(pArray);
+                itemList.Add(new(new()
+                {
+                    Id = rd.GetInt32("aid"),
+                    CharGuid = rd.GetInt32("charguid"),
+                    Guid = rd.GetInt32("guid"),
+                    World = rd.GetInt32("world"),
+                    Server = rd.GetInt32("server"),
+                    ItemBaseId = rd.GetInt32("itemtype"),
+                    Pos = rd.GetInt32("pos"),
+                    PData = pData,
+                    Creator = DbStringService.ToCommonString(rd.GetString("creator")),
+                    IsValid = (rd.GetInt32("isvalid") == 1),
+                    DbVersion = rd.GetInt32("dbversion"),
+                    FixAttr = rd.GetString("fixattr"),
+                    TVar = rd.GetString("var"),
+                    VisualId = rd.GetInt32("visualid"),
+                    MaxgemId = rd.GetInt32("maxgemid")
+                }));
             }
         }
         return itemList;
@@ -145,8 +147,7 @@ public class ItemListViewModel : ViewModelBase
 
     private void ShowItemEditor(object? parameter)
     {
-        var itemLog = parameter as ItemLogViewModel;
-        if (itemLog is null)
+        if (parameter is not ItemLogViewModel itemLog)
         {
             return;
         }
@@ -163,12 +164,21 @@ public class ItemListViewModel : ViewModelBase
             ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
             {
                 vm.ItemLog = itemLog;
+                vm.BagType = BagType;
+                vm.Connection = Connection;
+            });
+        }
+        else if (itemLog.ItemClass == 5)
+        {
+            ShowDialog(new GemEditorWindow(), (GemEditorViewModel vm) =>
+            {
+                vm.ItemLog = itemLog;
                 vm.Connection = Connection;
             });
         }
         else
         {
-            ShowErrorMessage("todo", "todo");
+            ShowErrorMessage("出错了", $"未知类型 class={itemLog.ItemClass}");
         }
     }
     private void ProcessCopyItem(object? parameter)

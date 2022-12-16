@@ -112,8 +112,7 @@ public class AttrSelectorViewModel : ViewModelBase
 
     private void ConfirmSelect()
     {
-        var currentWindow = OwnedWindow as AttrSelectorWindow;
-        if (currentWindow is null)
+        if (OwnedWindow is not AttrSelectorWindow currentWindow)
         {
             return;
         }
@@ -150,14 +149,12 @@ public class AttrSelectorViewModel : ViewModelBase
 
     private void AttrNode_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        var attrNode = sender as EquipAttributeNode;
-        if (attrNode is null)
+        if (sender is EquipAttributeNode attrNode)
         {
-            return;
-        }
-        if (e.PropertyName == nameof(attrNode.Checked))
-        {
-            OnAttributeCheckChange();
+            if (e.PropertyName == nameof(attrNode.Checked))
+            {
+                OnAttributeCheckChange();
+            }
         }
     }
     /// <summary>

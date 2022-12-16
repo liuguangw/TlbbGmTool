@@ -98,33 +98,59 @@ public static class AxpService
         }
     }
 
-    private static ItemBase ParseCommonItemRow(List<DbcField> rowFields)
+    private static ItemBaseCommonItem ParseCommonItemRow(List<DbcField> rowFields)
     {
         var itemId = rowFields[0].IntValue;
         var tClass = rowFields[1].IntValue;
         var tType = rowFields[3].IntValue;
+        var rulerId = (byte)rowFields[11].IntValue;
         //
         var name = rowFields[6].StringValue;
         var shortTypeString = rowFields[20].StringValue;
         var description = rowFields[7].StringValue;
         //
-        var level = rowFields[8].IntValue;
-        var maxSize = rowFields[12].IntValue;
-        return new(itemId, tClass, tType, name, shortTypeString, description, level, maxSize);
+        var level = (byte)rowFields[8].IntValue;
+        var maxSize = (byte)rowFields[12].IntValue;
+        //
+        var cosSelf = (rowFields[15].IntValue == 1);
+        var basePrice = (uint)rowFields[9].IntValue;
+        var reqSkill = rowFields[16].IntValue;
+        var reqSkillLevel = (byte)rowFields[17].IntValue;
+        var scriptID = rowFields[13].IntValue;
+        var skillID = rowFields[14].IntValue;
+        var targetType = (byte)rowFields[19].IntValue;
+        return new(itemId, tClass, tType, rulerId, name, shortTypeString, description, level, maxSize,
+            cosSelf, basePrice, reqSkill, reqSkillLevel, scriptID, skillID, targetType);
     }
-    private static ItemBase ParseGemInfoRow(List<DbcField> rowFields)
+    private static ItemBaseGem ParseGemInfoRow(List<DbcField> rowFields)
     {
         var itemId = rowFields[0].IntValue;
         var tClass = rowFields[1].IntValue;
         var tType = rowFields[3].IntValue;
+        var rulerId = (byte)rowFields[6].IntValue;
         //
         var name = rowFields[7].StringValue;
         var shortTypeString = rowFields[76].StringValue;
         var description = rowFields[8].StringValue;
         //
-        var level = rowFields[2].IntValue;
-        var maxSize = 1;
-        return new(itemId, tClass, tType, name, shortTypeString, description, level, maxSize);
+        var level = (byte)rowFields[2].IntValue;
+        //
+        var basePrice = (uint)rowFields[9].IntValue;
+        byte attrType = 0;
+        ushort attrValue = 0;
+        var attrStartIndex = 11;
+        var attrEndIndex = 11 + 64;
+        for (var i = attrStartIndex; i < attrEndIndex; i++)
+        {
+            if (rowFields[i].IntValue > 0)
+            {
+                attrValue = (ushort)rowFields[i].IntValue;
+                break;
+            }
+            attrType++;
+        }
+        return new(itemId, tClass, tType, rulerId, name, shortTypeString, description, level,
+            basePrice, attrType, attrValue);
     }
 
     private static Dictionary<int, int[]> ParseItemSegValue(DbcFile dbcFile)
@@ -147,23 +173,24 @@ public static class AxpService
         return segValueDictionary;
     }
 
-    private static ItemBase ParseEquipBaseRow(List<DbcField> rowFields, Dictionary<int, int[]> segDictionary)
+    private static ItemBaseEquip ParseEquipBaseRow(List<DbcField> rowFields, Dictionary<int, int[]> segDictionary)
     {
         var itemId = rowFields[0].IntValue;
         var tClass = rowFields[1].IntValue;
         var tType = rowFields[3].IntValue;
+        var rulerId = (byte)rowFields[7].IntValue;
         //
         var name = rowFields[10].StringValue;
         var shortTypeString = rowFields[22].StringValue;
         var description = rowFields[13].StringValue;
         //
-        var level = rowFields[11].IntValue;
+        var level = (byte)rowFields[11].IntValue;
         //extra
         var equipPoint = rowFields[5].IntValue;
         var bagCapacity = rowFields[97].IntValue;
         var materialCapacity = rowFields[98].IntValue;
-        var equipVisual = rowFields[6].IntValue;
-        var maxLife = rowFields[16].IntValue;
+        var equipVisual = (ushort)rowFields[6].IntValue;
+        var maxDurPoint = (byte)rowFields[16].IntValue;
         //起始数值段
         var segIndex = rowFields[91].IntValue;
         int[]? equipAttrValues = null;
@@ -174,9 +201,9 @@ public static class AxpService
                 equipAttrValues = segValues;
             }
         }
-        return new(itemId, tClass, tType, name, shortTypeString, description, level,
+        return new(itemId, tClass, tType,rulerId, name, shortTypeString, description, level,
         equipPoint, bagCapacity, materialCapacity,
-        equipVisual, maxLife, equipAttrValues);
+        equipVisual, maxDurPoint, equipAttrValues);
     }
 
     private static XinFaBase ParseXinFaRow(List<DbcField> rowFields)

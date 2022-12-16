@@ -100,8 +100,10 @@ public partial class DbcFile
     private static async Task LoadTextRowsAsync(StringReader reader, List<DbcFieldType> fieldTypes, SortedDictionary<int, List<DbcField>> dataMap)
     {
         string? lineContent;
+        //int lineNumber = 2;
         while (true)
         {
+            //lineNumber++;
             lineContent = await reader.ReadLineAsync();
             if (lineContent is null)
             {
@@ -129,10 +131,34 @@ public partial class DbcFile
                 switch (fieldType)
                 {
                     case DbcFieldType.T_INT:
-                        row.Add(new(int.Parse(fieldStr)));
+                        int intValue = 0;
+                        if (!string.IsNullOrEmpty(fieldStr))
+                        {
+                            try
+                            {
+                                intValue = int.Parse(fieldStr);
+                            }
+                            catch (Exception)
+                            {
+                                //throw new Exception($"parse int value \"{fieldStr}\" failed at line {lineNumber} column {i}, {ex.Message}");
+                            }
+                        }
+                        row.Add(new(intValue));
                         break;
                     case DbcFieldType.T_FLOAT:
-                        row.Add(new(float.Parse(fieldStr)));
+                        float floatValue = 0;
+                        if (!string.IsNullOrEmpty(fieldStr))
+                        {
+                            try
+                            {
+                                floatValue = float.Parse(fieldStr);
+                            }
+                            catch (Exception)
+                            {
+                                //throw new Exception($"parse int value \"{fieldStr}\" failed at line {lineNumber} column {i}, {ex.Message}");
+                            }
+                        }
+                        row.Add(new(floatValue));
                         break;
                     case DbcFieldType.T_STRING:
                         row.Add(new(fieldStr));

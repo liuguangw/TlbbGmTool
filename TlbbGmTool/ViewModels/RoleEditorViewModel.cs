@@ -98,44 +98,42 @@ public class RoleEditorViewModel : ViewModelBase
             Value = charGuid
         });
         RoleViewModel? dbRoleInfo = null;
-        using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+        using var reader = await mySqlCommand.ExecuteReaderAsync();
+        if (reader is MySqlDataReader rd)
         {
-            if (rd != null)
+            if (await rd.ReadAsync())
             {
-                if (await rd.ReadAsync())
+                dbRoleInfo = new(new()
                 {
-                    dbRoleInfo = new(new()
-                    {
-                        AccName = rd.GetString("accname"),
-                        CharGuid = rd.GetInt32("charguid"),
-                        CharName = DbStringService.ToCommonString(rd.GetString("charname")),
-                        Title = DbStringService.ToCommonString(rd.GetString("title")),
-                        Menpai = rd.GetInt32("menpai"),
-                        Level = rd.GetInt32("level"),
-                        Scene = rd.GetInt32("scene"),
-                        XPos = rd.GetInt32("xpos"),
-                        ZPos = rd.GetInt32("zpos"),
-                        Hp = rd.GetInt32("hp"),
-                        Mp = rd.GetInt32("mp"),
-                        Str = rd.GetInt32("str"),
-                        Spr = rd.GetInt32("spr"),
-                        Con = rd.GetInt32("con"),
-                        Ipr = rd.GetInt32("ipr"),
-                        Dex = rd.GetInt32("dex"),
-                        Points = rd.GetInt32("points"),
-                        Enegry = rd.GetInt32("enegry"),
-                        EnergyMax = rd.GetInt32("energymax"),
-                        Vigor = rd.GetInt32("vigor"),
-                        MaxVigor = rd.GetInt32("maxvigor"),
-                        Exp = rd.GetInt32("exp"),
-                        PkValue = rd.GetInt32("pkvalue"),
-                        VMoney = rd.GetInt32("vmoney"),
-                        BankMoney = rd.GetInt32("bankmoney"),
-                        YuanBao = rd.GetInt32("yuanbao"),
-                        MenpaiPoint = rd.GetInt32("menpaipoint"),
-                        ZengDian = rd.GetInt32("zengdian"),
-                    });
-                }
+                    AccName = rd.GetString("accname"),
+                    CharGuid = rd.GetInt32("charguid"),
+                    CharName = DbStringService.ToCommonString(rd.GetString("charname")),
+                    Title = DbStringService.ToCommonString(rd.GetString("title")),
+                    Menpai = rd.GetInt32("menpai"),
+                    Level = rd.GetInt32("level"),
+                    Scene = rd.GetInt32("scene"),
+                    XPos = rd.GetInt32("xpos"),
+                    ZPos = rd.GetInt32("zpos"),
+                    Hp = rd.GetInt32("hp"),
+                    Mp = rd.GetInt32("mp"),
+                    Str = rd.GetInt32("str"),
+                    Spr = rd.GetInt32("spr"),
+                    Con = rd.GetInt32("con"),
+                    Ipr = rd.GetInt32("ipr"),
+                    Dex = rd.GetInt32("dex"),
+                    Points = rd.GetInt32("points"),
+                    Enegry = rd.GetInt32("enegry"),
+                    EnergyMax = rd.GetInt32("energymax"),
+                    Vigor = rd.GetInt32("vigor"),
+                    MaxVigor = rd.GetInt32("maxvigor"),
+                    Exp = rd.GetInt32("exp"),
+                    PkValue = rd.GetInt32("pkvalue"),
+                    VMoney = rd.GetInt32("vmoney"),
+                    BankMoney = rd.GetInt32("bankmoney"),
+                    YuanBao = rd.GetInt32("yuanbao"),
+                    MenpaiPoint = rd.GetInt32("menpaipoint"),
+                    ZengDian = rd.GetInt32("zengdian"),
+                });
             }
         }
         return dbRoleInfo;

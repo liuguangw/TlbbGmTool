@@ -67,20 +67,18 @@ public class XinFaListViewModel : ViewModelBase
         });
         // 切换数据库
         await connection.SwitchGameDbAsync();
-        using (var rd = await mySqlCommand.ExecuteReaderAsync() as MySqlDataReader)
+        using var reader = await mySqlCommand.ExecuteReaderAsync();
+        if (reader is MySqlDataReader rd)
         {
-            if (rd != null)
+            while (await rd.ReadAsync())
             {
-                while (await rd.ReadAsync())
+                xinFaList.Add(new(new()
                 {
-                    xinFaList.Add(new(new()
-                    {
-                        Id = rd.GetInt32("aid"),
-                        CharGuid = rd.GetInt32("charguid"),
-                        XinFaId = rd.GetInt32("xinfaid"),
-                        XinFaLevel = rd.GetInt32("xinfalvl")
-                    }));
-                }
+                    Id = rd.GetInt32("aid"),
+                    CharGuid = rd.GetInt32("charguid"),
+                    XinFaId = rd.GetInt32("xinfaid"),
+                    XinFaLevel = rd.GetInt32("xinfalvl")
+                }));
             }
         }
         return xinFaList;
@@ -88,15 +86,13 @@ public class XinFaListViewModel : ViewModelBase
 
     private void ShowXinFaEditor(object? parameter)
     {
-        XinFaLogViewModel? xinFaLog = parameter as XinFaLogViewModel;
-        if (xinFaLog is null)
+        if (parameter is XinFaLogViewModel xinFaLog)
         {
-            return;
+            ShowDialog(new XinFaEditorWindow(), (XinFaEditorViewModel vm) =>
+            {
+                vm.XinFaLog = xinFaLog;
+                vm.Connection = Connection;
+            });
         }
-        ShowDialog(new XinFaEditorWindow(), (XinFaEditorViewModel vm) =>
-        {
-            vm.XinFaLog = xinFaLog;
-            vm.Connection = Connection;
-        });
     }
 }

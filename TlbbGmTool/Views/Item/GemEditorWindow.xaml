@@ -1,19 +1,17 @@
-﻿<Window x:Class="liuguang.TlbbGmTool.Views.Item.CommonItemEditorWindow"
+﻿<Window x:Class="liuguang.TlbbGmTool.Views.Item.GemEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
         mc:Ignorable="d"
-        ShowInTaskbar="False" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
-        Title="{Binding WindowTitle}" Height="200" Width="400">
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Title="{Binding WindowTitle}" Height="137" Width="410">
     <Window.DataContext>
-        <vm:CommonItemEditorViewModel />
+        <vm:GemEditorViewModel />
     </Window.DataContext>
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -35,35 +33,14 @@
             <Style TargetType="Button">
                 <Setter Property="Padding" Value="13,6" />
             </Style>
-            <Style TargetType="Slider">
-                <Setter Property="MinWidth" Value="140" />
-                <Setter Property="Orientation" Value="Horizontal" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="TickPlacement" Value="BottomRight" />
-                <Setter Property="TickFrequency" Value="1" />
-                <Setter Property="IsSnapToTickEnabled" Value="True" />
-            </Style>
         </Grid.Resources>
         <Label Grid.Row="0" Grid.Column="0">名称</Label>
         <TextBox Grid.Row="0" Grid.Column="1"
                  IsReadOnly="True" BorderThickness="0"
-                 Text="{Binding ItemData.ItemName,Mode=OneWay}" />
+                 Text="{Binding ItemData.ItemName,Mode=OneWay}"/>
         <Button Grid.Row="0" Grid.Column="2" Margin="5"
                 Command="{Binding SelectItemCommand}">替换</Button>
-        <Label Grid.Row="1" Grid.Column="0">最大数量</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
-                 IsReadOnly="True" BorderThickness="0"
-                 Text="{Binding ItemData.MaxSize,Mode=OneWay}" />
-        <Label Grid.Row="2" Grid.Column="0">数量</Label>
-        <Slider Grid.Row="2" Grid.Column="1"
-                Value="{Binding ItemData.Count}"
-                IsEnabled="{Binding CountEditorEnabled}"
-                Minimum="1"
-                Maximum="{Binding ItemData.MaxSize}" VerticalAlignment="Center" />
-        <TextBox Grid.Row="2" Grid.Column="2"
-                IsEnabled="{Binding CountEditorEnabled}"
-                 Text="{Binding ItemData.Count,UpdateSourceTrigger=PropertyChanged}" />
-        <Button Grid.Row="3" Grid.Column="2" Margin="5"
+        <Button Grid.Row="1" Grid.Column="2" Margin="5"
                 Command="{Binding SaveCommand}">保存</Button>
     </Grid>
 </Window>
