@@ -39,8 +39,26 @@
                 <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
                                     Header="数量" Binding="{Binding ItemCount}" />
-                <DataGridTemplateColumn Width="188" Header="管理"
-                                        CellTemplate="{StaticResource AdminItemTemplate}" />
+                <DataGridTemplateColumn Width="188" Header="管理">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <WrapPanel Margin="5">
+                                <Button Content="修改" Padding="10,5"
+                                        Command="{Binding DataContext.EditItemCommand, 
+                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                                <Button Content="复制" Padding="10,5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.CopyItemCommand, 
+                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                                <Button Content="删除" Padding="10,5" Margin="5,0,0,0"
+                                        Command="{Binding DataContext.DeleteItemCommand, 
+                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
