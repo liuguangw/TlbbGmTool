@@ -1,10 +1,8 @@
+using liuguang.Dbc;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,9 +18,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-#if NET
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-#endif
     }
 
     private async void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -36,47 +31,64 @@ public partial class MainWindow : Window
             var path = openFileDialog.FileName;
             try
             {
-                var table = new DataTable();
-                List<string> columns = new();
-                List<List<string>> rows = new();
-                await Task.Run(async () =>
+                var dbcFile = await Task.Run(async () =>
                 {
-                    await LoadTxtFileAsync(path, columns, rows);
+                    return await LoadTxtFileAsync(path);
                 });
-                for (var columnIndex = 0; columnIndex < columns.Count; columnIndex++)
+                var table = new DataTable();
+                for (var columnIndex = 0; columnIndex < dbcFile.FieldTypes.Count; columnIndex++)
                 {
                     var column = new DataColumn()
                     {
-                        DataType = typeof(string),
                         ColumnName = $"f{columnIndex}",
-                        Caption = columns[columnIndex]
                     };
-                    if (columnIndex == 0)
+                    var fieldName = string.Empty;
+                    if (dbcFile.FieldNames != null)
                     {
-                        column.DataType = typeof(int);
+                        fieldName = dbcFile.FieldNames[columnIndex];
+                    }
+                    switch (dbcFile.FieldTypes[columnIndex])
+                    {
+                        case DbcFieldType.T_INT:
+                            column.DataType = typeof(int);
+                            column.Caption = $"({columnIndex},INT){fieldName}";
+                            break;
+                        case DbcFieldType.T_FLOAT:
+                            column.DataType = typeof(float);
+                            column.Caption = $"({columnIndex},FLOAT){fieldName}";
+                            break;
+                        case DbcFieldType.T_STRING:
+                            column.DataType = typeof(string);
+                            column.Caption = $"({columnIndex},STRING){fieldName}";
+                            break;
                     }
                     table.Columns.Add(column);
                 }
-                foreach (var rowData in rows)
+                foreach (var rowData in dbcFile.DataMap.Values)
                 {
                     var row = table.NewRow();
                     for (var i = 0; i < rowData.Count; i++)
                     {
-                        if (i == 0)
+                        var nodeField = rowData[i];
+                        switch (nodeField.FieldType)
                         {
-                            row[$"f{i}"] = int.Parse(rowData[i]);
+                            case DbcFieldType.T_INT:
+                                row[$"f{i}"] = nodeField.IntValue;
+                                break;
+                            case DbcFieldType.T_FLOAT:
+                                row[$"f{i}"] = nodeField.FloatValue;
+                                break;
+                            case DbcFieldType.T_STRING:
+                                row[$"f{i}"] = nodeField.StringValue;
+                                break;
                         }
-                        else
-                        {
-                            row[$"f{i}"] = rowData[i];
-                        }
-
                     }
                     table.Rows.Add(row);
                 }
                 _dataTable = table;
                 grid.ItemsSource = table.DefaultView;
                 grid.Visibility = Visibility.Visible;
+                Title = "txt表格查看工具(" + path + ")";
             }
             catch (Exception ex)
             {
@@ -84,81 +96,14 @@ public partial class MainWindow : Window
             }
         }
     }
-    private async Task LoadTxtFileAsync(string path, List<string> columns, List<List<string>> rows)
+    private async Task<DbcFile> LoadTxtFileAsync(string path)
     {
-        var textEncoding = Encoding.GetEncoding("GB18030");
+        DbcFile fileInfo;
         using (var stream = File.OpenRead(path))
         {
-            using (var reader = new StreamReader(stream, textEncoding))
-            {
-                var firstLine = await reader.ReadLineAsync();
-                var labelLine = await reader.ReadLineAsync();
-                if ((firstLine is null) || (labelLine is null))
-                {
-                    throw new Exception("null at head line");
-                }
-                var columnTypes = firstLine.Split('\t');
-                var columnLabels = labelLine.Split('\t');
-                for (var i = 0; i < columnTypes.Length; i++)
-                {
-                    var columnType = columnTypes[i];
-                    if (string.IsNullOrEmpty(columnType))
-                    {
-                        continue;
-                    }
-                    var label = string.Empty;
-                    if (i < columnLabels.Length)
-                    {
-                        label = columnLabels[i];
-                    }
-                    columns.Add($"({i},{columnType}){label}");
-                }
-                //
-                while (true)
-                {
-                    var lineContent = await reader.ReadLineAsync();
-                    if (lineContent is null)
-                    {
-                        break;
-                    }
-                    if (lineContent.StartsWith("#"))
-                    {
-                        continue;
-                    }
-                    if (string.IsNullOrEmpty(lineContent))
-                    {
-                        continue;
-                    }
-                    var row = ParseRow(lineContent, columns.Count);
-                    if (row != null)
-                    {
-                        rows.Add(row);
-                    }
-                }
-            }
+            fileInfo = await DbcFile.ReadAsync(stream, (uint)stream.Length);
         }
-    }
-
-    private List<string>? ParseRow(string lineContent, int columnCount)
-    {
-        var fields = lineContent.Split('\t');
-        if (string.IsNullOrEmpty(fields[0]))
-        {
-            return null;
-        }
-        var rowFields = new List<string>();
-        for (var i = 0; i < columnCount; i++)
-        {
-            if (i < fields.Length)
-            {
-                rowFields.Add(fields[i]);
-            }
-            else
-            {
-                rowFields.Add(string.Empty);
-            }
-        }
-        return rowFields;
+        return fileInfo;
     }
 
     private void grid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)

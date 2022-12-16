@@ -17,6 +17,10 @@ public partial class DbcFile
     /// </summary>
     public List<DbcFieldType> FieldTypes;
     /// <summary>
+    /// 字段名称列表
+    /// </summary>
+    public List<string>? FieldNames;
+    /// <summary>
     /// 数据字典, [物品ID => 一行数据]
     /// </summary>
     public SortedDictionary<int, List<DbcField>> DataMap;
@@ -25,6 +29,10 @@ public partial class DbcFile
     {
         FieldTypes = fieldTypes;
         DataMap = dataMap;
+    }
+    private DbcFile(List<DbcFieldType> fieldTypes, List<string>? fieldNames, SortedDictionary<int, List<DbcField>> dataMap) : this(fieldTypes, dataMap)
+    {
+        FieldNames = fieldNames;
     }
     private static async Task ReadBytesAsync(Stream stream, byte[] data)
     {

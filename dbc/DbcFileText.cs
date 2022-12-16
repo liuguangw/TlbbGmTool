@@ -22,13 +22,15 @@ public partial class DbcFile
         var fileContent = _textEncoding.GetString(textData);
         //
         List<DbcFieldType> fieldTypes = new();
+        List<string>? fieldNames;
         SortedDictionary<int, List<DbcField>> dataMap = new();
         using (var reader = new StringReader(fileContent))
         {
             await LoadTextFieldTypesAsync(reader, fieldTypes);
+            fieldNames = await LoadTextFieldNamesAsync(reader, fieldTypes.Count);
             await LoadTextRowsAsync(reader, fieldTypes, dataMap);
         }
-        return new(fieldTypes, dataMap);
+        return new(fieldTypes, fieldNames, dataMap);
     }
     private static async Task LoadTextFieldTypesAsync(StringReader reader, List<DbcFieldType> fieldTypes)
     {
@@ -68,10 +70,35 @@ public partial class DbcFile
         }
     }
 
+    private static async Task<List<string>?> LoadTextFieldNamesAsync(StringReader reader, int fieldCount)
+    {
+        var lineContent = await reader.ReadLineAsync();
+        if (lineContent is null)
+        {
+            throw new Exception("read field names failed");
+        }
+        if (string.IsNullOrEmpty(lineContent))
+        {
+            return null;
+        }
+        var fieldNames = new List<string>(fieldCount);
+        var strItems = lineContent.Split('\t');
+        for (var i = 0; i < fieldCount; i++)
+        {
+            if (i < strItems.Length)
+            {
+                fieldNames.Add(strItems[i]);
+            }
+            else
+            {
+                fieldNames.Add(string.Empty);
+            }
+        }
+        return fieldNames;
+    }
+
     private static async Task LoadTextRowsAsync(StringReader reader, List<DbcFieldType> fieldTypes, SortedDictionary<int, List<DbcField>> dataMap)
     {
-        //空读一行
-        await reader.ReadLineAsync();
         string? lineContent;
         while (true)
         {
