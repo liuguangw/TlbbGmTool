@@ -4,6 +4,7 @@ using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Item;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +26,7 @@ public class ItemListViewModel : ViewModelBase
 
     public Visibility AddEquipVisible => ItemsContainer.RoleBagType == BagType.ItemBag ? Visibility.Visible : Visibility.Collapsed;
     public Visibility AddGemVisible => ItemsContainer.RoleBagType == BagType.MaterialBag ? Visibility.Visible : Visibility.Collapsed;
+    private bool CanInsertItem => ItemsContainer.ItemList.Count < ItemsContainer.BagMaxSize;
 
     /// <summary>
     /// 弹出物品编辑窗体
@@ -57,10 +59,24 @@ public class ItemListViewModel : ViewModelBase
         EditItemCommand = new(ShowItemEditor);
         CopyItemCommand = new(ProcessCopyItem);
         DeleteItemCommand = new(ProcessDeleteItem);
-        AddEquipCommand = new(ShowAddEquipEditor);
-        AddGemCommand = new(ShowAddGemEditor);
-        AddItemCommand = new(ShowAddItemEditor);
+        AddEquipCommand = new(ShowAddEquipEditor, () => CanInsertItem);
+        AddGemCommand = new(ShowAddGemEditor, () => CanInsertItem);
+        AddItemCommand = new(ShowAddItemEditor, () => CanInsertItem);
         ItemsContainer.PropertyChanged += ItemsContainer_PropertyChanged;
+        ItemsContainer.ItemList.CollectionChanged += ItemList_CollectionChanged;
+    }
+
+    /// <summary>
+    /// 当物品列表的长度变化时，更新发放按钮的状态(包满了就不允许发放了)
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    private void ItemList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        AddEquipCommand.RaiseCanExecuteChanged();
+        AddGemCommand.RaiseCanExecuteChanged();
+        AddItemCommand.RaiseCanExecuteChanged();
     }
 
     private void ItemsContainer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
