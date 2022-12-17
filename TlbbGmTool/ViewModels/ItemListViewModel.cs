@@ -158,9 +158,64 @@ public class ItemListViewModel : ViewModelBase
             ShowErrorMessage("出错了", $"未知类型 class={itemLog.ItemClass}");
         }
     }
-    private void ProcessCopyItem(object? parameter)
+    private async void ProcessCopyItem(object? parameter)
     {
+        if (Connection is null)
+        {
+            return;
+        }
+        if (parameter is not ItemLogViewModel itemLog)
+        {
+            return;
+        }
+        if (!Confirm("复制提示", $"你确定要复制{itemLog.ItemName}吗?"))
+        {
+            return;
+        }
+        var pData = new byte[itemLog.PData.Length];
+        Array.Copy(itemLog.PData, pData, pData.Length);
+        ItemLogViewModel newItemLog = new(new()
+        {
+            CharGuid = itemLog.CharGuid,
+            ItemBaseId = itemLog.ItemBaseId,
+            PData = pData,
+            Creator = itemLog.Creator,
+        });
+        try
+        {
+            await Task.Run(async () =>
+            {
+                await ItemDbService.InsertItemAsync(Connection, PosOffset, BagMaxSize, newItemLog);
+            });
+            InsertNewItem(newItemLog);
+            ShowMessage("复制成功", $"复制{newItemLog.ItemName}成功,pos={newItemLog.Pos}");
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("复制失败", ex, true);
+        }
+    }
 
+    /// <summary>
+    /// 把新物品放入列表中
+    /// </summary>
+    /// <param name="itemLog"></param>
+    private void InsertNewItem(ItemLogViewModel itemLog)
+    {
+        var insertOk = false;
+        for (var i = 0; i < ItemList.Count; i++)
+        {
+            if (itemLog.Pos < ItemList[i].Pos)
+            {
+                ItemList.Insert(i, itemLog);
+                insertOk = true;
+                break;
+            }
+        }
+        if (!insertOk)
+        {
+            ItemList.Add(itemLog);
+        }
     }
 
     private async void ProcessDeleteItem(object? parameter)
