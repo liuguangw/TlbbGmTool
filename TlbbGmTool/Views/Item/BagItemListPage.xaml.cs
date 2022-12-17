@@ -23,10 +23,10 @@ public partial class BagItemListPage : Page
             var roleWindowVm = (RoleWindowViewModel)roleWindow.DataContext;
             vm.OwnedWindow = roleWindow;
             vm.Connection = roleWindowVm.Connection;
-            vm.RoleBagType = RoleBagType;
+            vm.ItemsContainer.RoleBagType = RoleBagType;
             if (roleWindowVm.RoleInfo != null)
             {
-                vm.CharGuid = roleWindowVm.RoleInfo.CharGuid;
+                vm.ItemsContainer.CharGuid = roleWindowVm.RoleInfo.CharGuid;
             }
         }
         await vm.LoadItemListAsync();

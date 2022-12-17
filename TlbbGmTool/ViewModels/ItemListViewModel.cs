@@ -4,7 +4,7 @@ using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Item;
 using System;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,54 +13,18 @@ namespace liuguang.TlbbGmTool.ViewModels;
 public class ItemListViewModel : ViewModelBase
 {
     #region Fields
-    public int CharGuid;
     /// <summary>
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
-    /// <summary>
-    /// </summary>
-    private BagType _roleBagType = BagType.ItemBag;
-    /// <summary>
-    /// 背包开始位置
-    /// </summary>
-    public int PosOffset = -1;
-    /// <summary>
-    /// 当前页背包最大容量
-    /// </summary>
-    public int BagMaxSize = 30;
     #endregion
 
     #region Properties
 
-    public ObservableCollection<ItemLogViewModel> ItemList { get; } = new();
-    public BagType RoleBagType
-    {
-        get => _roleBagType;
-        set
-        {
-            _roleBagType = value;
-            if (PosOffset < 0)
-            {
-                switch (_roleBagType)
-                {
-                    case BagType.ItemBag:
-                        PosOffset = 0;
-                        break;
-                    case BagType.MaterialBag:
-                        PosOffset = BagMaxSize;
-                        break;
-                    case BagType.TaskBag:
-                        PosOffset = 2 * BagMaxSize;
-                        break;
-                }
-            }
-            RaisePropertyChanged(nameof(AddEquipVisible));
-            RaisePropertyChanged(nameof(AddGemVisible));
-        }
-    }
-    public Visibility AddEquipVisible => _roleBagType == BagType.ItemBag ? Visibility.Visible : Visibility.Collapsed;
-    public Visibility AddGemVisible => _roleBagType == BagType.MaterialBag ? Visibility.Visible : Visibility.Collapsed;
+    public BagContainer ItemsContainer { get; } = new();
+
+    public Visibility AddEquipVisible => ItemsContainer.RoleBagType == BagType.ItemBag ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility AddGemVisible => ItemsContainer.RoleBagType == BagType.MaterialBag ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>
     /// 弹出物品编辑窗体
@@ -96,6 +60,16 @@ public class ItemListViewModel : ViewModelBase
         AddEquipCommand = new(ShowAddEquipEditor);
         AddGemCommand = new(ShowAddGemEditor);
         AddItemCommand = new(ShowAddItemEditor);
+        ItemsContainer.PropertyChanged += ItemsContainer_PropertyChanged;
+    }
+
+    private void ItemsContainer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ItemsContainer.RoleBagType))
+        {
+            RaisePropertyChanged(nameof(AddEquipVisible));
+            RaisePropertyChanged(nameof(AddGemVisible));
+        }
     }
 
     public async Task LoadItemListAsync()
@@ -108,13 +82,9 @@ public class ItemListViewModel : ViewModelBase
         {
             var itemList = await Task.Run(async () =>
             {
-                return await ItemDbService.LoadItemListAsync(Connection, CharGuid, PosOffset, BagMaxSize);
+                return await ItemDbService.LoadItemListAsync(Connection, ItemsContainer.CharGuid, ItemsContainer.PosOffset, ItemsContainer.BagMaxSize);
             });
-            ItemList.Clear();
-            foreach (var itemInfo in itemList)
-            {
-                ItemList.Add(itemInfo);
-            }
+            ItemsContainer.FillItemList(itemList);
         }
         catch (Exception ex)
         {
@@ -141,7 +111,7 @@ public class ItemListViewModel : ViewModelBase
             ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
             {
                 vm.ItemLog = itemLog;
-                vm.RoleBagType = _roleBagType;
+                vm.RoleBagType = ItemsContainer.RoleBagType;
                 vm.Connection = Connection;
             });
         }
@@ -185,36 +155,14 @@ public class ItemListViewModel : ViewModelBase
         {
             await Task.Run(async () =>
             {
-                await ItemDbService.InsertItemAsync(Connection, PosOffset, BagMaxSize, newItemLog);
+                await ItemDbService.InsertItemAsync(Connection, ItemsContainer.PosOffset, ItemsContainer.BagMaxSize, newItemLog);
             });
-            InsertNewItem(newItemLog);
+            ItemsContainer.InsertNewItem(newItemLog);
             ShowMessage("复制成功", $"复制{newItemLog.ItemName}成功,pos={newItemLog.Pos}");
         }
         catch (Exception ex)
         {
             ShowErrorMessage("复制失败", ex, true);
-        }
-    }
-
-    /// <summary>
-    /// 把新物品放入列表中
-    /// </summary>
-    /// <param name="itemLog"></param>
-    private void InsertNewItem(ItemLogViewModel itemLog)
-    {
-        var insertOk = false;
-        for (var i = 0; i < ItemList.Count; i++)
-        {
-            if (itemLog.Pos < ItemList[i].Pos)
-            {
-                ItemList.Insert(i, itemLog);
-                insertOk = true;
-                break;
-            }
-        }
-        if (!insertOk)
-        {
-            ItemList.Add(itemLog);
         }
     }
 
@@ -238,7 +186,7 @@ public class ItemListViewModel : ViewModelBase
             {
                 await ItemDbService.DeleteItemAsync(Connection, itemLog.Id);
             });
-            ItemList.Remove(itemLog);
+            ItemsContainer.ItemList.Remove(itemLog);
             ShowMessage("删除成功", $"删除{itemLog.ItemName}成功");
         }
         catch (Exception ex)
@@ -251,19 +199,25 @@ public class ItemListViewModel : ViewModelBase
     {
         ShowDialog(new EquipEditorWindow(), (EquipEditorViewModel vm) =>
         {
-            vm.ItemList = ItemList;
-            vm.CharGuid = CharGuid;
-            vm.PosOffset = PosOffset;
-            vm.BagMaxSize = BagMaxSize;
             vm.Connection = Connection;
+            vm.ItemsContainer = ItemsContainer;
         });
     }
     private void ShowAddGemEditor()
     {
-
+        ShowDialog(new GemEditorWindow(), (GemEditorViewModel vm) =>
+        {
+            vm.Connection = Connection;
+            vm.ItemsContainer = ItemsContainer;
+        });
     }
     private void ShowAddItemEditor()
     {
-
+        ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
+        {
+            vm.Connection = Connection;
+            vm.RoleBagType = ItemsContainer.RoleBagType;
+            vm.ItemsContainer = ItemsContainer;
+        });
     }
 }

@@ -5,7 +5,6 @@ using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Item;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,20 +15,8 @@ public class EquipEditorViewModel : ViewModelBase
     #region Fields
     private bool _isSaving = false;
     private ItemLogViewModel? _inputItemLog;
-    private EquipDataViewModel _equipData = new();
-    private ObservableCollection<ItemLogViewModel>? _itemList;
-    /// <summary>
-    /// 发放需要,角色id
-    /// </summary>
-    public int CharGuid;
-    /// <summary>
-    /// 发放需要,背包开始位置
-    /// </summary>
-    public int PosOffset = -1;
-    /// <summary>
-    /// 发放需要,当前页背包最大容量
-    /// </summary>
-    public int BagMaxSize = 30;
+    private readonly EquipDataViewModel _equipData = new();
+    private BagContainer? _itemsContainer;
     /// <summary>
     /// 数据库连接
     /// </summary>
@@ -66,11 +53,11 @@ public class EquipEditorViewModel : ViewModelBase
             EquipDataService.Read(value.ItemBaseId, value.PData, _equipData);
         }
     }
-    public ObservableCollection<ItemLogViewModel> ItemList
+    public BagContainer ItemsContainer
     {
         set
         {
-            _itemList = value;
+            _itemsContainer = value;
             var defaultItem = (from itemBaseInfo in SharedData.ItemBaseMap.Values
                                where itemBaseInfo.TClass == 1
                                select new ItemBaseViewModel(itemBaseInfo)).FirstOrDefault();
@@ -319,9 +306,13 @@ public class EquipEditorViewModel : ViewModelBase
 
     private async Task InsertItemAsync(DbConnection connection, int itemBaseId, byte[] pData)
     {
+        if (_itemsContainer is null)
+        {
+            return;
+        }
         ItemLogViewModel itemLog = new(new()
         {
-            CharGuid = CharGuid,
+            CharGuid = _itemsContainer.CharGuid,
             ItemBaseId = itemBaseId,
             PData = pData,
             Creator = "流光"
@@ -330,9 +321,9 @@ public class EquipEditorViewModel : ViewModelBase
         {
             await Task.Run(async () =>
             {
-                await ItemDbService.InsertItemAsync(connection, PosOffset, BagMaxSize, itemLog);
+                await ItemDbService.InsertItemAsync(connection, _itemsContainer.PosOffset, _itemsContainer.BagMaxSize, itemLog);
             });
-            InsertNewItem(itemLog);
+            _itemsContainer.InsertNewItem(itemLog);
             ShowMessage("发放成功", $"发放装备成功,pos={itemLog.Pos}");
             OwnedWindow?.Close();
         }
@@ -366,32 +357,6 @@ public class EquipEditorViewModel : ViewModelBase
         finally
         {
             IsSaving = false;
-        }
-    }
-
-    /// <summary>
-    /// 把新物品放入列表中
-    /// </summary>
-    /// <param name="itemLog"></param>
-    private void InsertNewItem(ItemLogViewModel itemLog)
-    {
-        if (_itemList is null)
-        {
-            return;
-        }
-        var insertOk = false;
-        for (var i = 0; i < _itemList.Count; i++)
-        {
-            if (itemLog.Pos < _itemList[i].Pos)
-            {
-                _itemList.Insert(i, itemLog);
-                insertOk = true;
-                break;
-            }
-        }
-        if (!insertOk)
-        {
-            _itemList.Add(itemLog);
         }
     }
 }

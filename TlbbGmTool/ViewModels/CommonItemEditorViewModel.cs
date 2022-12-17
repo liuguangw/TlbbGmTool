@@ -17,6 +17,7 @@ public class CommonItemEditorViewModel : ViewModelBase
     private bool _isSaving = false;
     private ItemLogViewModel? _inputItemLog;
     private CommonItemDataViewModel _itemData = new();
+    private BagContainer? _itemsContainer;
     /// <summary>
     /// 数据库连接
     /// </summary>
@@ -54,6 +55,34 @@ public class CommonItemEditorViewModel : ViewModelBase
             CommonItemDataService.Read(value.ItemBaseId, value.PData, _itemData);
         }
     }
+    public BagContainer ItemsContainer
+    {
+        set
+        {
+            _itemsContainer = value;
+            var filterClass = 3;
+            switch (RoleBagType)
+            {
+                case BagType.ItemBag:
+                    filterClass = 3;
+                    break;
+                case BagType.MaterialBag:
+                    filterClass = 2;
+                    break;
+                case BagType.TaskBag:
+                    filterClass = 4;
+                    break;
+
+            }
+            var defaultItem = (from itemBaseInfo in SharedData.ItemBaseMap.Values
+                               where itemBaseInfo.TClass == filterClass
+                               select new ItemBaseViewModel(itemBaseInfo)).FirstOrDefault();
+            if (defaultItem != null)
+            {
+                LoadNewItemBase(defaultItem);
+            }
+        }
+    }
     public CommonItemDataViewModel ItemData => _itemData;
     /// <summary>
     /// 数量编辑功能的状态
@@ -71,6 +100,30 @@ public class CommonItemEditorViewModel : ViewModelBase
         SelectItemCommand = new(ShowSelectItemWindow);
         SaveCommand = new(SaveItem, () => !_isSaving);
         _itemData.PropertyChanged += ItemData_PropertyChanged;
+    }
+
+    /// <summary>
+    /// 当选择一个新的物品id时，初始化对应的数据
+    /// </summary>
+    /// <param name="itemBase"></param>
+    private void LoadNewItemBase(ItemBaseViewModel itemBase)
+    {
+        _itemData.ItemBaseId = itemBase.ItemBaseId;
+        var itemMaxSize = itemBase.ItemMaxSize;
+        _itemData.Count = Math.Min(_itemData.Count, itemMaxSize);
+        _itemData.MaxSize = itemMaxSize;
+        if (itemBase.BaseInfo is ItemBaseCommonItem itemBaseInfo)
+        {
+            _itemData.RulerId = itemBaseInfo.RulerId;
+            _itemData.CosSelf = itemBaseInfo.CosSelf;
+            _itemData.BasePrice = itemBaseInfo.BasePrice;
+            _itemData.Level = itemBaseInfo.Level;
+            _itemData.ReqSkill = itemBaseInfo.ReqSkill;
+            _itemData.ReqSkillLevel = itemBaseInfo.ReqSkillLevel;
+            _itemData.ScriptID = itemBaseInfo.ScriptID;
+            _itemData.SkillID = itemBaseInfo.SkillID;
+            _itemData.TargetType = itemBaseInfo.TargetType;
+        }
     }
 
     private void ItemData_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -118,22 +171,7 @@ public class CommonItemEditorViewModel : ViewModelBase
             var selectedItem = selectorWindow.SelectedItem;
             if (selectedItem != null)
             {
-                _itemData.ItemBaseId = selectedItem.ItemBaseId;
-                var itemMaxSize = selectedItem.ItemMaxSize;
-                _itemData.Count = Math.Min(_itemData.Count, itemMaxSize);
-                _itemData.MaxSize = itemMaxSize;
-                if (selectedItem.BaseInfo is ItemBaseCommonItem itemBaseInfo)
-                {
-                    _itemData.RulerId = itemBaseInfo.RulerId;
-                    _itemData.CosSelf = itemBaseInfo.CosSelf;
-                    _itemData.BasePrice = itemBaseInfo.BasePrice;
-                    _itemData.Level = itemBaseInfo.Level;
-                    _itemData.ReqSkill = itemBaseInfo.ReqSkill;
-                    _itemData.ReqSkillLevel = itemBaseInfo.ReqSkillLevel;
-                    _itemData.ScriptID = itemBaseInfo.ScriptID;
-                    _itemData.SkillID = itemBaseInfo.SkillID;
-                    _itemData.TargetType = itemBaseInfo.TargetType;
-                }
+                LoadNewItemBase(selectedItem);
             }
         }
     }
@@ -149,56 +187,71 @@ public class CommonItemEditorViewModel : ViewModelBase
         {
             return;
         }
+        IsSaving = true;
         var itemBaseId = _itemData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
         CommonItemDataService.Write(_itemData, pData);
-        var pArray = DataService.ConvertToPArray(pData);
         if (_inputItemLog is null)
         {
-            ShowErrorMessage("todo", "todo");
+            await InsertItemAsync(Connection, itemBaseId, pData);
         }
         else
         {
-            try
+            await UpdateItemAsync(Connection, _inputItemLog, itemBaseId, pData);
+        }
+    }
+    private async Task InsertItemAsync(DbConnection connection, int itemBaseId, byte[] pData)
+    {
+        if (_itemsContainer is null)
+        {
+            return;
+        }
+        ItemLogViewModel itemLog = new(new()
+        {
+            CharGuid = _itemsContainer.CharGuid,
+            ItemBaseId = itemBaseId,
+            PData = pData,
+        });
+        try
+        {
+            await Task.Run(async () =>
             {
-                await Task.Run(async () =>
-                {
-                    await UpdateItemDataAsync(Connection, _inputItemLog.Id, itemBaseId, pArray);
-                });
-                _inputItemLog.ItemBaseId = itemBaseId;
-                _inputItemLog.PData = pData;
-                ShowMessage("修改成功", "修改物品成功");
-                OwnedWindow?.Close();
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("修改失败", ex);
-            }
+                await ItemDbService.InsertItemAsync(connection, _itemsContainer.PosOffset, _itemsContainer.BagMaxSize, itemLog);
+            });
+            _itemsContainer.InsertNewItem(itemLog);
+            ShowMessage("发放成功", $"发放物品成功,pos={itemLog.Pos}");
+            OwnedWindow?.Close();
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("发放失败", ex, true);
+        }
+        finally
+        {
+            IsSaving = false;
         }
     }
 
-    private async Task UpdateItemDataAsync(DbConnection dbConnection, int logId, int itemBaseId, int[] pArray)
+    private async Task UpdateItemAsync(DbConnection connection, ItemLogViewModel itemLog, int itemBaseId, byte[] pData)
     {
-        var sql = "UPDATE t_iteminfo SET itemtype=@itemtype";
-        var intDictionary = new Dictionary<string, int>()
+        try
         {
-            ["@itemtype"] = itemBaseId,
-            ["@aid"] = logId,
-        };
-        for (var i = 0; i < pArray.Length; i++)
-        {
-            intDictionary[$"@p{i + 1}"] = pArray[i];
-            sql += $",p{i + 1}=@p{i + 1}";
-        }
-        sql += " WHERE aid=@aid";
-        var mySqlCommand = new MySqlCommand(sql, dbConnection.Conn);
-        foreach (var keyPair in intDictionary)
-        {
-            mySqlCommand.Parameters.Add(new MySqlParameter(keyPair.Key, MySqlDbType.Int32)
+            await Task.Run(async () =>
             {
-                Value = keyPair.Value
+                await ItemDbService.UpdateItemAsync(connection, itemLog.Id, itemBaseId, pData);
             });
+            itemLog.ItemBaseId = itemBaseId;
+            itemLog.PData = pData;
+            ShowMessage("修改成功", "修改物品成功");
+            OwnedWindow?.Close();
         }
-        await mySqlCommand.ExecuteNonQueryAsync();
+        catch (Exception ex)
+        {
+            ShowErrorMessage("修改失败", ex, true);
+        }
+        finally
+        {
+            IsSaving = false;
+        }
     }
 }

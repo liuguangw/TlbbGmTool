@@ -22,7 +22,7 @@
             <Button Command="{Binding AddItemCommand}">发放物品</Button>
         </WrapPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                  Margin="10" ItemsSource="{Binding ItemList}">
+                  Margin="10" ItemsSource="{Binding ItemsContainer.ItemList}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="50" ElementStyle="{StaticResource TextColumnStyle}"
                                     CellStyle="{StaticResource ItemCellStyle}"
@@ -46,15 +46,15 @@
                                 <Button Content="修改" Padding="10,5"
                                         Command="{Binding DataContext.EditItemCommand, 
                                             RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
-                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                                        CommandParameter="{Binding}"/>
                                 <Button Content="复制" Padding="10,5" Margin="5,0,0,0"
                                         Command="{Binding DataContext.CopyItemCommand, 
                                             RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
-                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                                        CommandParameter="{Binding}"/>
                                 <Button Content="删除" Padding="10,5" Margin="5,0,0,0"
                                         Command="{Binding DataContext.DeleteItemCommand, 
                                             RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
-                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                                        CommandParameter="{Binding}"/>
                             </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

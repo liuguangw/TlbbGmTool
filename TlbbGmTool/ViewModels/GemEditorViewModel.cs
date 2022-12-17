@@ -17,6 +17,7 @@ public class GemEditorViewModel : ViewModelBase
     private bool _isSaving = false;
     private ItemLogViewModel? _inputItemLog;
     private GemDataViewModel _itemData = new();
+    private BagContainer? _itemsContainer;
     /// <summary>
     /// 数据库连接
     /// </summary>
@@ -53,6 +54,20 @@ public class GemEditorViewModel : ViewModelBase
             GemDataService.Read(value.ItemBaseId, value.PData, _itemData);
         }
     }
+    public BagContainer ItemsContainer
+    {
+        set
+        {
+            _itemsContainer = value;
+            var defaultItem = (from itemBaseInfo in SharedData.ItemBaseMap.Values
+                               where itemBaseInfo.TClass == 5
+                               select new ItemBaseViewModel(itemBaseInfo)).FirstOrDefault();
+            if (defaultItem != null)
+            {
+                LoadNewItemBase(defaultItem);
+            }
+        }
+    }
     public GemDataViewModel ItemData => _itemData;
     #endregion
 
@@ -66,6 +81,22 @@ public class GemEditorViewModel : ViewModelBase
         SelectItemCommand = new(ShowSelectItemWindow);
         SaveCommand = new(SaveItem, () => !_isSaving);
         _itemData.PropertyChanged += ItemData_PropertyChanged;
+    }
+
+    /// <summary>
+    /// 当选择一个新的宝石id时，初始化对应的数据
+    /// </summary>
+    /// <param name="itemBase"></param>
+    private void LoadNewItemBase(ItemBaseViewModel itemBase)
+    {
+        _itemData.ItemBaseId = itemBase.ItemBaseId;
+        _itemData.RulerId = itemBase.RulerId;
+        if (itemBase.BaseInfo is ItemBaseGem gemBaseInfo)
+        {
+            _itemData.BasePrice = gemBaseInfo.BasePrice;
+            _itemData.AttrType = gemBaseInfo.AttrType;
+            _itemData.AttrValue = gemBaseInfo.AttrValue;
+        }
     }
 
     private void ItemData_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -95,14 +126,7 @@ public class GemEditorViewModel : ViewModelBase
             var selectedItem = selectorWindow.SelectedItem;
             if (selectedItem != null)
             {
-                _itemData.ItemBaseId = selectedItem.ItemBaseId;
-                _itemData.RulerId = selectedItem.RulerId;
-                if (selectedItem.BaseInfo is ItemBaseGem gemBaseInfo)
-                {
-                    _itemData.BasePrice = gemBaseInfo.BasePrice;
-                    _itemData.AttrType = gemBaseInfo.AttrType;
-                    _itemData.AttrValue = gemBaseInfo.AttrValue;
-                }
+                LoadNewItemBase(selectedItem);
             }
         }
     }
@@ -116,53 +140,69 @@ public class GemEditorViewModel : ViewModelBase
         var itemBaseId = _itemData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
         GemDataService.Write(_itemData, pData);
-        var pArray = DataService.ConvertToPArray(pData);
         if (_inputItemLog is null)
         {
-            ShowErrorMessage("todo", "todo");
+            await InsertItemAsync(Connection, itemBaseId, pData);
         }
         else
         {
-            try
-            {
-                await Task.Run(async () =>
-                {
-                    await UpdateItemDataAsync(Connection, _inputItemLog.Id, itemBaseId, pArray);
-                });
-                _inputItemLog.ItemBaseId = itemBaseId;
-                _inputItemLog.PData = pData;
-                ShowMessage("修改成功", "修改宝石成功");
-                OwnedWindow?.Close();
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("修改失败", ex);
-            }
+            await UpdateItemAsync(Connection, _inputItemLog, itemBaseId, pData);
         }
     }
 
-    private async Task UpdateItemDataAsync(DbConnection dbConnection, int logId, int itemBaseId, int[] pArray)
+
+    private async Task InsertItemAsync(DbConnection connection, int itemBaseId, byte[] pData)
     {
-        var sql = "UPDATE t_iteminfo SET itemtype=@itemtype";
-        var intDictionary = new Dictionary<string, int>()
+        if (_itemsContainer is null)
         {
-            ["@itemtype"] = itemBaseId,
-            ["@aid"] = logId,
-        };
-        for (var i = 0; i < pArray.Length; i++)
-        {
-            intDictionary[$"@p{i + 1}"] = pArray[i];
-            sql += $",p{i + 1}=@p{i + 1}";
+            return;
         }
-        sql += " WHERE aid=@aid";
-        var mySqlCommand = new MySqlCommand(sql, dbConnection.Conn);
-        foreach (var keyPair in intDictionary)
+        ItemLogViewModel itemLog = new(new()
         {
-            mySqlCommand.Parameters.Add(new MySqlParameter(keyPair.Key, MySqlDbType.Int32)
+            CharGuid = _itemsContainer.CharGuid,
+            ItemBaseId = itemBaseId,
+            PData = pData,
+        });
+        try
+        {
+            await Task.Run(async () =>
             {
-                Value = keyPair.Value
+                await ItemDbService.InsertItemAsync(connection, _itemsContainer.PosOffset, _itemsContainer.BagMaxSize, itemLog);
             });
+            _itemsContainer.InsertNewItem(itemLog);
+            ShowMessage("发放成功", $"发放宝石成功,pos={itemLog.Pos}");
+            OwnedWindow?.Close();
         }
-        await mySqlCommand.ExecuteNonQueryAsync();
+        catch (Exception ex)
+        {
+            ShowErrorMessage("发放失败", ex, true);
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    private async Task UpdateItemAsync(DbConnection connection, ItemLogViewModel itemLog, int itemBaseId, byte[] pData)
+    {
+        try
+        {
+            await Task.Run(async () =>
+            {
+                await ItemDbService.UpdateItemAsync(connection, itemLog.Id, itemBaseId, pData);
+            });
+            itemLog.ItemBaseId = itemBaseId;
+            itemLog.PData = pData;
+            ShowMessage("修改成功", "修改宝石成功");
+            OwnedWindow?.Close();
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("修改失败", ex, true);
+        }
+        finally
+        {
+            IsSaving = false;
+        }
     }
 }
