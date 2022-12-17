@@ -1,3 +1,4 @@
+using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,7 +8,7 @@ namespace liuguang.TlbbGmTool.Views.Item;
 public partial class BagItemListPage : Page
 {
     private bool _vmBind = false;
-    public int BagType { get; set; } = 0;
+    public BagType RoleBagType { get; set; } = BagType.ItemBag;
     public BagItemListPage()
     {
         InitializeComponent();
@@ -22,7 +23,7 @@ public partial class BagItemListPage : Page
             var roleWindowVm = (RoleWindowViewModel)roleWindow.DataContext;
             vm.OwnedWindow = roleWindow;
             vm.Connection = roleWindowVm.Connection;
-            vm.BagType = BagType;
+            vm.RoleBagType = RoleBagType;
             if (roleWindowVm.RoleInfo != null)
             {
                 vm.CharGuid = roleWindowVm.RoleInfo.CharGuid;

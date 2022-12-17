@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows;
 using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Item;
-using MySql.Data.MySqlClient;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace liuguang.TlbbGmTool.ViewModels;
 
@@ -20,9 +19,8 @@ public class ItemListViewModel : ViewModelBase
     /// </summary>
     public DbConnection? Connection;
     /// <summary>
-    /// 类型 0道具 1材料 2任务
     /// </summary>
-    private int _bagType = 0;
+    private BagType _roleBagType = BagType.ItemBag;
     /// <summary>
     /// 背包开始位置
     /// </summary>
@@ -36,22 +34,33 @@ public class ItemListViewModel : ViewModelBase
     #region Properties
 
     public ObservableCollection<ItemLogViewModel> ItemList { get; } = new();
-    public int BagType
+    public BagType RoleBagType
     {
-        get => _bagType;
+        get => _roleBagType;
         set
         {
-            _bagType = value;
+            _roleBagType = value;
             if (PosOffset < 0)
             {
-                PosOffset = _bagType * BagMaxSize;
+                switch (_roleBagType)
+                {
+                    case BagType.ItemBag:
+                        PosOffset = 0;
+                        break;
+                    case BagType.MaterialBag:
+                        PosOffset = BagMaxSize;
+                        break;
+                    case BagType.TaskBag:
+                        PosOffset = 2 * BagMaxSize;
+                        break;
+                }
             }
             RaisePropertyChanged(nameof(AddEquipVisible));
             RaisePropertyChanged(nameof(AddGemVisible));
         }
     }
-    public Visibility AddEquipVisible => _bagType == 0 ? Visibility.Visible : Visibility.Collapsed;
-    public Visibility AddGemVisible => _bagType == 1 ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility AddEquipVisible => _roleBagType == BagType.ItemBag ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility AddGemVisible => _roleBagType == BagType.MaterialBag ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>
     /// 弹出物品编辑窗体
@@ -99,7 +108,7 @@ public class ItemListViewModel : ViewModelBase
         {
             var itemList = await Task.Run(async () =>
             {
-                return await DoLoadItemListAsync(Connection, CharGuid);
+                return await ItemDbService.LoadItemListAsync(Connection, CharGuid, PosOffset, BagMaxSize);
             });
             ItemList.Clear();
             foreach (var itemInfo in itemList)
@@ -111,59 +120,6 @@ public class ItemListViewModel : ViewModelBase
         {
             ShowErrorMessage("加载出错", ex);
         }
-    }
-
-    private async Task<List<ItemLogViewModel>> DoLoadItemListAsync(DbConnection connection, int charGuid)
-    {
-        var itemList = new List<ItemLogViewModel>();
-        const string sql = "SELECT * FROM t_iteminfo WHERE charguid=@charguid AND isvalid=1 AND pos>=@pos1 AND pos<@pos2 ORDER BY pos ASC";
-        var mySqlCommand = new MySqlCommand(sql, connection.Conn);
-        mySqlCommand.Parameters.Add(new MySqlParameter("@charguid", MySqlDbType.Int32)
-        {
-            Value = charGuid
-        });
-        mySqlCommand.Parameters.Add(new MySqlParameter("@pos1", MySqlDbType.Int32)
-        {
-            Value = PosOffset
-        });
-        mySqlCommand.Parameters.Add(new MySqlParameter("@pos2", MySqlDbType.Int32)
-        {
-            Value = PosOffset + BagMaxSize
-        });
-        // 切换数据库
-        await connection.SwitchGameDbAsync();
-        using var reader = await mySqlCommand.ExecuteReaderAsync();
-        if (reader is MySqlDataReader rd)
-        {
-            while (await rd.ReadAsync())
-            {
-                var pArray = new int[17];
-                for (var i = 0; i < pArray.Length; i++)
-                {
-                    pArray[i] = rd.GetInt32("p" + (i + 1));
-                }
-                var pData = DataService.ConvertToPData(pArray);
-                itemList.Add(new(new()
-                {
-                    Id = rd.GetInt32("aid"),
-                    CharGuid = rd.GetInt32("charguid"),
-                    Guid = rd.GetInt32("guid"),
-                    World = rd.GetInt32("world"),
-                    Server = rd.GetInt32("server"),
-                    ItemBaseId = rd.GetInt32("itemtype"),
-                    Pos = rd.GetInt32("pos"),
-                    PData = pData,
-                    Creator = DbStringService.ToCommonString(rd.GetString("creator")),
-                    IsValid = (rd.GetInt32("isvalid") == 1),
-                    DbVersion = rd.GetInt32("dbversion"),
-                    FixAttr = rd.GetString("fixattr"),
-                    TVar = rd.GetString("var"),
-                    VisualId = rd.GetInt32("visualid"),
-                    MaxgemId = rd.GetInt32("maxgemid")
-                }));
-            }
-        }
-        return itemList;
     }
 
     private void ShowItemEditor(object? parameter)
@@ -185,7 +141,7 @@ public class ItemListViewModel : ViewModelBase
             ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
             {
                 vm.ItemLog = itemLog;
-                vm.BagType = _bagType;
+                vm.RoleBagType = _roleBagType;
                 vm.Connection = Connection;
             });
         }
@@ -206,13 +162,46 @@ public class ItemListViewModel : ViewModelBase
     {
 
     }
-    private void ProcessDeleteItem(object? parameter)
+
+    private async void ProcessDeleteItem(object? parameter)
     {
+        if (Connection is null)
+        {
+            return;
+        }
+        if (parameter is not ItemLogViewModel itemLog)
+        {
+            return;
+        }
+        if (!Confirm("删除提示", $"你确定要删除{itemLog.ItemName}吗?"))
+        {
+            return;
+        }
+        try
+        {
+            await Task.Run(async () =>
+            {
+                await ItemDbService.DeleteItemAsync(Connection, itemLog.Id);
+            });
+            ItemList.Remove(itemLog);
+            ShowMessage("删除成功", $"删除{itemLog.ItemName}成功");
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("删除失败", ex, true);
+        }
 
     }
     private void ShowAddEquipEditor()
     {
-
+        ShowDialog(new EquipEditorWindow(), (EquipEditorViewModel vm) =>
+        {
+            vm.ItemList = ItemList;
+            vm.CharGuid = CharGuid;
+            vm.PosOffset = PosOffset;
+            vm.BagMaxSize = BagMaxSize;
+            vm.Connection = Connection;
+        });
     }
     private void ShowAddGemEditor()
     {

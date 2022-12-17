@@ -11,12 +11,11 @@ public partial class DbcFile
     private static async Task<DbcFile> ReadTextAsync(Stream stream, uint limit)
     {
         var textData = new byte[limit];
-        var buff = new byte[0x1000];
         var readLength = 0;
         int rCount;
         while (readLength < limit)
         {
-            rCount = Math.Min(buff.Length, (int)limit - readLength);
+            rCount = Math.Min(0x1000, (int)limit - readLength);
             readLength += await stream.ReadAsync(textData, readLength, rCount);
         }
         var fileContent = _textEncoding.GetString(textData);

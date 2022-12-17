@@ -21,7 +21,7 @@ public class CommonItemEditorViewModel : ViewModelBase
     /// 数据库连接
     /// </summary>
     public DbConnection? Connection;
-    public int BagType = 0;
+    public BagType RoleBagType = BagType.ItemBag;
     #endregion
     #region Properties
     public bool IsSaving
@@ -95,9 +95,22 @@ public class CommonItemEditorViewModel : ViewModelBase
         {
             vm.WindowTitle = "选择物品";
             vm.InitItemId = _itemData.ItemBaseId;
-            int[] itemClassArr = { 3, 2, 4 };
+            var filterClass = 3;
+            switch (RoleBagType)
+            {
+                case BagType.ItemBag:
+                    filterClass = 3;
+                    break;
+                case BagType.MaterialBag:
+                    filterClass = 2;
+                    break;
+                case BagType.TaskBag:
+                    filterClass = 4;
+                    break;
+
+            }
             vm.ItemList = (from itemBaseInfo in SharedData.ItemBaseMap.Values
-                           where itemBaseInfo.TClass == itemClassArr[BagType]
+                           where itemBaseInfo.TClass == filterClass
                            select new ItemBaseViewModel(itemBaseInfo)).ToList();
         };
         if (ShowDialog(selectorWindow, beforeAction) == true)

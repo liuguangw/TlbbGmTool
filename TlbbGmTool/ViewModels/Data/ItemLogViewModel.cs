@@ -12,7 +12,7 @@ public class ItemLogViewModel : NotifyBase
     public int Id
     {
         get => _itemLog.Id;
-        private set => SetProperty(ref _itemLog.Id, value);
+        set => SetProperty(ref _itemLog.Id, value);
     }
     public int CharGuid
     {

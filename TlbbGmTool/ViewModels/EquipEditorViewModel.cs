@@ -3,9 +3,9 @@ using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Item;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +17,19 @@ public class EquipEditorViewModel : ViewModelBase
     private bool _isSaving = false;
     private ItemLogViewModel? _inputItemLog;
     private EquipDataViewModel _equipData = new();
+    private ObservableCollection<ItemLogViewModel>? _itemList;
+    /// <summary>
+    /// 发放需要,角色id
+    /// </summary>
+    public int CharGuid;
+    /// <summary>
+    /// 发放需要,背包开始位置
+    /// </summary>
+    public int PosOffset = -1;
+    /// <summary>
+    /// 发放需要,当前页背包最大容量
+    /// </summary>
+    public int BagMaxSize = 30;
     /// <summary>
     /// 数据库连接
     /// </summary>
@@ -51,6 +64,20 @@ public class EquipEditorViewModel : ViewModelBase
         {
             _inputItemLog = value;
             EquipDataService.Read(value.ItemBaseId, value.PData, _equipData);
+        }
+    }
+    public ObservableCollection<ItemLogViewModel> ItemList
+    {
+        set
+        {
+            _itemList = value;
+            var defaultItem = (from itemBaseInfo in SharedData.ItemBaseMap.Values
+                               where itemBaseInfo.TClass == 1
+                               select new ItemBaseViewModel(itemBaseInfo)).FirstOrDefault();
+            if (defaultItem != null)
+            {
+                LoadNewItemBase(defaultItem);
+            }
         }
     }
     public EquipDataViewModel EquipData => _equipData;
@@ -96,6 +123,29 @@ public class EquipEditorViewModel : ViewModelBase
         _equipData.PropertyChanged += EquipData_PropertyChanged;
     }
 
+    /// <summary>
+    /// 当选择一个新的装备id时，初始化对应的数据
+    /// </summary>
+    /// <param name="itemBase"></param>
+    private void LoadNewItemBase(ItemBaseViewModel itemBase)
+    {
+        _equipData.ItemBaseId = itemBase.ItemBaseId;
+        //无属性的装备
+        if (!_equipData.CanSelectAttr)
+        {
+            _equipData.Attr0 = 0;
+            _equipData.Attr1 = 0;
+        }
+        if (itemBase.BaseInfo is ItemBaseEquip equipBaseInfo)
+        {
+            _equipData.RulerId = equipBaseInfo.RulerId;
+            _equipData.CurDurPoint = equipBaseInfo.MaxDurPoint;
+            _equipData.CurDamagePoint = 0;
+            _equipData.MaxDurPoint = equipBaseInfo.MaxDurPoint;
+            _equipData.VisualId = equipBaseInfo.EquipVisual;
+        }
+    }
+
     private void EquipData_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         //当孔数变化后,通知选择宝石按钮的状态更新
@@ -135,21 +185,7 @@ public class EquipEditorViewModel : ViewModelBase
             var selectedItem = selectorWindow.SelectedItem;
             if (selectedItem != null)
             {
-                _equipData.ItemBaseId = selectedItem.ItemBaseId;
-                //无属性的装备
-                if (!_equipData.CanSelectAttr)
-                {
-                    _equipData.Attr0 = 0;
-                    _equipData.Attr1 = 0;
-                }
-                if (selectedItem.BaseInfo is ItemBaseEquip equipBaseInfo)
-                {
-                    _equipData.RulerId = equipBaseInfo.RulerId;
-                    _equipData.CurDurPoint = equipBaseInfo.MaxDurPoint;
-                    _equipData.CurDamagePoint = 0;
-                    _equipData.MaxDurPoint = equipBaseInfo.MaxDurPoint;
-                    _equipData.VisualId = equipBaseInfo.EquipVisual;
-                }
+                LoadNewItemBase(selectedItem);
             }
         }
     }
@@ -263,56 +299,99 @@ public class EquipEditorViewModel : ViewModelBase
         {
             return;
         }
+        IsSaving = true;
         var itemBaseId = _equipData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
-        EquipDataService.Write(_equipData, pData);
-        var pArray = DataService.ConvertToPArray(pData);
         if (_inputItemLog is null)
         {
-            ShowErrorMessage("todo", "todo");
+            _equipData.HasCreator = true;
+        }
+        EquipDataService.Write(_equipData, pData);
+        if (_inputItemLog is null)
+        {
+            await InsertItemAsync(Connection, itemBaseId, pData);
         }
         else
         {
-            try
-            {
-                await Task.Run(async () =>
-                {
-                    await UpdateEquipDataAsync(Connection, _inputItemLog.Id, itemBaseId, pArray);
-                });
-                _inputItemLog.ItemBaseId = itemBaseId;
-                _inputItemLog.PData = pData;
-                ShowMessage("修改成功", "修改装备成功");
-                OwnedWindow?.Close();
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("修改失败", ex);
-            }
+            await UpdateItemAsync(Connection, _inputItemLog, itemBaseId, pData);
         }
     }
 
-    private async Task UpdateEquipDataAsync(DbConnection dbConnection, int logId, int itemBaseId, int[] pArray)
+    private async Task InsertItemAsync(DbConnection connection, int itemBaseId, byte[] pData)
     {
-        var sql = "UPDATE t_iteminfo SET itemtype=@itemtype";
-        var intDictionary = new Dictionary<string, int>()
+        ItemLogViewModel itemLog = new(new()
         {
-            ["@itemtype"] = itemBaseId,
-            ["@aid"] = logId,
-        };
-        for (var i = 0; i < pArray.Length; i++)
+            CharGuid = CharGuid,
+            ItemBaseId = itemBaseId,
+            PData = pData,
+            Creator = "流光"
+        });
+        try
         {
-            intDictionary[$"@p{i + 1}"] = pArray[i];
-            sql += $",p{i + 1}=@p{i + 1}";
-        }
-        sql += " WHERE aid=@aid";
-        var mySqlCommand = new MySqlCommand(sql, dbConnection.Conn);
-        foreach (var keyPair in intDictionary)
-        {
-            mySqlCommand.Parameters.Add(new MySqlParameter(keyPair.Key, MySqlDbType.Int32)
+            await Task.Run(async () =>
             {
-                Value = keyPair.Value
+                await ItemDbService.InsertItemAsync(connection, PosOffset, BagMaxSize, itemLog);
             });
+            InsertNewItem(itemLog);
+            ShowMessage("发放成功", $"发放装备成功,pos={itemLog.Pos}");
+            OwnedWindow?.Close();
         }
-        await mySqlCommand.ExecuteNonQueryAsync();
+        catch (Exception ex)
+        {
+            ShowErrorMessage("发放失败", ex, true);
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    private async Task UpdateItemAsync(DbConnection connection, ItemLogViewModel itemLog, int itemBaseId, byte[] pData)
+    {
+        try
+        {
+            await Task.Run(async () =>
+            {
+                await ItemDbService.UpdateItemAsync(connection, itemLog.Id, itemBaseId, pData);
+            });
+            itemLog.ItemBaseId = itemBaseId;
+            itemLog.PData = pData;
+            ShowMessage("修改成功", "修改装备成功");
+            OwnedWindow?.Close();
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("修改失败", ex, true);
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    /// <summary>
+    /// 把新物品放入列表中
+    /// </summary>
+    /// <param name="itemLog"></param>
+    private void InsertNewItem(ItemLogViewModel itemLog)
+    {
+        if (_itemList is null)
+        {
+            return;
+        }
+        var insertOk = false;
+        for (var i = 0; i < _itemList.Count; i++)
+        {
+            if (itemLog.Pos < _itemList[i].Pos)
+            {
+                _itemList.Insert(i, itemLog);
+                insertOk = true;
+                break;
+            }
+        }
+        if (!insertOk)
+        {
+            _itemList.Add(itemLog);
+        }
     }
 }
