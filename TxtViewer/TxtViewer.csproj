@@ -15,8 +15,8 @@
     <Company>流光</Company>
     <Product>TxtViewer</Product>
     <Copyright>MIT License</Copyright>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
     <StartupObject>liuguang.TxtViewer.App</StartupObject>
     <RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
   </PropertyGroup>
