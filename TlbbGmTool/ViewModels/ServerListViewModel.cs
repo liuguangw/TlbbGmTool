@@ -51,6 +51,7 @@ public class ServerListViewModel : ViewModelBase
             ShowDialog(new ServerEditorWindow(), (ServerEditorViewModel vm) =>
             {
                 vm.ServerInfo = serverInfo;
+                vm.ServerList = _serverList;
             });
         }
     }

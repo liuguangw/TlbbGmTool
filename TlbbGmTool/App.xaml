@@ -1,7 +1,7 @@
 ﻿<Application x:Class="liuguang.TlbbGmTool.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml" DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
         <Style x:Key="TextColumnStyle" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
