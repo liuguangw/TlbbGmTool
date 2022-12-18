@@ -212,7 +212,7 @@ public static class ItemDbService
         itemLog.Guid = nextGuid;
     }
 
-    public static async Task UpdateItemAsync(DbConnection dbConnection, int logId, int itemBaseId, byte[] pData)
+    public static async Task UpdateItemAsync(DbConnection dbConnection, int logId, int itemBaseId, byte[] pData, string? creator = null)
     {
         var sql = "UPDATE t_iteminfo SET itemtype=@itemtype";
         var intDictionary = new Dictionary<string, int>()
@@ -226,7 +226,7 @@ public static class ItemDbService
             intDictionary[$"@p{i + 1}"] = pArray[i];
             sql += $",p{i + 1}=@p{i + 1}";
         }
-        sql += " WHERE aid=@aid";
+        sql += ",creator=@creator WHERE aid=@aid";
         var mySqlCommand = new MySqlCommand(sql, dbConnection.Conn);
         foreach (var keyPair in intDictionary)
         {
@@ -235,6 +235,11 @@ public static class ItemDbService
                 Value = keyPair.Value
             });
         }
+        var creatorText = (creator is null) ? string.Empty : DbStringService.ToDbString(creator);
+        mySqlCommand.Parameters.Add(new MySqlParameter("@creator", MySqlDbType.String)
+        {
+            Value = creatorText
+        });
         await mySqlCommand.ExecuteNonQueryAsync();
     }
     public static async Task DeleteItemAsync(DbConnection dbConnection, int logId)

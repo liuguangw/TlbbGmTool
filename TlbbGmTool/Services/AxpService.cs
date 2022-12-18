@@ -21,6 +21,7 @@ public static class AxpService
             await LoadEquipBaseAsync(fileStream, axpFile, SharedData.ItemBaseMap);
             await LoadXinFaAsync(fileStream, axpFile, SharedData.XinFaMap);
             await LoadPetSkillAsync(fileStream, axpFile, SharedData.PetSkillMap);
+            await LoadDarkImpactAsync(fileStream, axpFile, SharedData.DarkImpactMap);
         }
     }
 
@@ -95,6 +96,15 @@ public static class AxpService
                     petSkillMap[keyValuePair.Key] = ParsePetSkillRow(skillType, rowFields);
                 }
             }
+        }
+    }
+
+    private static async Task LoadDarkImpactAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, string> darkImpactMap)
+    {
+        var dbcFile = await ParseFileAsync(stream, axpFile, "DarkImpackStr.txt");
+        foreach (var keyValuePair in dbcFile.DataMap)
+        {
+            darkImpactMap[keyValuePair.Key] = keyValuePair.Value[1].StringValue;
         }
     }
 
@@ -201,7 +211,7 @@ public static class AxpService
                 equipAttrValues = segValues;
             }
         }
-        return new(itemId, tClass, tType,rulerId, name, shortTypeString, description, level,
+        return new(itemId, tClass, tType, rulerId, name, shortTypeString, description, level,
         equipPoint, bagCapacity, materialCapacity,
         equipVisual, maxDurPoint, equipAttrValues);
     }

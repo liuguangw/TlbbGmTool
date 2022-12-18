@@ -1,0 +1,82 @@
+﻿<Window x:Class="liuguang.TlbbGmTool.Views.Item.DarkImpactSelectorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Title="暗器技能选择" Height="500" Width="520">
+    <Window.DataContext>
+        <vm:DarkImpactSelectorViewModel />
+    </Window.DataContext>
+    <Grid Margin="5,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0">
+            <Label>名称筛选</Label>
+            <TextBox MinWidth="120" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
+        </WrapPanel>
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  ItemsSource="{Binding CurrentPageItemList}">
+            <DataGrid.Resources>
+                <Style x:Key="DarkCellStyle" TargetType="DataGridCell">
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock>
+                                        <Run Foreground="#FF615858">ID:</Run>
+                                        <Run Text="{Binding Value, Mode=OneWay}" Foreground="#FFF12679" />
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Title, Mode=OneWay}" MaxWidth="200"
+                                       TextWrapping="Wrap"
+                                       Foreground="#FF4FC32D" />
+                                </StackPanel>
+                            </ToolTip>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource DarkCellStyle}"
+                                    Header="ID" Binding="{Binding Value}" SortDirection="Ascending" />
+                <DataGridTextColumn Width="3*" ElementStyle="{StaticResource TextColumnStyle}"
+                                    CellStyle="{StaticResource DarkCellStyle}"
+                                    Header="名称" Binding="{Binding Title}" />
+                <DataGridTemplateColumn Header="管理" Width="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Margin="3"
+                                Padding="5"
+                                Command="{Binding DataContext.ConfirmCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type DataGrid}}}"
+                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                                选择
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <WrapPanel Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <WrapPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Padding" Value="10,5" />
+                </Style>
+            </WrapPanel.Resources>
+            <Button Command="{Binding FirstPageCommand}">首页</Button>
+            <Button Margin="5,0" Command="{Binding PrevPageCommand}">上一页</Button>
+            <Label MinWidth="60" Content="{Binding PageTip}" />
+            <Button Margin="5,0" Command="{Binding NextPageCommand}">下一页</Button>
+            <Button Command="{Binding LastPageCommand}">末页</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

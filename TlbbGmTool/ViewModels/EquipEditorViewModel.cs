@@ -51,6 +51,7 @@ public class EquipEditorViewModel : ViewModelBase
         {
             _inputItemLog = value;
             EquipDataService.Read(value.ItemBaseId, value.PData, _equipData);
+            _equipData.Creator = value.Creator;
         }
     }
     public BagContainer ItemsContainer
@@ -97,7 +98,7 @@ public class EquipEditorViewModel : ViewModelBase
         SelectGem1Command = new(() => ShowSelectGemWindow(1), () => _equipData.GemMaxCount > 1);
         SelectGem2Command = new(() => ShowSelectGemWindow(2), () => _equipData.GemMaxCount > 2);
         SelectGem3Command = new(() => ShowSelectGemWindow(3), () => _equipData.GemMaxCount > 3);
-        SelectAttrCommand = new(ShowSelectAttrWindow, () => _equipData.CanSelectAttr);
+        SelectAttrCommand = new(ShowSelectAttrWindow, () => _equipData.HasSegAttr);
         SaveCommand = new(SaveItem, () => !_isSaving);
         for (byte i = 0; i <= 9; i++)
         {
@@ -118,7 +119,7 @@ public class EquipEditorViewModel : ViewModelBase
     {
         _equipData.ItemBaseId = itemBase.ItemBaseId;
         //无属性的装备
-        if (!_equipData.CanSelectAttr)
+        if (!_equipData.HasSegAttr)
         {
             _equipData.Attr0 = 0;
             _equipData.Attr1 = 0;
@@ -130,6 +131,18 @@ public class EquipEditorViewModel : ViewModelBase
             _equipData.CurDamagePoint = 0;
             _equipData.MaxDurPoint = equipBaseInfo.MaxDurPoint;
             _equipData.VisualId = equipBaseInfo.EquipVisual;
+            _equipData.DarkFlag = 0;
+            //暗器
+            if (equipBaseInfo.EquipPoint == 17)
+            {
+                _equipData.DarkFlag = 1;
+                _equipData.Attr0 = 0;
+                //固定5种基本属性
+                _equipData.Attr1 = 0x7C00;
+                //暗器没有制作者
+                _equipData.HasCreator = false;
+                _equipData.Creator = string.Empty;
+            }
         }
     }
 
@@ -147,7 +160,7 @@ public class EquipEditorViewModel : ViewModelBase
         {
             RaisePropertyChanged(nameof(WindowTitle));
         }
-        else if (e.PropertyName == nameof(_equipData.CanSelectAttr))
+        else if (e.PropertyName == nameof(_equipData.HasSegAttr))
         {
             SelectAttrCommand.RaiseCanExecuteChanged();
         }
@@ -214,6 +227,11 @@ public class EquipEditorViewModel : ViewModelBase
     /// </summary>
     private void ShowSelectAttrWindow()
     {
+        if (_equipData.DarkFlag != 0)
+        {
+            ShowDarkEquipEditor();
+            return;
+        }
         var selectorWindow = new AttrSelectorWindow();
         var beforeAction = (AttrSelectorViewModel vm) =>
         {
@@ -230,6 +248,22 @@ public class EquipEditorViewModel : ViewModelBase
             _equipData.Attr1 = selectorWindow.Attr1;
         }
     }
+    /// <summary>
+    /// 显示暗器编辑窗体
+    /// </summary>
+    private void ShowDarkEquipEditor()
+    {
+        var editorWindow = new DarkDataEditorWindow();
+        var beforeAction = (DarkDataEditorViewModel vm) =>
+        {
+            vm.InitHexData = _equipData.Creator;
+        };
+        if (ShowDialog(editorWindow, beforeAction) == true)
+        {
+            _equipData.Creator = editorWindow.HexData;
+        }
+    }
+
     /// <summary>
     /// 展示选择宝石的窗体
     /// </summary>
@@ -291,20 +325,25 @@ public class EquipEditorViewModel : ViewModelBase
         byte[] pData = new byte[17 * 4];
         if (_inputItemLog is null)
         {
-            _equipData.HasCreator = true;
+            if (_equipData.DarkFlag == 0)
+            {
+                _equipData.HasCreator = true;
+                _equipData.Creator = "流光";
+
+            }
         }
         EquipDataService.Write(_equipData, pData);
         if (_inputItemLog is null)
         {
-            await InsertItemAsync(Connection, itemBaseId, pData);
+            await InsertItemAsync(Connection, itemBaseId, pData, _equipData.Creator);
         }
         else
         {
-            await UpdateItemAsync(Connection, _inputItemLog, itemBaseId, pData);
+            await UpdateItemAsync(Connection, _inputItemLog, itemBaseId, pData, _equipData.Creator);
         }
     }
 
-    private async Task InsertItemAsync(DbConnection connection, int itemBaseId, byte[] pData)
+    private async Task InsertItemAsync(DbConnection connection, int itemBaseId, byte[] pData, string creator)
     {
         if (_itemsContainer is null)
         {
@@ -315,7 +354,7 @@ public class EquipEditorViewModel : ViewModelBase
             CharGuid = _itemsContainer.CharGuid,
             ItemBaseId = itemBaseId,
             PData = pData,
-            Creator = "流光"
+            Creator = creator
         });
         try
         {
@@ -337,16 +376,17 @@ public class EquipEditorViewModel : ViewModelBase
         }
     }
 
-    private async Task UpdateItemAsync(DbConnection connection, ItemLogViewModel itemLog, int itemBaseId, byte[] pData)
+    private async Task UpdateItemAsync(DbConnection connection, ItemLogViewModel itemLog, int itemBaseId, byte[] pData, string creator)
     {
         try
         {
             await Task.Run(async () =>
             {
-                await ItemDbService.UpdateItemAsync(connection, itemLog.Id, itemBaseId, pData);
+                await ItemDbService.UpdateItemAsync(connection, itemLog.Id, itemBaseId, pData, creator);
             });
             itemLog.ItemBaseId = itemBaseId;
             itemLog.PData = pData;
+            itemLog.Creator = creator;
             ShowMessage("修改成功", "修改装备成功");
             OwnedWindow?.Close();
         }

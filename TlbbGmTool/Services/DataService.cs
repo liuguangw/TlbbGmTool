@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 
 namespace liuguang.TlbbGmTool.Services;
 /// <summary>
@@ -16,6 +17,17 @@ public static class DataService
         Array.Copy(src, startIndex, buff, 0, buff.Length);
         Array.Reverse(buff);
         return BitConverter.ToUInt16(buff, 0);
+    }
+    public static short ReadShort(byte[] src, int startIndex)
+    {
+        if (BitConverter.IsLittleEndian)
+        {
+            return BitConverter.ToInt16(src, startIndex);
+        }
+        var buff = new byte[2];
+        Array.Copy(src, startIndex, buff, 0, buff.Length);
+        Array.Reverse(buff);
+        return BitConverter.ToInt16(buff, 0);
     }
     public static int ReadInt(byte[] src, int startIndex)
     {
@@ -41,6 +53,16 @@ public static class DataService
     }
 
     public static void WriteData(byte[] destArray, int destIndex, ushort value)
+    {
+        byte[] buff = BitConverter.GetBytes(value);
+        if (!BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(buff);
+        }
+        Array.Copy(buff, 0, destArray, destIndex, buff.Length);
+    }
+
+    public static void WriteData(byte[] destArray, int destIndex, short value)
     {
         byte[] buff = BitConverter.GetBytes(value);
         if (!BitConverter.IsLittleEndian)
@@ -96,5 +118,35 @@ public static class DataService
             WriteData(pData, i * 4, pArray[i]);
         }
         return pData;
+    }
+
+    /// <summary>
+    /// 把16进制string转化为字节数组
+    /// </summary>
+    /// <param name="pArray"></param>
+    /// <returns></returns>
+    public static byte[] ConvertToPData(string hexText)
+    {
+        var pData = new byte[hexText.Length / 2];
+        for (var i = 0; i < pData.Length; i++)
+        {
+            var hexNodeStr = hexText.Substring(i * 2, 2);
+            pData[i] = Convert.ToByte(hexNodeStr, 16);
+        }
+        return pData;
+    }
+    /// <summary>
+    /// 将字节数组转化为16进制字符串
+    /// </summary>
+    /// <param name="pData"></param>
+    /// <returns></returns>
+    public static string ConvertToHex(byte[] pData)
+    {
+        var hexTextArr = new string[pData.Length];
+        for (var i = 0; i < pData.Length; i++)
+        {
+            hexTextArr[i] = pData[i].ToString("X2");
+        }
+        return string.Concat(hexTextArr);
     }
 }

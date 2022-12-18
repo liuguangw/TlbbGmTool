@@ -36,4 +36,8 @@ public static class SharedData
     /// </summary>
     /// <returns></returns>
     public static readonly SortedDictionary<int, PetSkillBase> PetSkillMap = new();
+    /// <summary>
+    /// 暗器状态名称
+    /// </summary>
+    public static readonly SortedDictionary<int, string> DarkImpactMap = new();
 }

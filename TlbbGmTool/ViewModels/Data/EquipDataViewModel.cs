@@ -17,7 +17,7 @@ public class EquipDataViewModel : NotifyBase
         {
             _itemBaseId = value;
             RaisePropertyChanged(nameof(EquipName));
-            RaisePropertyChanged(nameof(CanSelectAttr));
+            RaisePropertyChanged(nameof(HasSegAttr));
         }
     }
     public string EquipName => ItemService.ParseItemName(_itemBaseId);
@@ -26,7 +26,7 @@ public class EquipDataViewModel : NotifyBase
     /// 属性值设置int[64]/null
     /// </summary>
     public int[]? SegAttrs => ParseEquipSegAttrs(_itemBaseId);
-    public bool CanSelectAttr
+    public bool HasSegAttr
     {
         get
         {
@@ -66,6 +66,8 @@ public class EquipDataViewModel : NotifyBase
     private ushort _visualId;
     private int[] _attrs = new int[2];
     private byte _hiddenValue;
+    private byte _darkFlag;
+    private string _creator = string.Empty;
     #endregion
 
     #region EquipProperties
@@ -203,6 +205,11 @@ public class EquipDataViewModel : NotifyBase
     }
     public string Attr1Tip => CalcAttrTip(_attrs[1]);
     public byte HiddenValue { get => _hiddenValue; set => SetProperty(ref _hiddenValue, value); }
+    /// <summary>
+    /// 暗器标识
+    /// </summary>
+    public byte DarkFlag { get => _darkFlag; set => _darkFlag = value; }
+    public string Creator { get => _creator; set => _creator = value; }
     #endregion
 
     #region StatusProperties
