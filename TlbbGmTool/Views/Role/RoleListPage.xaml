@@ -23,7 +23,7 @@
             <Label Margin="13,0,0,0" Content="账号关键词" />
             <TextBox Margin="8,0,0,0" MinWidth="150" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding AccountSearchText}" />
-            <Button Margin="15,0,0,0" Padding="10,0" Command="{Binding SearchCommand}">搜索</Button>
+            <Button Margin="15,0,0,0" Padding="15,0" Command="{Binding SearchCommand}">搜索</Button>
         </WrapPanel>
         <DataGrid Grid.Row="1" Style="{StaticResource DataGridStyle}" Margin="10,0" ItemsSource="{Binding RoleList}">
             <DataGrid.Columns>

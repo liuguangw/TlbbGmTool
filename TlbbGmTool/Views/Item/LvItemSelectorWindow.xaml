@@ -51,7 +51,7 @@
                         <DataTemplate>
                             <Button
                                 Margin="3"
-                                Padding="2"
+                                Padding="5"
                                 Command="{Binding DataContext.ConfirmCommand, 
                                 RelativeSource={RelativeSource FindAncestor, 
                                 AncestorType={x:Type DataGrid}}}"

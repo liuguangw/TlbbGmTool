@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Title="修改账户信息" Width="400" Height="334">
+        Title="{Binding WindowTitle}" Width="400" Height="334">
     <Window.DataContext>
         <vm:AccountEditorViewModel />
     </Window.DataContext>
@@ -43,9 +43,9 @@
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding UserAccount.Id}"
                  IsReadOnly="True" BorderThickness="0" />
         <Label Grid.Row="1" Grid.Column="0">账号</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding UserAccount.Name}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding UserAccount.Name,UpdateSourceTrigger=PropertyChanged}" />
         <Label Grid.Row="2" Grid.Column="0">密码</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding UserAccount.Password}" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding UserAccount.Password,UpdateSourceTrigger=PropertyChanged}" ToolTip="加密后的密码" />
         <Button Grid.Row="2" Grid.Column="2" Margin="10,2,0,2"
                 Command="{Binding ShowHashToolCommand}">
             加密工具

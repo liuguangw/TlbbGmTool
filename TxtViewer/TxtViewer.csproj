@@ -9,7 +9,7 @@
     <RootNamespace>liuguang.TxtViewer</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\TlbbGmTool\images\icon.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
     <AssemblyTitle>txt表格查看工具</AssemblyTitle>
     <Description>txt表格查看工具</Description>
     <Company>流光</Company>
@@ -23,6 +23,9 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>none</DebugType>
   </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dbc\dbc.csproj" />
   </ItemGroup>

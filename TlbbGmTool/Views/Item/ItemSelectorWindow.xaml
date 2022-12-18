@@ -22,11 +22,14 @@
                       DisplayMemberPath="Title"
                       SelectedValuePath="Value"
                       SelectedValue="{Binding SelectedType}" />
-            <Label Margin="8,0,0,0">最低等级</Label>
-            <TextBox MinWidth="40" Style="{StaticResource CommonTextBoxStyle}"
+            <Label Margin="8,0,0,0">等级范围</Label>
+            <TextBox MinWidth="30" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding MinLevel,UpdateSourceTrigger=PropertyChanged}" />
+            <Label>~</Label>
+            <TextBox MinWidth="30" Style="{StaticResource CommonTextBoxStyle}"
+                     Text="{Binding MaxLevel,UpdateSourceTrigger=PropertyChanged}" />
             <Label Margin="8,0,0,0">名称筛选</Label>
-            <TextBox MinWidth="160" Style="{StaticResource CommonTextBoxStyle}"
+            <TextBox MinWidth="120" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" />
         </WrapPanel>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
@@ -49,7 +52,7 @@
                         <DataTemplate>
                             <Button
                                 Margin="3"
-                                Padding="2"
+                                Padding="5"
                                 Command="{Binding DataContext.ConfirmCommand, 
                                 RelativeSource={RelativeSource FindAncestor, 
                                 AncestorType={x:Type DataGrid}}}"

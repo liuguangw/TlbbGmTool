@@ -25,7 +25,8 @@ public class ItemSelectorViewModel : ViewModelBase
 
     private string _windowTitle = "物品选择器";
     private int _selectedType = 0;
-    private byte _minLevel;
+    private byte? _minLevel;
+    private byte? _maxLevel;
     private string _searchText = string.Empty;
 
     /// <summary>
@@ -73,14 +74,37 @@ public class ItemSelectorViewModel : ViewModelBase
             }
         }
     }
-    public byte MinLevel
+    public string MinLevel
     {
-        get => _minLevel;
+        get => _minLevel?.ToString() ?? string.Empty;
         set
         {
-            if (SetProperty(ref _minLevel, value))
+            try
             {
+                var lvValue = Convert.ToInt32(value);
+                _minLevel = (byte)(lvValue & 0xFF);
                 DoFilterItemList();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+    }
+    public string MaxLevel
+    {
+        get => _maxLevel?.ToString() ?? string.Empty;
+        set
+        {
+            try
+            {
+                var lvValue = Convert.ToInt32(value);
+                _maxLevel = (byte)(lvValue & 0xFF);
+                DoFilterItemList();
+            }
+            catch (Exception)
+            {
+
             }
         }
     }
@@ -175,7 +199,8 @@ public class ItemSelectorViewModel : ViewModelBase
     private void DoFilterItemList()
     {
         _filterItemList = (from itemBaseInfo in _itemList
-                           where itemBaseInfo.ItemLevel >= _minLevel
+                           where (!_minLevel.HasValue) || itemBaseInfo.ItemLevel >= _minLevel.Value
+                           where (!_maxLevel.HasValue) || itemBaseInfo.ItemLevel <= _maxLevel.Value
                            where _selectedType == 0 || itemBaseInfo.ItemShortTypeString == ShortTypeSelection[_selectedType].Title
                            where itemBaseInfo.ItemName.IndexOf(_searchText, StringComparison.Ordinal) >= 0
                            select itemBaseInfo).ToList();

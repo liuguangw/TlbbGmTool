@@ -15,21 +15,20 @@ public class ServerEditorViewModel : ViewModelBase
     #region Fields
     private bool _isConnecting = false;
     private GameServerViewModel? _inputServerInfo;
+    private readonly GameServerViewModel _serverInfo = new(new());
     #endregion
 
     #region Properties
-    public GameServerViewModel InputServerInfo
+    public GameServerViewModel ServerInfo
     {
+        get => _serverInfo;
         set
         {
-            if (SetProperty(ref _inputServerInfo, value))
-            {
-                RaisePropertyChanged(nameof(WindowTitle));
-                ServerInfo.CopyFrom(value);
-            }
+            _inputServerInfo = value;
+            _serverInfo.CopyFrom(value);
+            RaisePropertyChanged(nameof(WindowTitle));
         }
     }
-    public GameServerViewModel ServerInfo { get; set; } = new(new());
     public ObservableCollection<GameServerViewModel>? ServerList { get; set; }
 
     public string WindowTitle => (_inputServerInfo is null) ? "添加服务器" : "修改服务器";
@@ -55,20 +54,18 @@ public class ServerEditorViewModel : ViewModelBase
 
     private void ShowFolderDialog()
     {
-        using (var dialog = new FolderBrowserDialog())
+        using var dialog = new FolderBrowserDialog();
+        if (!string.IsNullOrEmpty(ServerInfo.ClientPath))
         {
-            if (!string.IsNullOrEmpty(ServerInfo.ClientPath))
+            if (Directory.Exists(ServerInfo.ClientPath))
             {
-                if (Directory.Exists(ServerInfo.ClientPath))
-                {
-                    dialog.SelectedPath = ServerInfo.ClientPath;
-                }
+                dialog.SelectedPath = ServerInfo.ClientPath;
             }
-            var result = dialog.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                ServerInfo.ClientPath = dialog.SelectedPath;
-            }
+        }
+        var result = dialog.ShowDialog();
+        if (result == DialogResult.OK)
+        {
+            ServerInfo.ClientPath = dialog.SelectedPath;
         }
     }
     private bool CanSave()
@@ -88,10 +85,6 @@ public class ServerEditorViewModel : ViewModelBase
 
     private async void SaveServerConfig()
     {
-        if (ServerList is null || OwnedWindow is null)
-        {
-            return;
-        }
         //检测客户端目录是否有效
         var configAxpPath = Path.Combine(ServerInfo.ClientPath, "Data", "Config.axp");
         if (!File.Exists(configAxpPath))
@@ -103,7 +96,7 @@ public class ServerEditorViewModel : ViewModelBase
         if (_inputServerInfo is null)
         {
             //add
-            ServerList.Add(ServerInfo);
+            ServerList?.Add(ServerInfo);
         }
         else
         {
@@ -125,7 +118,7 @@ public class ServerEditorViewModel : ViewModelBase
             ShowErrorMessage("保存配置失败", ex);
             return;
         }
-        OwnedWindow.Close();
+        OwnedWindow?.Close();
     }
 
     private async void TryToConnect()

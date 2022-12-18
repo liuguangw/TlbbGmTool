@@ -24,6 +24,7 @@ public class AccountListViewModel : ViewModelBase
     public string SearchText { get; set; } = string.Empty;
 
     public Command SearchCommand { get; }
+    public Command AddAccountCommand { get; }
 
     public bool IsSearching
     {
@@ -32,6 +33,7 @@ public class AccountListViewModel : ViewModelBase
             if (SetProperty(ref _isSearching, value))
             {
                 SearchCommand.RaiseCanExecuteChanged();
+                AddAccountCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -41,6 +43,7 @@ public class AccountListViewModel : ViewModelBase
     public AccountListViewModel()
     {
         SearchCommand = new(SearchAccount, () => !_isSearching);
+        AddAccountCommand = new(ShowAddAccountEditorDialog, parameter => !_isSearching);
         EditAccountCommand = new(ShowAccountEditorDialog);
     }
 
@@ -134,5 +137,13 @@ public class AccountListViewModel : ViewModelBase
                 vm.Connection = Connection;
             });
         }
+    }
+    private void ShowAddAccountEditorDialog(object? parameter)
+    {
+        ShowDialog(new AccountEditorWindow(), (AccountEditorViewModel vm) =>
+        {
+            vm.AccountList = AccountList;
+            vm.Connection = Connection;
+        });
     }
 }

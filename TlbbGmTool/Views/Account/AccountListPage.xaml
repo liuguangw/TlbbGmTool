@@ -16,12 +16,15 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <WrapPanel Grid.Row="0" Margin="0,5">
-            <Label Content="账号关键词" />
-            <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}"
+        <DockPanel Grid.Row="0" Margin="0,5">
+            <WrapPanel DockPanel.Dock="Left">
+                <Label Content="账号关键词" />
+                <TextBox Margin="10,0,0,0" MinWidth="156" Style="{StaticResource CommonTextBoxStyle}"
                      Text="{Binding SearchText}" />
-            <Button Margin="10,0,0,0" Padding="10,0" Command="{Binding SearchCommand}">搜索</Button>
-        </WrapPanel>
+                <Button Margin="10,0,0,0" Padding="15,0" Command="{Binding SearchCommand}">搜索</Button>
+            </WrapPanel>
+            <Button DockPanel.Dock="Right" Padding="15,0" Command="{Binding AddAccountCommand}" HorizontalAlignment="Right" Margin="0,0,10,0">添加账号</Button>
+        </DockPanel>
         <DataGrid Grid.Row="1" Style="{StaticResource DataGridStyle}"
                   Margin="10,0" ItemsSource="{Binding AccountList}">
             <DataGrid.Columns>
