@@ -36,7 +36,15 @@
             <GroupBox.Header>
                 <Label Content="使用说明"/>
             </GroupBox.Header>
-            <TextBlock><Run Text="点击菜单 - 区服管理, 添加服务器的数据库配置信息。"/><LineBreak/><LineBreak/><Run Foreground="Red" Text="注意: 修改数据时，需要先退出游戏，否则修改可能不会生效。"/></TextBlock>
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="1.点击菜单 - 区服管理, 添加服务器的数据库配置信息。"/><LineBreak/>
+                <Run Text="2.角色管理功能需要读取客户端数据,点击连接之后，需要稍等一下等数据加载成功，才能使用搜索。"/><LineBreak/>
+                <Run>3.并不是每件装备都有属性条，具体取决于</Run><Run Foreground="#FF2DD228">EquipBase.txt</Run><Run>里面有没有配置，如果没有，那么这件装备就不能选择属性。 
+                    而装备的具体属性数值在</Run><Run Foreground="#FFDE9E11">ItemSegValue.txt</Run><Run>，虽然有64种属性，但是只有数值设置为正数的属性类型才可以在编辑器中选择，并且最多只能选择16种。</Run><LineBreak/>
+                <Run Text="4.本工具的修改功能不会影响全局，只会修改某条数据记录。"/><LineBreak/>
+                <LineBreak/>
+                <Run Foreground="Red" Text="注意: 修改数据时，需要先退出游戏，否则修改可能不会生效。"/>
+            </TextBlock>
         </GroupBox>
     </Grid>
 </Window>
