@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="暗器属性编辑器" Height="386" Width="457">
+        Title="暗器属性编辑器" Height="386" Width="560">
     <Window.DataContext>
         <vm:DarkDataEditorViewModel />
     </Window.DataContext>
@@ -17,61 +17,10 @@
             <RowDefinition Height="60" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
             <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <GroupBox Margin="5,0" Grid.RowSpan="3">
-            <GroupBox.Header>
-                <Label>暗器属性</Label>
-            </GroupBox.Header>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="30" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="Label">
-                        <Setter Property="Padding" Value="0,0,0,6" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Setter Property="HorizontalContentAlignment" Value="Right" />
-                    </Style>
-                    <Style TargetType="TextBox">
-                        <Setter Property="Margin" Value="5" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                    </Style>
-                </Grid.Resources>
-                <Label Grid.Row="0" Grid.Column="0">当前经验值</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DarkData.NowExp}" />
-                <Label Grid.Row="1" Grid.Column="0">等级</Label>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DarkData.Level}" />
-                <Label Grid.Row="2" Grid.Column="0">暗器品质</Label>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DarkData.Quality}" />
-
-                <Label Grid.Row="3" Grid.Column="0">力量</Label>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DarkData.AppendAttr0}" />
-                <Label Grid.Row="4" Grid.Column="0">灵气</Label>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DarkData.AppendAttr1}" />
-                <Label Grid.Row="5" Grid.Column="0">体力</Label>
-                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DarkData.AppendAttr2}" />
-                <Label Grid.Row="6" Grid.Column="0">定力</Label>
-                <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding DarkData.AppendAttr3}" />
-                <Label Grid.Row="7" Grid.Column="0">身法</Label>
-                <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding DarkData.AppendAttr4}" />
-
-            </Grid>
-        </GroupBox>
-        <GroupBox Margin="5,0" Grid.Column="1">
+        <GroupBox Margin="5,0" Grid.ColumnSpan="2">
             <GroupBox.Header>
                 <Label>暗器技能</Label>
             </GroupBox.Header>
@@ -93,12 +42,60 @@
                     <ColumnDefinition Width="5*" />
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="{Binding DarkData.Impact0Text,Mode=OneWay}" ToolTip="{Binding DarkData.Impact0Text}" />
+                <Label Grid.Row="0" Grid.Column="0" Content="{Binding DarkData.Impact0Text,Mode=OneWay}" />
                 <Button Grid.Row="0" Grid.Column="1" Command="{Binding SelectImpact0Command}">选择</Button>
-                <Label Grid.Row="1" Grid.Column="0" Content="{Binding DarkData.Impact1Text,Mode=OneWay}" ToolTip="{Binding DarkData.Impact1Text}" />
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding DarkData.Impact1Text,Mode=OneWay}" />
                 <Button Grid.Row="1" Grid.Column="1" Command="{Binding SelectImpact1Command}">选择</Button>
-                <Label Grid.Row="2" Grid.Column="0" Content="{Binding DarkData.Impact2Text,Mode=OneWay}" ToolTip="{Binding DarkData.Impact2Text}" />
+                <Label Grid.Row="2" Grid.Column="0" Content="{Binding DarkData.Impact2Text,Mode=OneWay}" />
                 <Button Grid.Row="2" Grid.Column="1" Command="{Binding SelectImpact2Command}">选择</Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="5,0" Grid.Row="1" Grid.RowSpan="2">
+            <GroupBox.Header>
+                <Label>暗器属性</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Padding" Value="0,0,0,6" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="HorizontalContentAlignment" Value="Right" />
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+                <Label Grid.Row="0" Grid.Column="0">力量</Label>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DarkData.AppendAttr0}" />
+                <Label Grid.Row="1" Grid.Column="0">灵气</Label>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DarkData.AppendAttr1}" />
+                <Label Grid.Row="2" Grid.Column="0">体力</Label>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DarkData.AppendAttr2}" />
+                <Label Grid.Row="3" Grid.Column="0">定力</Label>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DarkData.AppendAttr3}" />
+                
+                <Label Grid.Row="0" Grid.Column="2">身法</Label>
+                <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding DarkData.AppendAttr4}" />
+                <Label Grid.Row="1" Grid.Column="2">当前经验值</Label>
+                <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding DarkData.NowExp}" />
+                <Label Grid.Row="2" Grid.Column="2">等级</Label>
+                <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DarkData.Level}" />
+                <Label Grid.Row="3" Grid.Column="2">暗器品质</Label>
+                <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding DarkData.Quality}" />
+
             </Grid>
         </GroupBox>
         <DockPanel Margin="5" Grid.Row="2" Grid.Column="1">
