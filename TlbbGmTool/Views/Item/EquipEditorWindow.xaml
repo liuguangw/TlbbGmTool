@@ -213,14 +213,14 @@
                 <Slider Value="{Binding EquipData.Aptitude0}"
                         Grid.Row="0" Grid.Column="2"
                         Style="{StaticResource CommonSlider}" />
-                <Label Grid.Row="0" Grid.Column="3">内功资质:</Label>
+                <Label Grid.Row="0" Grid.Column="3">外防资质:</Label>
                 <Label Content="{Binding EquipData.Aptitude1}" MinWidth="25"
                        Grid.Row="0" Grid.Column="4" />
                 <Slider Value="{Binding EquipData.Aptitude1}"
                         Grid.Row="0" Grid.Column="5"
                         Style="{StaticResource CommonSlider}" />
                 <!--next row-->
-                <Label Grid.Row="1" Grid.Column="0">外防资质:</Label>
+                <Label Grid.Row="1" Grid.Column="0">内功资质:</Label>
                 <Label Content="{Binding EquipData.Aptitude2}" MinWidth="25"
                        Grid.Row="1" Grid.Column="1" />
                 <Slider Value="{Binding EquipData.Aptitude2}"
