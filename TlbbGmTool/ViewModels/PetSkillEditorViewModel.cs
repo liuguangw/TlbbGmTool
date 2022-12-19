@@ -1,4 +1,5 @@
 using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Services;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using MySql.Data.MySqlClient;
 using System;
@@ -132,18 +133,17 @@ public class PetSkillEditorViewModel : ViewModelBase
 
     private void LoadSkillList(string skillHex)
     {
-        const int nodeLength = 6;
+        var pData = DataService.ConvertToPData(skillHex);
         for (var i = 0; i < 13; i++)
         {
-            var offset = i * nodeLength;
-            var flag = skillHex.Substring(offset, 2);
-            if (flag == "00")
+            var offset = i * 3;
+            var flag = pData[offset];
+            if (flag == 0)
             {
                 continue;
             }
-            var hexIdString = skillHex.Substring(offset + 4, 2) +
-                              skillHex.Substring(offset + 2, 2);
-            var skillId = Convert.ToInt32(hexIdString, 16);
+            offset++;
+            var skillId = DataService.ReadShort(pData, offset);
             if (_allSkills.TryGetValue(skillId, out var skillItem))
             {
                 SkillList.Add(skillItem);
@@ -180,13 +180,26 @@ public class PetSkillEditorViewModel : ViewModelBase
 
     private async Task DoSavePetSkillAsync(DbConnection connection, PetLogViewModel petInfo)
     {
-        var skillHexList = from skillInfo in SkillList
-                           let skillHexStr = skillInfo.Id.ToString("X4")
-                           select "01" + skillHexStr.Substring(2) + skillHexStr.Substring(0, 2);
-        var skillString = string.Concat(skillHexList);
-        //pad string
-        skillString += string.Concat(Enumerable.Repeat("00FFFF", 13 - SkillList.Count));
-        petInfo.Skill = skillString;
+        var pData = new byte[13 * 3];
+        var offset = 0;
+        //写入技能id
+        foreach (var skillInfo in SkillList)
+        {
+            pData[offset] = 1;
+            offset++;
+            DataService.WriteData(pData, offset, (short)skillInfo.Id);
+            offset += 2;
+        }
+        //填充剩余数据
+        short padValue = -1;
+        while (offset < pData.Length)
+        {
+            pData[offset] = 0;
+            offset++;
+            DataService.WriteData(pData, offset, padValue);
+            offset += 2;
+        }
+        petInfo.Skill = DataService.ConvertToHex(pData);
         //
         const string sql = "UPDATE t_pet SET skill=@skill WHERE aid=@aid";
         var mySqlCommand = new MySqlCommand(sql, connection.Conn);

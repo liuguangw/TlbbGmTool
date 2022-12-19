@@ -28,17 +28,7 @@ public class ItemSelectorViewModel : ViewModelBase
     private byte? _minLevel;
     private byte? _maxLevel;
     private string _searchText = string.Empty;
-
-    /// <summary>
-    /// 当前页码
-    /// </summary>
-    private int _page = 1;
-
-    /// <summary>
-    /// 总页数
-    /// </summary>
-    private int _pageTotal = 1;
-
+    private readonly PaginationViewModel _pagination = new();
     /// <summary>
     /// 每页最大展示量
     /// </summary>
@@ -59,6 +49,7 @@ public class ItemSelectorViewModel : ViewModelBase
             DoFilterItemList();
         }
     }
+    public PaginationViewModel Pagination => _pagination;
     public int InitItemId
     {
         set => _initItemId = value;
@@ -124,37 +115,11 @@ public class ItemSelectorViewModel : ViewModelBase
         new("全部",0)
     };
 
-    public int Page
-    {
-        set
-        {
-            if (SetProperty(ref _page, value))
-            {
-                RaisePropertyChanged(nameof(PageTip));
-                RaisePageCommandChange();
-            }
-        }
-    }
-
-    private int PageTotal
-    {
-        set
-        {
-            if (SetProperty(ref _pageTotal, value))
-            {
-                RaisePropertyChanged(nameof(PageTip));
-                RaisePageCommandChange();
-            }
-        }
-    }
-
-    public string PageTip => $"第{_page}/{_pageTotal}页";
-
     public IEnumerable<ItemBaseViewModel> CurrentPageItemList
     {
         get
         {
-            var offset = (_page - 1) * _pageLimit;
+            var offset = (_pagination.Page - 1) * _pageLimit;
             return (from itemInfo in _filterItemList
                     select itemInfo).Skip(offset).Take(_pageLimit);
         }
@@ -164,20 +129,15 @@ public class ItemSelectorViewModel : ViewModelBase
 
     public Command ConfirmCommand { get; }
 
-    public Command FirstPageCommand { get; }
-    public Command LastPageCommand { get; }
-    public Command PrevPageCommand { get; }
-    public Command NextPageCommand { get; }
-
     #endregion
 
     public ItemSelectorViewModel()
     {
         ConfirmCommand = new(ConfirmSelect, CanConfirmSelect);
-        FirstPageCommand = new(GoToFirstPage, CanGotoFirstPage);
-        LastPageCommand = new(GoToLastPage, CanGotoLastPage);
-        PrevPageCommand = new(GotoPrevPage, CanGotoPrevPage);
-        NextPageCommand = new(GotoNextPage, CanGotoNextPage);
+        _pagination.OnPageChanged += () =>
+        {
+            RaisePropertyChanged(nameof(CurrentPageItemList));
+        };
     }
     private void LoadShortTypeSelection()
     {
@@ -204,14 +164,7 @@ public class ItemSelectorViewModel : ViewModelBase
                            where _selectedType == 0 || itemBaseInfo.ItemShortTypeString == ShortTypeSelection[_selectedType].Title
                            where itemBaseInfo.ItemName.IndexOf(_searchText, StringComparison.Ordinal) >= 0
                            select itemBaseInfo).ToList();
-        Page = 1;
-        var pageTotal = (int)Math.Ceiling(_filterItemList.Count / (double)_pageLimit);
-        if (pageTotal < 1)
-        {
-            pageTotal = 1;
-        }
-
-        PageTotal = pageTotal;
+        _pagination.SetCount(_filterItemList.Count, _pageLimit);
         RaisePropertyChanged(nameof(CurrentPageItemList));
     }
     private bool CanConfirmSelect(object? parameter)
@@ -237,46 +190,5 @@ public class ItemSelectorViewModel : ViewModelBase
         currentWindow.SelectedItem = itemBaseInfo;
         currentWindow.DialogResult = true;
         currentWindow.Close();
-    }
-
-    private void RaisePageCommandChange()
-    {
-        FirstPageCommand.RaiseCanExecuteChanged();
-        LastPageCommand.RaiseCanExecuteChanged();
-        PrevPageCommand.RaiseCanExecuteChanged();
-        NextPageCommand.RaiseCanExecuteChanged();
-    }
-
-    private bool CanGotoFirstPage() => _page != 1;
-
-    private void GoToFirstPage()
-    {
-        Page = 1;
-        RaisePropertyChanged(nameof(CurrentPageItemList));
-    }
-
-
-    private bool CanGotoLastPage() => _page != _pageTotal;
-
-    private void GoToLastPage()
-    {
-        Page = _pageTotal;
-        RaisePropertyChanged(nameof(CurrentPageItemList));
-    }
-
-    private bool CanGotoPrevPage() => _page > 1;
-
-    private void GotoPrevPage()
-    {
-        Page = _page - 1;
-        RaisePropertyChanged(nameof(CurrentPageItemList));
-    }
-
-    private bool CanGotoNextPage() => _page < _pageTotal;
-
-    private void GotoNextPage()
-    {
-        Page = _page + 1;
-        RaisePropertyChanged(nameof(CurrentPageItemList));
     }
 }

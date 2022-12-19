@@ -98,6 +98,7 @@ public class RoleEditorViewModel : ViewModelBase
             Value = charGuid
         });
         RoleViewModel? dbRoleInfo = null;
+        await dbConnection.SwitchGameDbAsync();
         using var reader = await mySqlCommand.ExecuteReaderAsync();
         if (reader is MySqlDataReader rd)
         {

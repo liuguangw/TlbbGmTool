@@ -13,16 +13,15 @@ public static class AxpService
 {
     public static async Task LoadDataAsync(string axpFilePath)
     {
-        using (var fileStream = File.OpenRead(axpFilePath))
-        {
-            var axpFile = await AxpFile.ReadAsync(fileStream);
-            await LoadCommonItemAsync(fileStream, axpFile, SharedData.ItemBaseMap);
-            await LoadGemInfoAsync(fileStream, axpFile, SharedData.ItemBaseMap);
-            await LoadEquipBaseAsync(fileStream, axpFile, SharedData.ItemBaseMap);
-            await LoadXinFaAsync(fileStream, axpFile, SharedData.XinFaMap);
-            await LoadPetSkillAsync(fileStream, axpFile, SharedData.PetSkillMap);
-            await LoadDarkImpactAsync(fileStream, axpFile, SharedData.DarkImpactMap);
-        }
+        SharedData.Clear();
+        using var fileStream = File.OpenRead(axpFilePath);
+        var axpFile = await AxpFile.ReadAsync(fileStream);
+        await LoadCommonItemAsync(fileStream, axpFile, SharedData.ItemBaseMap);
+        await LoadGemInfoAsync(fileStream, axpFile, SharedData.ItemBaseMap);
+        await LoadEquipBaseAsync(fileStream, axpFile, SharedData.ItemBaseMap);
+        await LoadXinFaAsync(fileStream, axpFile, SharedData.XinFaMap);
+        await LoadPetSkillAsync(fileStream, axpFile, SharedData.PetSkillMap);
+        await LoadDarkImpactAsync(fileStream, axpFile, SharedData.DarkImpactMap);
     }
 
     private static async Task<DbcFile> ParseFileAsync(Stream stream, AxpFile axpFile, string filename)

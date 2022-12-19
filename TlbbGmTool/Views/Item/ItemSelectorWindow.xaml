@@ -70,11 +70,11 @@
                     <Setter Property="Padding" Value="10,5" />
                 </Style>
             </WrapPanel.Resources>
-            <Button Command="{Binding FirstPageCommand}">首页</Button>
-            <Button Margin="5,0" Command="{Binding PrevPageCommand}">上一页</Button>
-            <Label MinWidth="60" Content="{Binding PageTip}" />
-            <Button Margin="5,0" Command="{Binding NextPageCommand}">下一页</Button>
-            <Button Command="{Binding LastPageCommand}">末页</Button>
+            <Button Command="{Binding Pagination.FirstPageCommand}">首页</Button>
+            <Button Margin="5,0" Command="{Binding Pagination.PrevPageCommand}">上一页</Button>
+            <Label MinWidth="60" Content="{Binding Pagination.PageTip}" />
+            <Button Margin="5,0" Command="{Binding Pagination.NextPageCommand}">下一页</Button>
+            <Button Command="{Binding Pagination.LastPageCommand}">末页</Button>
         </WrapPanel>
     </Grid>
 </Window>
