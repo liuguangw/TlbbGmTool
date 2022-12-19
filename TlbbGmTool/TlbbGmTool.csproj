@@ -1,52 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net7.0-windows;net48</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>liuguang.TlbbGmTool</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>images\icon.ico</ApplicationIcon>
-    <AssemblyTitle>天龙八部GM工具</AssemblyTitle>
-    <Description>一个普通的GM工具</Description>
-    <Company>流光</Company>
-    <Product>TlbbGmTool</Product>
-    <Copyright>MIT License</Copyright>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <StartupObject>liuguang.TlbbGmTool.App</StartupObject>
-    <RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Resource Include="images\about.png" />
-    <Resource Include="images\close.png" />
-    <Resource Include="images\icon.ico" />
-    <Resource Include="images\setting.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="config\servers.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="config\common.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-	<None Include="..\LICENSE">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.31" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\axp\axp.csproj" />
-    <ProjectReference Include="..\dbc\dbc.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net7.0-windows;net48</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<RootNamespace>liuguang.TlbbGmTool</RootNamespace>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationIcon>images\icon.ico</ApplicationIcon>
+		<AssemblyTitle>天龙八部GM工具</AssemblyTitle>
+		<Description>一个普通的GM工具</Description>
+		<Company>流光</Company>
+		<Product>TlbbGmTool</Product>
+		<Copyright>MIT License</Copyright>
+		<AssemblyVersion>1.0.2.0</AssemblyVersion>
+		<FileVersion>1.0.2.0</FileVersion>
+		<StartupObject>liuguang.TlbbGmTool.App</StartupObject>
+		<RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DebugType>none</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<Resource Include="images\about.png" />
+		<Resource Include="images\close.png" />
+		<Resource Include="images\icon.ico" />
+		<Resource Include="images\setting.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="config\servers.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="config\common.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="..\LICENSE">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MySql.Data" Version="8.0.31" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\axp\axp.csproj" />
+		<ProjectReference Include="..\dbc\dbc.csproj" />
+	</ItemGroup>
 
 </Project>

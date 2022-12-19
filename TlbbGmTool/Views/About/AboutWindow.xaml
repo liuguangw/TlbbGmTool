@@ -1,12 +1,16 @@
-﻿<Window
+﻿<Window x:Class="liuguang.TlbbGmTool.Views.About.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:liuguang.TlbbGmTool.Views.About" x:Class="liuguang.TlbbGmTool.Views.About.AboutWindow"
+        xmlns:local="clr-namespace:liuguang.TlbbGmTool.Views.About"
+        xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanMinimize"
         Title="关于本程序" Height="394" Width="640">
+    <Window.DataContext>
+        <vm:AboutWindowViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.Resources>
             <Style TargetType="{x:Type TextBlock}" x:Key="BoldBlock">
@@ -22,17 +26,24 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Style="{StaticResource BoldBlock}"><Run Text="本工具由流光开发,仅用于技术研究，使用本工具的任何后果与本作者无关。"/></TextBlock>
         <TextBlock Grid.Row="1" Style="{StaticResource BoldBlock}">
-            <Run Text="项目主页："/><Hyperlink NavigateUri="https://github.com/liuguangw/TlbbGmTool" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="https://github.com/liuguangw/TlbbGmTool"/></Hyperlink>
+            <Run>当前版本:</Run>
             <Run Foreground="#FF51ED1A">[</Run>
-            <Run Text="运行时: "/>
-            <Run Foreground="#FF3198DA" Text="{Binding AppRuntime, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AboutWindow}}}"/>
+            <Run Foreground="#FF3198DA" Text="{Binding Version}"/>
+            <Run Foreground="#FF51ED1A">] </Run>
+            <Run> 运行时:</Run>
+            <Run Foreground="#FF51ED1A">[</Run>
+            <Run Foreground="#FF3198DA" Text="{Binding AppRuntime}"/>
             <Run Foreground="#FF51ED1A">]</Run>
         </TextBlock>
-        <GroupBox Grid.Row="2" Margin="20,0,20,20" Padding="15">
+        <TextBlock Grid.Row="2" Style="{StaticResource BoldBlock}">
+            <Run Text="项目主页："/><Hyperlink NavigateUri="{Binding RepositoryUrl}" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="访问项目主页"><Run Text="{Binding RepositoryUrl}"/></Hyperlink>
+        </TextBlock>
+        <GroupBox Grid.Row="3" Margin="20,0,20,20" Padding="15">
             <GroupBox.Header>
                 <Label Content="使用说明"/>
             </GroupBox.Header>
