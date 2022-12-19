@@ -113,8 +113,8 @@ public class RoleEditorViewModel : ViewModelBase
                     Menpai = rd.GetInt32("menpai"),
                     Level = rd.GetInt32("level"),
                     Scene = rd.GetInt32("scene"),
-                    XPos = rd.GetInt32("xpos"),
-                    ZPos = rd.GetInt32("zpos"),
+                    XPos = rd.GetInt32("xpos") / 100,
+                    ZPos = rd.GetInt32("zpos") / 100,
                     Hp = rd.GetInt32("hp"),
                     Mp = rd.GetInt32("mp"),
                     Str = rd.GetInt32("str"),
@@ -143,8 +143,8 @@ public class RoleEditorViewModel : ViewModelBase
     private void GoHome()
     {
         _roleInfo.Scene = 2;
-        _roleInfo.XPos = 160 * 100;
-        _roleInfo.ZPos = 149 * 100;
+        _roleInfo.XPos = 160;
+        _roleInfo.ZPos = 149;
     }
     private async void SaveRole()
     {
@@ -181,8 +181,8 @@ public class RoleEditorViewModel : ViewModelBase
             ["menpai"] = roleInfo.Menpai,
             ["level"] = roleInfo.Level,
             ["scene"] = roleInfo.Scene,
-            ["xpos"] = roleInfo.XPos,
-            ["zpos"] = roleInfo.ZPos,
+            ["xpos"] = roleInfo.XPos * 100,
+            ["zpos"] = roleInfo.ZPos * 100,
             ["hp"] = roleInfo.Hp,
             ["mp"] = roleInfo.Mp,
             ["str"] = roleInfo.Str,

@@ -1,7 +1,7 @@
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 
-namespace liuguang.TlbbGmTool.ViewModels;
+namespace liuguang.TlbbGmTool.ViewModels.Data;
 
 public class UserAccountViewModel : NotifyBase
 {
@@ -22,8 +22,15 @@ public class UserAccountViewModel : NotifyBase
     public string Password
     {
         get => _userAccount.Password;
-        set => SetProperty(ref _userAccount.Password, value);
+        set
+        {
+            if (SetProperty(ref _userAccount.Password, value))
+            {
+                RaisePropertyChanged(nameof(PasswordSkipText));
+            }
+        }
     }
+    public string PasswordSkipText => _userAccount.Password.Substring(0, 4) + "*****";
     public string? Question
     {
         get => _userAccount.Question;
@@ -63,7 +70,7 @@ public class UserAccountViewModel : NotifyBase
         set => IdCard = (value ? "1" : null);
     }
 
-    public string IsLockText => (_userAccount.IdCard == "1")?"已锁定":"正常";
+    public string IsLockText => (_userAccount.IdCard == "1") ? "已锁定" : "正常";
     #endregion
 
     public UserAccountViewModel(UserAccount userAccount) { _userAccount = userAccount; }
@@ -72,9 +79,9 @@ public class UserAccountViewModel : NotifyBase
     {
         Id = src.Id;
         Name = src.Name;
-        Password= src.Password;
-        Question= src.Question;
-        Answer= src.Answer;
+        Password = src.Password;
+        Question = src.Question;
+        Answer = src.Answer;
         Email = src.Email;
         IdCard = src.IdCard;
         Point = src.Point;

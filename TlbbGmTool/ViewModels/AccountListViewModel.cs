@@ -1,5 +1,6 @@
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
+using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Account;
 using MySql.Data.MySqlClient;
 using System;
@@ -23,9 +24,6 @@ public class AccountListViewModel : ViewModelBase
 
     public string SearchText { get; set; } = string.Empty;
 
-    public Command SearchCommand { get; }
-    public Command AddAccountCommand { get; }
-
     public bool IsSearching
     {
         set
@@ -37,6 +35,10 @@ public class AccountListViewModel : ViewModelBase
             }
         }
     }
+
+    public Command SearchCommand { get; }
+    public Command AddAccountCommand { get; }
+    public Command DeleteAccountCommand { get; }
     public Command EditAccountCommand { get; }
     #endregion
 
@@ -45,6 +47,7 @@ public class AccountListViewModel : ViewModelBase
         SearchCommand = new(SearchAccount, () => !_isSearching);
         AddAccountCommand = new(ShowAddAccountEditorDialog, parameter => !_isSearching);
         EditAccountCommand = new(ShowAccountEditorDialog);
+        DeleteAccountCommand= new(ProcessDeleteAccount);
     }
 
     private async void SearchAccount()
@@ -145,5 +148,47 @@ public class AccountListViewModel : ViewModelBase
             vm.AccountList = AccountList;
             vm.Connection = Connection;
         });
+    }
+    private async void ProcessDeleteAccount(object? parameter)
+    {
+        if (Connection is null)
+        {
+            return;
+        }
+        if (parameter is not UserAccountViewModel accountInfo)
+        {
+            return;
+        }
+        if (!Confirm("删除提示", $"你确定要删除账号{accountInfo.Name}吗?"))
+        {
+            return;
+        }
+        try
+        {
+            await Task.Run(async () =>
+            {
+                await DeleteAccountAsync(Connection,accountInfo.Name);
+            });
+            AccountList.Remove(accountInfo);
+            ShowMessage("删除成功", $"删除账号{accountInfo.Name}成功");
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage("删除失败", ex, true);
+        }
+    }
+    private async Task DeleteAccountAsync(DbConnection connection,string name)
+    {
+
+        const string sql = "DELETE FROM account WHERE name=@name";
+        var mySqlCommand = new MySqlCommand(sql, connection.Conn);
+        mySqlCommand.Parameters.Add(new MySqlParameter("@name", MySqlDbType.String)
+        {
+            Value = name
+        });
+        // 切换数据库
+        await connection.SwitchAccountDbAsync();
+        //
+        await mySqlCommand.ExecuteNonQueryAsync();
     }
 }

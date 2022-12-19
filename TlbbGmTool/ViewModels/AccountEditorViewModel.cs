@@ -1,4 +1,5 @@
 using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Account;
 using MySql.Data.MySqlClient;
 using System;

@@ -30,28 +30,32 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Width="45" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="ID" Binding="{Binding Id}" SortDirection="Ascending" />
-                <DataGridTextColumn Width="150" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="账号" Binding="{Binding Name}" />
                 <DataGridTextColumn Width="*" ElementStyle="{StaticResource TextColumnStyle}"
-                                    Header="密码" Binding="{Binding Password}" />
-                <DataGridTextColumn Width="140" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="账号" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="84" ElementStyle="{StaticResource TextColumnStyle}"
+                                    Header="密码" Binding="{Binding PasswordSkipText}" />
+                <DataGridTextColumn Width="150" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="邮箱" Binding="{Binding Email}" />
                 <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="点数" Binding="{Binding Point}" />
                 <DataGridTextColumn Width="60" ElementStyle="{StaticResource TextColumnStyle}"
                                     Header="状态"
                                     Binding="{Binding IsLockText}" />
-                <DataGridTemplateColumn Header="管理" Width="90">
+                <DataGridTemplateColumn Header="管理" Width="130">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button
-                                Margin="3" Padding="3,5"
-                                Command="{Binding DataContext.EditAccountCommand, 
-                                RelativeSource={RelativeSource FindAncestor, 
-                                AncestorType={x:Type DataGrid}}}"
-                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}">
-                                修改
-                            </Button>
+                            <WrapPanel Margin="5">
+                                <Button Padding="10,5" Content="修改"
+                                        Command="{Binding DataContext.EditAccountCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                                <Button Margin="3,0,0,0" Padding="10,5" Content="删除"
+                                        Command="{Binding DataContext.DeleteAccountCommand, 
+                                        RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                            </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
