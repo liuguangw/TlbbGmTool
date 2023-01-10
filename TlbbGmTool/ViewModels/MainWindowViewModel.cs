@@ -195,8 +195,9 @@ public class MainWindowViewModel : ViewModelBase
         {
             await Task.Run(async () =>
             {
+                var dirPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config");
                 var axpPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config.axp");
-                await AxpService.LoadDataAsync(axpPath);
+                await AxpService.LoadDataAsync(dirPath, axpPath);
             });
             this.DataStatus = DataStatus.Loaded;
         }
@@ -204,7 +205,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             this.DataStatus = DataStatus.NotLoad;
             var stackTrace = (ex.InnerException ?? ex).StackTrace;
-            ShowErrorMessage("加载axp文件失败", $"{ex.Message}\n{stackTrace}");
+            ShowErrorMessage("加载txt文件失败", $"{ex.Message}\n{stackTrace}");
         }
     }
 

@@ -11,60 +11,91 @@ namespace liuguang.TlbbGmTool.Services;
 
 public static class AxpService
 {
-    public static async Task LoadDataAsync(string axpFilePath)
+    public static async Task LoadDataAsync(string dirPath, string axpFilePath)
     {
         SharedData.Clear();
-        using var fileStream = File.OpenRead(axpFilePath);
-        var axpFile = await AxpFile.ReadAsync(fileStream);
-        await LoadCommonItemAsync(fileStream, axpFile, SharedData.ItemBaseMap);
-        await LoadGemInfoAsync(fileStream, axpFile, SharedData.ItemBaseMap);
-        await LoadEquipBaseAsync(fileStream, axpFile, SharedData.ItemBaseMap);
-        await LoadXinFaAsync(fileStream, axpFile, SharedData.XinFaMap);
-        await LoadPetSkillAsync(fileStream, axpFile, SharedData.PetSkillMap);
-        await LoadDarkImpactAsync(fileStream, axpFile, SharedData.DarkImpactMap);
+        using var axpFileStream = File.OpenRead(axpFilePath);
+        var axpFile = await AxpFile.ReadAsync(axpFileStream);
+        var parseTextFileFn = async (string filename) =>
+        {
+            return await ParseFileAsync(dirPath, axpFileStream, axpFile, filename);
+        };
+        await LoadCommonItemAsync(parseTextFileFn, SharedData.ItemBaseMap);
+        await LoadGemInfoAsync(parseTextFileFn, SharedData.ItemBaseMap);
+        await LoadEquipBaseAsync(parseTextFileFn, SharedData.ItemBaseMap);
+        await LoadXinFaAsync(parseTextFileFn, SharedData.XinFaMap);
+        await LoadPetSkillAsync(parseTextFileFn, SharedData.PetSkillMap);
+        await LoadDarkImpactAsync(parseTextFileFn, SharedData.DarkImpactMap);
     }
 
-    private static async Task<DbcFile> ParseFileAsync(Stream stream, AxpFile axpFile, string filename)
+    /// <summary>
+    /// 解析txt文件
+    /// </summary>
+    /// <param name="dirPath">本地目录</param>
+    /// <param name="axpFileStream"></param>
+    /// <param name="axpFile"></param>
+    /// <param name="filename">txt文件名</param>
+    /// <returns></returns>
+    private static async Task<DbcFile> ParseFileAsync(string dirPath, Stream axpFileStream, AxpFile axpFile, string filename)
     {
+        DbcFile fileResult;
+        var filePath = Path.Combine(dirPath, filename);
+        //如果Config/xxxx.txt存在,则优先使用
+        if (File.Exists(filePath))
+        {
+            using (var fileStream = File.OpenRead(filePath))
+            {
+
+                try
+                {
+                    fileResult = await DbcFile.ReadAsync(fileStream, (uint)fileStream.Length);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"解析文件{filePath}出错,{ex.Message}", ex);
+                }
+                return fileResult;
+            }
+        }
+        //从axp文件中读取
         var blockNode = axpFile.GetBlockNode(filename);
         if (!blockNode.HasValue)
         {
-            throw new Exception("未找到文件" + filename);
+            throw new Exception("axp中未找到文件" + filename);
         }
-        stream.Seek(blockNode.Value.DataOffset, SeekOrigin.Begin);
-        DbcFile fileResult;
+        axpFileStream.Seek(blockNode.Value.DataOffset, SeekOrigin.Begin);
         try
         {
-            fileResult = await DbcFile.ReadAsync(stream, blockNode.Value.BlockSize);
+            fileResult = await DbcFile.ReadAsync(axpFileStream, blockNode.Value.BlockSize);
         }
         catch (Exception ex)
         {
-            throw new Exception($"解析文件{filename}出错,{ex.Message}", ex);
+            throw new Exception($"解析axp中文件{filename}出错,{ex.Message}", ex);
         }
         return fileResult;
     }
 
-    private static async Task LoadCommonItemAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, ItemBase> itemBaseMap)
+    private static async Task LoadCommonItemAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, ItemBase> itemBaseMap)
     {
-        var dbcFile = await ParseFileAsync(stream, axpFile, "CommonItem.txt");
+        var dbcFile = await parseTextFileAsync("CommonItem.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             itemBaseMap[keyValuePair.Key] = ParseCommonItemRow(keyValuePair.Value);
         }
     }
-    private static async Task LoadGemInfoAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, ItemBase> itemBaseMap)
+    private static async Task LoadGemInfoAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, ItemBase> itemBaseMap)
     {
-        var dbcFile = await ParseFileAsync(stream, axpFile, "GemInfo.txt");
+        var dbcFile = await parseTextFileAsync("GemInfo.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             itemBaseMap[keyValuePair.Key] = ParseGemInfoRow(keyValuePair.Value);
         }
     }
 
-    private static async Task LoadEquipBaseAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, ItemBase> itemBaseMap)
+    private static async Task LoadEquipBaseAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, ItemBase> itemBaseMap)
     {
-        var dbcFile = await ParseFileAsync(stream, axpFile, "EquipBase.txt");
-        var valueDbcFile = await ParseFileAsync(stream, axpFile, "ItemSegValue.txt");
+        var dbcFile = await parseTextFileAsync("EquipBase.txt");
+        var valueDbcFile = await parseTextFileAsync("ItemSegValue.txt");
         var segDictionary = ParseItemSegValue(valueDbcFile);
         foreach (var keyValuePair in dbcFile.DataMap)
         {
@@ -72,18 +103,18 @@ public static class AxpService
         }
     }
 
-    private static async Task LoadXinFaAsync(Stream stream, AxpFile axpFile, Dictionary<int, XinFaBase> xinFaMap)
+    private static async Task LoadXinFaAsync(Func<string, Task<DbcFile>> parseTextFileAsync, Dictionary<int, XinFaBase> xinFaMap)
     {
-        var dbcFile = await ParseFileAsync(stream, axpFile, "XinFa_V1.txt");
+        var dbcFile = await parseTextFileAsync("XinFa_V1.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             xinFaMap[keyValuePair.Key] = ParseXinFaRow(keyValuePair.Value);
         }
     }
 
-    private static async Task LoadPetSkillAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, PetSkillBase> petSkillMap)
+    private static async Task LoadPetSkillAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, PetSkillBase> petSkillMap)
     {
-        var dbcFile = await ParseFileAsync(stream, axpFile, "SkillTemplate_V1.txt");
+        var dbcFile = await parseTextFileAsync("SkillTemplate_V1.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             var rowFields = keyValuePair.Value;
@@ -98,9 +129,9 @@ public static class AxpService
         }
     }
 
-    private static async Task LoadDarkImpactAsync(Stream stream, AxpFile axpFile, SortedDictionary<int, string> darkImpactMap)
+    private static async Task LoadDarkImpactAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, string> darkImpactMap)
     {
-        var dbcFile = await ParseFileAsync(stream, axpFile, "DarkImpackStr.txt");
+        var dbcFile = await parseTextFileAsync("DarkImpackStr.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
         {
             darkImpactMap[keyValuePair.Key] = keyValuePair.Value[1].StringValue;
