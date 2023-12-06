@@ -65,7 +65,7 @@ public class DbConnection
         {
             return;
         }
-        await _conn.ChangeDataBaseAsync(dbName);
+        await _conn.ChangeDatabaseAsync(dbName);
         _currentDbName = dbName;
     }
 
