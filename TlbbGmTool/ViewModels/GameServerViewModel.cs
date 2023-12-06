@@ -5,10 +5,10 @@ namespace liuguang.TlbbGmTool.ViewModels;
 
 public class GameServerViewModel : NotifyBase
 {
-	#region Fields
+    #region Fields
     private GameServer _gameServer;
     private DbStatus _dbStatus = DbStatus.NotConnect;
-	#endregion
+    #endregion
 
     #region Properties
     public string ServerName
@@ -53,6 +53,12 @@ public class GameServerViewModel : NotifyBase
         set => SetProperty(ref _gameServer.DbPassword, value);
     }
 
+    public bool DisabledSsl
+    {
+        get => _gameServer.DisabledSsl;
+        set => SetProperty(ref _gameServer.DisabledSsl, value);
+    }
+
     public string ClientPath
     {
         get => _gameServer.ClientPath;
@@ -65,7 +71,7 @@ public class GameServerViewModel : NotifyBase
         set => SetProperty(ref _dbStatus, value);
     }
     #endregion
-	
+
     public GameServerViewModel(GameServer gameServer)
     {
         _gameServer = gameServer;
@@ -73,14 +79,15 @@ public class GameServerViewModel : NotifyBase
 
     public void CopyFrom(GameServerViewModel src)
     {
-        ServerName= src.ServerName;
-        DbHost= src.DbHost;
-        DbPort= src.DbPort;
-        AccountDbName= src.AccountDbName;
-        GameDbName= src.GameDbName;
-        DbUser= src.DbUser;
-        DbPassword= src.DbPassword;
-        ClientPath= src.ClientPath;
+        ServerName = src.ServerName;
+        DbHost = src.DbHost;
+        DbPort = src.DbPort;
+        AccountDbName = src.AccountDbName;
+        GameDbName = src.GameDbName;
+        DbUser = src.DbUser;
+        DbPassword = src.DbPassword;
+        DisabledSsl = src.DisabledSsl;
+        ClientPath = src.ClientPath;
     }
 
     public GameServer AsServer()

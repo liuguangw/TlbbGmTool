@@ -38,6 +38,11 @@ public class GameServer
     public string DbPassword = string.Empty;
 
     /// <summary>
+    /// 禁用SSL
+    /// </summary>
+    public bool DisabledSsl = false;
+
+    /// <summary>
     /// 客户端路径
     /// </summary>
     public string ClientPath = string.Empty;

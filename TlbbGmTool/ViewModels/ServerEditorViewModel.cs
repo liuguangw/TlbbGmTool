@@ -132,8 +132,12 @@ public class ServerEditorViewModel : ViewModelBase
             Database = ServerInfo.AccountDbName,
             UserID = ServerInfo.DbUser,
             Password = ServerInfo.DbPassword,
-            ConnectionTimeout = 5,
+            ConnectionTimeout = 20,
         };
+        if (ServerInfo.DisabledSsl)
+        {
+            connectionStringBuilder.SslMode = MySqlSslMode.Disabled;
+        }
 
         var mySqlConnection = new MySqlConnection
         {

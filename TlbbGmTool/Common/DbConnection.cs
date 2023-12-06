@@ -13,12 +13,12 @@ public class DbConnection
     /// <summary>
     /// 账号数据库名称
     /// </summary>
-    private string _accountDbName="web";
+    private string _accountDbName = "web";
 
     /// <summary>
     /// 游戏数据库名称
     /// /// </summary>
-    private string _gameDbName="tlbbdb";
+    private string _gameDbName = "tlbbdb";
 
     /// <summary>
     /// 当前选择的数据库
@@ -43,14 +43,19 @@ public class DbConnection
             Port = serverInfo.DbPort,
             UserID = serverInfo.DbUser,
             Password = serverInfo.DbPassword,
+            ConnectionTimeout = 20,
             MinimumPoolSize = 3,
             ConnectionLifeTime = 4 * 60,
-            Keepalive = 30
+            Keepalive = 30,
         };
+        if (serverInfo.DisabledSsl)
+        {
+            connectionStringBuilder.SslMode = MySqlSslMode.Disabled;
+        }
         _conn.ConnectionString = connectionStringBuilder.GetConnectionString(true);
         await _conn.OpenAsync();
         _accountDbName = serverInfo.AccountDbName;
-        _gameDbName= serverInfo.GameDbName;
+        _gameDbName = serverInfo.GameDbName;
         _currentDbName = null;
     }
 

@@ -61,6 +61,7 @@ public static class ServerService
                              GameDbName = serverEl.Element("gameDb")?.Value ?? string.Empty,
                              DbUser = serverEl.Element("user")?.Value ?? string.Empty,
                              DbPassword = serverEl.Element("password")?.Value ?? string.Empty,
+                             DisabledSsl = serverEl.Element("disabled_ssl")?.Value == "1",
                              ClientPath = serverEl.Element("client_path")?.Value ?? string.Empty,
                          };
         return serverList;
@@ -79,6 +80,7 @@ public static class ServerService
                 new XElement("gameDb", gameServer.GameDbName),
                 new XElement("user", gameServer.DbUser),
                 new XElement("password", gameServer.DbPassword),
+                new XElement("disabled_ssl", gameServer.DisabledSsl ? "1" : "0"),
                 new XElement("client_path", gameServer.ClientPath)
             )
         );
