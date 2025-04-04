@@ -7,15 +7,17 @@
     <gameDb>tlbbdb</gameDb>
     <user>root</user>
     <password>root</password>
+    <disabled_ssl>1</disabled_ssl>
     <client_path>G:\服务端\天龙八部\天龙八部085原版\TLBB_0.85.0600</client_path>
   </server>
   <server name="虚拟机服">
-    <host>192.168.200.3</host>
+    <host>192.168.139.128</host>
     <port>3306</port>
     <accountDb>web</accountDb>
     <gameDb>tlbbdb</gameDb>
     <user>root</user>
-    <password>123456</password>
-    <client_path>G:\服务端\天龙八部\天龙八部085原版\TLBB_0.85.0600</client_path>
+    <password>maomao</password>
+    <disabled_ssl>1</disabled_ssl>
+    <client_path>G:\服务端\天龙八部\tl08复古珍藏完美版\RLRSQYRSLBWFG\TLBB-085-0607</client_path>
   </server>
 </servers>

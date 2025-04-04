@@ -2,7 +2,6 @@ using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 using liuguang.TlbbGmTool.ViewModels.Data;
 using liuguang.TlbbGmTool.Views.Account;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

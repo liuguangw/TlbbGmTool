@@ -40,7 +40,7 @@ public class GameServer
     /// <summary>
     /// 禁用SSL
     /// </summary>
-    public bool DisabledSsl = false;
+    public bool DisabledSsl = true;
 
     /// <summary>
     /// 客户端路径

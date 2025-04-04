@@ -5,6 +5,7 @@ namespace liuguang.Axp;
 public class MathTable
 {
     private readonly uint[] _mathDataBuf;
+    private readonly Encoding _strEncoding;
 
     public MathTable()
     {
@@ -26,14 +27,14 @@ public class MathTable
             }
         }
         _mathDataBuf = mathDataBuf;
+        _strEncoding = Encoding.GetEncoding("GB18030");
     }
 
     public uint Hash(HashType hashType, string plain)
     {
         uint seed1 = 0x7FED_7FED;
         uint seed2 = 0xEEEE_EEEE;
-        var strEncoding = Encoding.GetEncoding("GB18030");
-        var stringData = strEncoding.GetBytes(plain);
+        var stringData = _strEncoding.GetBytes(plain);
         foreach (var byteP in stringData)
         {
             uint ch = byteP;

@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using liuguang.TlbbGmTool.Models;
 
 namespace liuguang.TlbbGmTool.Common;
@@ -52,7 +51,7 @@ public class DbConnection
         {
             connectionStringBuilder.SslMode = MySqlSslMode.Disabled;
         }
-        _conn.ConnectionString = connectionStringBuilder.GetConnectionString(true);
+        _conn.ConnectionString = connectionStringBuilder.ConnectionString;
         await _conn.OpenAsync();
         _accountDbName = serverInfo.AccountDbName;
         _gameDbName = serverInfo.GameDbName;

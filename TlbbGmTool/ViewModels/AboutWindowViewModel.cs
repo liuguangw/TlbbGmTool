@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace liuguang.TlbbGmTool.ViewModels;
 
@@ -17,11 +18,7 @@ public class AboutWindowViewModel
             var metaAttribute = currentAssem.GetCustomAttribute<AssemblyMetadataAttribute>();
             RepositoryUrl = metaAttribute?.Value ?? "-";
 
-        }
-#if NET
-        AppRuntime = ".NET";
-#elif NETFRAMEWORK
-        AppRuntime = ".NET Framework";
-#endif
+        }          
+        AppRuntime = RuntimeInformation.FrameworkDescription;
     }
 }

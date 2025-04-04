@@ -1,12 +1,11 @@
-using liuguang.TlbbGmTool.Common;
-using System.Windows.Forms;
 using System;
-using System.Linq;
-using liuguang.TlbbGmTool.Services;
 using System.Collections.ObjectModel;
-using MySql.Data.MySqlClient;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Services;
 
 namespace liuguang.TlbbGmTool.ViewModels;
 
@@ -141,7 +140,7 @@ public class ServerEditorViewModel : ViewModelBase
 
         var mySqlConnection = new MySqlConnection
         {
-            ConnectionString = connectionStringBuilder.GetConnectionString(true),
+            ConnectionString = connectionStringBuilder.ConnectionString,
         };
         try
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using liuguang.TlbbGmTool.Common;
@@ -262,6 +263,9 @@ public class MainWindowViewModel : ViewModelBase
         };
         try
         {
+#if NET
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
             await Task.WhenAll(taskList);
         }
         catch (Exception e)

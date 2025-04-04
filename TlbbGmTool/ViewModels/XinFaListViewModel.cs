@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Views.XinFa;
-using MySql.Data.MySqlClient;
 
 namespace liuguang.TlbbGmTool.ViewModels;
 

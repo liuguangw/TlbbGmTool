@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
+		<TargetFrameworks>net8.0-windows;net6.0-windows;net48</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
@@ -16,8 +16,10 @@
 		<Company>流光</Company>
 		<Product>TlbbGmTool</Product>
 		<Copyright>MIT License</Copyright>
-		<AssemblyVersion>1.0.4.0</AssemblyVersion>
-		<FileVersion>1.0.4.0</FileVersion>
+		<AssemblyVersion>1.0.5.0</AssemblyVersion>
+		<PackageVersion>$(AssemblyVersion)</PackageVersion>
+		<VersionPrefix>$(AssemblyVersion)</VersionPrefix>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<StartupObject>liuguang.TlbbGmTool.App</StartupObject>
 		<RepositoryUrl>https://github.com/liuguangw/TlbbGmTool</RepositoryUrl>
 	</PropertyGroup>
@@ -42,7 +44,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="8.0.33" />
+		<PackageReference Include="MySqlConnector" Version="2.4.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\axp\axp.csproj" />

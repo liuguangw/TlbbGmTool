@@ -1,3 +1,4 @@
+global using MySqlConnector;
 using System.Windows;
 using System.Windows.Threading;
 
