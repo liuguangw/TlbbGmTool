@@ -2,11 +2,14 @@
 
 某网络游戏的单机版本GM工具。
 
-本工具使用C#语言编写，支持.Net(6.0)和.NET Framework(4.8+)两种运行环境，如果不能运行，则需要至少安装一种运行库。
+本工具使用C#语言编写，支持 .NET(8.0、6.0)和 .NET Framework(4.8+)运行环境。
 
 - .NET 运行库(新系统推荐) https://dotnet.microsoft.com/zh-cn/download/dotnet
 
-- .NET Framework运行库(4.8版本支持win7) https://dotnet.microsoft.com/zh-cn/download/dotnet-framework
+- .NET Framework运行库 https://dotnet.microsoft.com/zh-cn/download/dotnet-framework
+
+> 注意: .NET 8.0 不支持 win10以下的系统，旧版本的系统可以安装 .NET 6.0 或者 .NET Framework 4.8
+>
 
 ## 编译指南
 
@@ -18,32 +21,25 @@
 
 ### .NET sdk命令行
 
-安装完.NET sdk之后，可以使用`dotnet`工具来编译此项目。
+安装完.NET sdk之后，打开 CMD 控制台，可以使用`dotnet`工具来编译此项目，根据 sdk 版本执行对应的命令。
 
-```bash
-dotnet build TlbbGmTool -c Release
+```shell
+# 编译 .net8.0 版本的
+dotnet publish TlbbGmTool -c Release -f net8.0-windows -p:PublishSingleFile=true --no-self-contained
+# 编译 .net6.0 版本的
+dotnet publish TlbbGmTool -c Release -f net6.0-windows -p:PublishSingleFile=true --no-self-contained
+# 编译 .NET Framework 4.8 版本的 (.NET Framework的程序不能打包成单个文件)
+dotnet publish TlbbGmTool -c Release -f net48 --no-self-contained
 ```
 
-编译结果输出大致如下所示，`net48`文件夹下的是.NET Framework版本的，`net6.0-windows`文件夹下的是.NET版本的：
+编译结果输出大致如下所示，`publish`文件夹下就是构建好的程序：
 
 ```
-E:\vs_applications\TlbbGmTool>dotnet build TlbbGmTool -c Release
-适用于 .NET MSBuild 版本 17.8.3+195e7f5a3
-  正在确定要还原的项目…
-  所有项目均是最新的，无法还原。
-  dbc -> E:\vs_applications\TlbbGmTool\dbc\bin\Release\net6.0-windows\dbc.dll
-  axp -> E:\vs_applications\TlbbGmTool\axp\bin\Release\net6.0-windows\axp.dll
-  dbc -> E:\vs_applications\TlbbGmTool\dbc\bin\Release\net48\dbc.dll
-  axp -> E:\vs_applications\TlbbGmTool\axp\bin\Release\net48\axp.dll
-  TlbbGmTool -> E:\vs_applications\TlbbGmTool\TlbbGmTool\bin\Release\net6.0-windows\TlbbGmTool.dll
-  TlbbGmTool -> E:\vs_applications\TlbbGmTool\TlbbGmTool\bin\Release\net48\TlbbGmTool.exe
+E:\vs_applications\TlbbGmTool> dotnet publish TlbbGmTool -c Release -f net8.0-windows -p:PublishSingleFile=true --no-self-contained
+  dbc net8.0-windows 已成功 (0.1) → dbc\bin\Release\net8.0-windows\dbc.dll
+  axp net8.0-windows 已成功 (0.2) → axp\bin\Release\net8.0-windows\axp.dll
+  TlbbGmTool net8.0-windows 已成功 (0.2) → TlbbGmTool\bin\Release\net8.0-windows\win-x64\publish\
 
-已成功生成。
-    0 个警告
-    0 个错误
-
-已用时间 00:00:01.11
-
-E:\vs_applications\TlbbGmTool>
+在 0.6 中生成 已成功
 ```
 
