@@ -49,7 +49,8 @@ public class GemEditorViewModel : ViewModelBase
         set
         {
             _inputItemLog = value;
-            GemDataService.Read(value.ItemBaseId, value.PData, _itemData);
+            GemDataService.Read(value.ItemBaseId, value.PData, _itemData, Connection?.GameServerType ?? ServerType.Common);
+            _itemData.MaxSize = (byte)value.ItemMaxSize;
         }
     }
     public BagContainer ItemsContainer
@@ -67,6 +68,10 @@ public class GemEditorViewModel : ViewModelBase
         }
     }
     public GemDataViewModel ItemData => _itemData;
+    /// <summary>
+    /// 数量编辑功能的状态
+    /// </summary>
+    public bool CountEditorEnabled => (_itemData.MaxSize > 1);
     #endregion
 
     #region Commands
@@ -89,6 +94,9 @@ public class GemEditorViewModel : ViewModelBase
     {
         _itemData.ItemBaseId = itemBase.ItemBaseId;
         _itemData.RulerId = itemBase.RulerId;
+        var itemMaxSize = itemBase.ItemMaxSize;
+        _itemData.Count = Math.Min(_itemData.Count, itemMaxSize);
+        _itemData.MaxSize = itemMaxSize;
         if (itemBase.BaseInfo is ItemBaseGem gemBaseInfo)
         {
             _itemData.BasePrice = gemBaseInfo.BasePrice;
@@ -102,6 +110,10 @@ public class GemEditorViewModel : ViewModelBase
         if (e.PropertyName == nameof(_itemData.ItemName))
         {
             RaisePropertyChanged(nameof(WindowTitle));
+        }
+        else if (e.PropertyName == nameof(_itemData.MaxSize))
+        {
+            RaisePropertyChanged(nameof(CountEditorEnabled));
         }
     }
 
@@ -137,7 +149,7 @@ public class GemEditorViewModel : ViewModelBase
         }
         var itemBaseId = _itemData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
-        GemDataService.Write(_itemData, pData);
+        GemDataService.Write(_itemData, pData, Connection.GameServerType);
         if (_inputItemLog is null)
         {
             await InsertItemAsync(Connection, itemBaseId, pData);

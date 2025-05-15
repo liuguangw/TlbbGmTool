@@ -198,7 +198,7 @@ public class MainWindowViewModel : ViewModelBase
             {
                 var dirPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config");
                 var axpPath = Path.Combine(_selectedServer.ClientPath, "Data", "Config.axp");
-                await AxpService.LoadDataAsync(dirPath, axpPath);
+                await AxpService.LoadDataAsync(dirPath, axpPath, _selectedServer.GameServerType);
             });
             this.DataStatus = DataStatus.Loaded;
         }

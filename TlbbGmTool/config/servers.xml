@@ -8,16 +8,18 @@
     <user>root</user>
     <password>root</password>
     <disabled_ssl>1</disabled_ssl>
+    <server_type>0</server_type>
     <client_path>G:\服务端\天龙八部\天龙八部085原版\TLBB_0.85.0600</client_path>
   </server>
-  <server name="虚拟机服">
-    <host>192.168.139.128</host>
+  <server name="武道二怀旧端">
+    <host>192.168.200.128</host>
     <port>3306</port>
     <accountDb>web</accountDb>
-    <gameDb>tlbbdb</gameDb>
+    <gameDb>tlbbdb2</gameDb>
     <user>root</user>
-    <password>maomao</password>
+    <password>Tlbb@1234!</password>
     <disabled_ssl>1</disabled_ssl>
-    <client_path>G:\服务端\天龙八部\tl08复古珍藏完美版\RLRSQYRSLBWFG\TLBB-085-0607</client_path>
+    <server_type>1</server_type>
+    <client_path>G:\服务端\天龙八部\怀旧武道二源端一键端\武道二客户端</client_path>
   </server>
 </servers>

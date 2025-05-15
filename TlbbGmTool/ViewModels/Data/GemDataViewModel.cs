@@ -29,11 +29,15 @@ public class GemDataViewModel : NotifyBase
     private uint _basePrice;
     private byte _attrType = 0;
     private ushort _attrValue = 0;
+    private byte _maxSize = 0xFF;
+    private byte _count = 1;
     #endregion
     #region ItemProperties
     public byte RulerId { get => _rulerId; set => _rulerId = value; }
     public uint BasePrice { get => _basePrice; set => _basePrice = value; }
     public byte AttrType { get => _attrType; set => _attrType = value; }
     public ushort AttrValue { get => _attrValue; set => _attrValue = value; }
+    public byte MaxSize { get => _maxSize; set => SetProperty(ref _maxSize, value); }
+    public byte Count { get => _count; set => SetProperty(ref _count, value); }
     #endregion
 }

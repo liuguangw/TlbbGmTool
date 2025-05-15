@@ -11,7 +11,7 @@ namespace liuguang.TlbbGmTool.Services;
 
 public static class AxpService
 {
-    public static async Task LoadDataAsync(string dirPath, string axpFilePath)
+    public static async Task LoadDataAsync(string dirPath, string axpFilePath, ServerType serverType)
     {
         SharedData.Clear();
         using var axpFileStream = File.OpenRead(axpFilePath);
@@ -21,7 +21,7 @@ public static class AxpService
             return await ParseFileAsync(dirPath, axpFileStream, axpFile, filename);
         };
         await LoadCommonItemAsync(parseTextFileFn, SharedData.ItemBaseMap);
-        await LoadGemInfoAsync(parseTextFileFn, SharedData.ItemBaseMap);
+        await LoadGemInfoAsync(parseTextFileFn, SharedData.ItemBaseMap, serverType);
         await LoadEquipBaseAsync(parseTextFileFn, SharedData.ItemBaseMap);
         await LoadXinFaAsync(parseTextFileFn, SharedData.XinFaMap);
         await LoadPetSkillAsync(parseTextFileFn, SharedData.PetSkillMap);
@@ -83,12 +83,12 @@ public static class AxpService
             itemBaseMap[keyValuePair.Key] = ParseCommonItemRow(keyValuePair.Value);
         }
     }
-    private static async Task LoadGemInfoAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, ItemBase> itemBaseMap)
+    private static async Task LoadGemInfoAsync(Func<string, Task<DbcFile>> parseTextFileAsync, SortedDictionary<int, ItemBase> itemBaseMap, ServerType serverType)
     {
         var dbcFile = await parseTextFileAsync("GemInfo.txt");
         foreach (var keyValuePair in dbcFile.DataMap)
         {
-            itemBaseMap[keyValuePair.Key] = ParseGemInfoRow(keyValuePair.Value);
+            itemBaseMap[keyValuePair.Key] = ParseGemInfoRow(keyValuePair.Value, serverType);
         }
     }
 
@@ -162,7 +162,7 @@ public static class AxpService
         return new(itemId, tClass, tType, rulerId, name, shortTypeString, description, level, maxSize,
             cosSelf, basePrice, reqSkill, reqSkillLevel, scriptID, skillID, targetType);
     }
-    private static ItemBaseGem ParseGemInfoRow(List<DbcField> rowFields)
+    private static ItemBaseGem ParseGemInfoRow(List<DbcField> rowFields, ServerType serverType)
     {
         var itemId = rowFields[0].IntValue;
         var tClass = rowFields[1].IntValue;
@@ -189,7 +189,12 @@ public static class AxpService
             }
             attrType++;
         }
-        return new(itemId, tClass, tType, rulerId, name, shortTypeString, description, level,
+        byte maxSize = 1;
+        if (serverType == ServerType.HuaiJiu)
+        {
+            maxSize = (byte)rowFields[80].IntValue;
+        }
+        return new(itemId, tClass, tType, rulerId, name, shortTypeString, description, level, maxSize,
             basePrice, attrType, attrValue);
     }
 

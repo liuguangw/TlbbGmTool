@@ -189,6 +189,11 @@ public class ItemLogViewModel : NotifyBase
             else
             {
                 offset = 6 * 4 + 2;
+                //宝石
+                if (ItemClass == 5)
+                {
+                    offset = 11;
+                }
             }
             return _itemLog.PData[offset] & 0xff;
         }

@@ -154,15 +154,35 @@ public static class ItemDbService
         return nextGuid + 2;
     }
 
+    private static async Task<int> GetWorldID(DbConnection connection)
+    {
+        var world = 0;
+        const string sql = "SELECT nVal FROM t_general_set WHERE sKey='WORLD_ID' LIMIT 1";
+        var mySqlCommand = new MySqlCommand(sql, connection.Conn);
+        using (var reader = await mySqlCommand.ExecuteReaderAsync())
+        {
+            if (reader is MySqlDataReader rd)
+            {
+                if (await rd.ReadAsync())
+                {
+                    world = rd.GetInt32("nVal");
+                }
+            }
+        }
+
+        return world;
+    }
+
     public static async Task InsertItemAsync(DbConnection connection, int posBegin, int limitCount, ItemLogViewModel itemLog)
     {
+        var world = await GetWorldID(connection);
         var nextPos = await GetNextPos(connection, itemLog.CharGuid, posBegin, limitCount);
         var nextGuid = await GetNextGuid(connection);
         var intDictionary = new Dictionary<string, int>()
         {
             ["charguid"] = itemLog.CharGuid,
             ["guid"] = nextGuid,
-            ["world"] = itemLog.World,
+            ["world"] = world,
             ["server"] = itemLog.Server,
             ["itemtype"] = itemLog.ItemBaseId,
             ["pos"] = nextPos,
@@ -172,12 +192,20 @@ public static class ItemDbService
         {
             intDictionary.Add($"p{i + 1}", pArray[i]);
         }
+        //P18 - P21
+        if (connection.GameServerType == ServerType.HuaiJiu)
+        {
+            for (var i = 17; i <21; i++)
+            {
+                intDictionary.Add($"p{i + 1}", 0);
+            }
+        }
         var fieldNames = intDictionary.Keys.ToList();
-        fieldNames.AddRange(new[]{
+        fieldNames.AddRange([
                 "creator",
                 "fixattr",
                 "var"
-            });
+            ]);
         var sql = "INSERT INTO t_iteminfo";
         sql += "(" + string.Join(", ", fieldNames) + ") VALUES";
         var fieldValueTemplates = (from fieldName in fieldNames

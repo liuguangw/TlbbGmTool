@@ -188,7 +188,7 @@ public class CommonItemEditorViewModel : ViewModelBase
         IsSaving = true;
         var itemBaseId = _itemData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
-        CommonItemDataService.Write(_itemData, pData,Connection.GameServerType);
+        CommonItemDataService.Write(_itemData, pData, Connection.GameServerType);
         if (_inputItemLog is null)
         {
             await InsertItemAsync(Connection, itemBaseId, pData);
