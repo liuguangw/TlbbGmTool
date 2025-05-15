@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.Models;
 
 namespace liuguang.TlbbGmTool.Services;
@@ -62,6 +63,7 @@ public static class ServerService
                              DbUser = serverEl.Element("user")?.Value ?? string.Empty,
                              DbPassword = serverEl.Element("password")?.Value ?? string.Empty,
                              DisabledSsl = serverEl.Element("disabled_ssl")?.Value == "1",
+                             GameServerType = (serverEl.Element("server_type")?.Value == "1")? ServerType.HuaiJiu: ServerType.Common,
                              ClientPath = serverEl.Element("client_path")?.Value ?? string.Empty,
                          };
         return serverList;
@@ -81,6 +83,7 @@ public static class ServerService
                 new XElement("user", gameServer.DbUser),
                 new XElement("password", gameServer.DbPassword),
                 new XElement("disabled_ssl", gameServer.DisabledSsl ? "1" : "0"),
+                new XElement("server_type", gameServer.GameServerType == ServerType.HuaiJiu ? "1" : "0"),
                 new XElement("client_path", gameServer.ClientPath)
             )
         );

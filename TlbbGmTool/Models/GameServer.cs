@@ -1,3 +1,5 @@
+using liuguang.TlbbGmTool.Common;
+
 namespace liuguang.TlbbGmTool.Models;
 
 public class GameServer
@@ -41,6 +43,11 @@ public class GameServer
     /// 禁用SSL
     /// </summary>
     public bool DisabledSsl = true;
+
+    /// <summary>
+    /// 服务端类型
+    /// </summary>
+    public ServerType GameServerType = ServerType.Common;
 
     /// <summary>
     /// 客户端路径

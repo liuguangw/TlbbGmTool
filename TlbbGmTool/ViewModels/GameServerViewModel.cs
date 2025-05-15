@@ -59,6 +59,12 @@ public class GameServerViewModel : NotifyBase
         set => SetProperty(ref _gameServer.DisabledSsl, value);
     }
 
+    public ServerType GameServerType
+    {
+        get => _gameServer.GameServerType;
+        set => _gameServer.GameServerType = value;
+    }
+
     public string ClientPath
     {
         get => _gameServer.ClientPath;
@@ -87,6 +93,7 @@ public class GameServerViewModel : NotifyBase
         DbUser = src.DbUser;
         DbPassword = src.DbPassword;
         DisabledSsl = src.DisabledSsl;
+        GameServerType = src.GameServerType;
         ClientPath = src.ClientPath;
     }
 

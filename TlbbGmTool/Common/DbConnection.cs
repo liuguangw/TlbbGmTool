@@ -25,17 +25,29 @@ public class DbConnection
     private string? _currentDbName;
 
     /// <summary>
+    /// 服务端类型
+    /// </summary>
+    public ServerType _serverType;
+
+    /// <summary>
     /// MySQL连接对象
     /// </summary>
     public MySqlConnection Conn => _conn;
 
+    /// <summary>
+    /// 服务端类型
+    /// </summary>
+    public ServerType GameServerType =>_serverType;
+
     public DbConnection()
     {
+        _serverType = ServerType.Common;
         _conn = new();
     }
 
     public async Task OpenAsync(GameServer serverInfo)
     {
+        _serverType = serverInfo.GameServerType;
         var connectionStringBuilder = new MySqlConnectionStringBuilder
         {
             Server = serverInfo.DbHost,

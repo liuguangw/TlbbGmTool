@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Data;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -112,5 +113,12 @@ public partial class MainWindow : Window
         {
             e.Column.Header = _dataTable.Columns[e.PropertyName]?.Caption ?? e.PropertyName;
         }
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+#if NET
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,8 @@ public class ServerEditorViewModel : ViewModelBase
     private bool _isConnecting = false;
     private GameServerViewModel? _inputServerInfo;
     private readonly GameServerViewModel _serverInfo = new(new());
+    private readonly List<ComboBoxNode<ServerType>> _serverTypes = [];
+    private ComboBoxNode<ServerType> _selectedNode;
     #endregion
 
     #region Properties
@@ -31,6 +34,12 @@ public class ServerEditorViewModel : ViewModelBase
     public ObservableCollection<GameServerViewModel>? ServerList { get; set; }
 
     public string WindowTitle => (_inputServerInfo is null) ? "添加服务器" : "修改服务器";
+    public List<ComboBoxNode<ServerType>> ServerTypes => _serverTypes;
+    public ComboBoxNode<ServerType> SelectedNode
+    {
+        get => _selectedNode;
+        set => SetProperty(ref _selectedNode, value);
+    }
 
     public Command SaveServerCommand { get; }
 
@@ -49,6 +58,9 @@ public class ServerEditorViewModel : ViewModelBase
             SaveServerCommand.RaiseCanExecuteChanged();
             ConnTestCommand.RaiseCanExecuteChanged();
         };
+        _serverTypes.Add(new("经典端", ServerType.Common));
+        _serverTypes.Add(new("怀旧端", ServerType.HuaiJiu));
+        _selectedNode = _serverTypes[0];
     }
 
     private void ShowFolderDialog()
@@ -91,6 +103,7 @@ public class ServerEditorViewModel : ViewModelBase
             ShowErrorMessage("无效的路径", $"客户端路径[{ServerInfo.ClientPath}]无效");
             return;
         }
+        ServerInfo.GameServerType = _selectedNode.Value;
         //
         if (_inputServerInfo is null)
         {

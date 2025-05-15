@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="liuguang.TxtViewer.MainWindow"
         mc:Ignorable="d"
-        Title="txt表格查看工具" Height="450" Width="800">
+        Title="txt表格查看工具" Height="450" Width="800" Loaded="Window_Loaded">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="菜单">
