@@ -118,8 +118,8 @@ public class ItemListViewModel : ViewModelBase
         {
             ShowDialog(new EquipEditorWindow(), (EquipEditorViewModel vm) =>
             {
-                vm.ItemLog = itemLog;
                 vm.Connection = Connection;
+                vm.ItemLog = itemLog;
             });
         }
         else if ((itemLog.ItemClass >= 2) && (itemLog.ItemClass <= 4))

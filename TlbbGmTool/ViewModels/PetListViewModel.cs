@@ -129,8 +129,8 @@ public class PetListViewModel : ViewModelBase
         {
             ShowDialog(new PetSkillEditorWindow(), (PetSkillEditorViewModel vm) =>
             {
-                vm.PetInfo = petInfo;
                 vm.Connection = Connection;
+                vm.PetInfo = petInfo;
             });
         }
     }

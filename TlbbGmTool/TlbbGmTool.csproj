@@ -16,7 +16,7 @@
 		<Company>流光</Company>
 		<Product>TlbbGmTool</Product>
 		<Copyright>MIT License</Copyright>
-		<AssemblyVersion>1.0.5.0</AssemblyVersion>
+		<AssemblyVersion>1.0.6.0</AssemblyVersion>
 		<PackageVersion>$(AssemblyVersion)</PackageVersion>
 		<VersionPrefix>$(AssemblyVersion)</VersionPrefix>
 		<FileVersion>$(AssemblyVersion)</FileVersion>

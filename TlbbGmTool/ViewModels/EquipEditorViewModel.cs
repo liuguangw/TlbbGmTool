@@ -50,7 +50,7 @@ public class EquipEditorViewModel : ViewModelBase
         set
         {
             _inputItemLog = value;
-            EquipDataService.Read(value.ItemBaseId, value.PData, _equipData);
+            EquipDataService.Read(value.ItemBaseId, value.PData, _equipData, Connection?.GameServerType ?? ServerType.Common);
             _equipData.Creator = value.Creator;
         }
     }
@@ -332,7 +332,7 @@ public class EquipEditorViewModel : ViewModelBase
 
             }
         }
-        EquipDataService.Write(_equipData, pData);
+        EquipDataService.Write(_equipData, pData, Connection.GameServerType);
         if (_inputItemLog is null)
         {
             await InsertItemAsync(Connection, itemBaseId, pData, _equipData.Creator);

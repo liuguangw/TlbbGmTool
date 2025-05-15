@@ -1,3 +1,4 @@
+using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.ViewModels.Data;
 
 namespace liuguang.TlbbGmTool.Services;
@@ -9,7 +10,8 @@ public static class EquipDataService
     /// <param name="itemBaseId"></param>
     /// <param name="pData"></param>
     /// <param name="equipData"></param>
-    public static void Read(int itemBaseId, byte[] pData, EquipDataViewModel equipData)
+    /// <param name="serverType">端类型</param>
+    public static void Read(int itemBaseId, byte[] pData, EquipDataViewModel equipData, ServerType serverType)
     {
         equipData.ItemBaseId = itemBaseId;
         int offset = 0;
@@ -32,12 +34,19 @@ public static class EquipDataService
             return value;
         };
         equipData.RulerId = readNextByte();
-        //跳过固定为0的字节
-        offset++;
+        if (serverType == ServerType.Common)
+        {
+            //跳过固定为0的字节
+            offset++;
+        }
         //前3个宝石
         equipData.Gem0 = readNextInt();
         equipData.Gem1 = readNextInt();
         equipData.Gem2 = readNextInt();
+        if (serverType == ServerType.HuaiJiu)
+        {
+            equipData.Gem3 = readNextInt();
+        }
         //
         equipData.BindStatus = readNextByte();
         equipData.MaxDurPoint = readNextByte();
@@ -64,9 +73,12 @@ public static class EquipDataService
         equipData.Attr0 = readNextInt();
         equipData.Attr1 = readNextInt();
         equipData.HiddenValue = readNextByte();
-        //最后一个宝石
-        offset += 16;
-        equipData.Gem3 = readNextInt();
+        if (serverType == ServerType.Common)
+        {
+            //最后一个宝石
+            offset += 16;
+            equipData.Gem3 = readNextInt();
+        }
         equipData.DarkFlag = readNextByte();
     }
 
@@ -75,7 +87,8 @@ public static class EquipDataService
     /// </summary>
     /// <param name="equipData"></param>
     /// <param name="pData">17*4长度的字节数组</param>
-    public static void Write(EquipDataViewModel equipData, byte[] pData)
+    /// <param name="serverType">端类型</param>
+    public static void Write(EquipDataViewModel equipData, byte[] pData, ServerType serverType)
     {
         int offset = 0;
         var writeNextByte = (byte value) =>
@@ -98,12 +111,19 @@ public static class EquipDataService
         equipData.ReloadAttrCount();
         //
         writeNextByte(equipData.RulerId);
-        //跳过固定为0的字节
-        offset++;
+        if (serverType == ServerType.Common)
+        {
+            //跳过固定为0的字节
+            offset++;
+        }
         //前3个宝石
         writeNextInt(equipData.Gem0);
         writeNextInt(equipData.Gem1);
         writeNextInt(equipData.Gem2);
+        if (serverType == ServerType.HuaiJiu)
+        {
+            writeNextInt(equipData.Gem3);
+        }
         //
         writeNextByte(equipData.BindStatus);
         writeNextByte(equipData.MaxDurPoint);
@@ -130,9 +150,12 @@ public static class EquipDataService
         writeNextInt(equipData.Attr0);
         writeNextInt(equipData.Attr1);
         writeNextByte(equipData.HiddenValue);
-        //最后一个宝石
-        offset += 16;
-        writeNextInt(equipData.Gem3);
+        if (serverType == ServerType.Common)
+        {
+            //最后一个宝石
+            offset += 16;
+            writeNextInt(equipData.Gem3);
+        }
         writeNextByte(equipData.DarkFlag);
     }
 }

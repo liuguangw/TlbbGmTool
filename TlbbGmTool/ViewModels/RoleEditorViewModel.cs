@@ -200,10 +200,11 @@ public class RoleEditorViewModel : ViewModelBase
             ["bankmoney"] = roleInfo.BankMoney,
             ["yuanbao"] = roleInfo.YuanBao,
             ["menpaipoint"] = roleInfo.MenpaiPoint,
-            ["zengdian"] = roleInfo.ZengDian
+            ["zengdian"] = roleInfo.ZengDian,
+            ["crc32"] = 0
         };
         var fieldNames = intDictionary.Keys.ToList();
-        fieldNames.AddRange(new[] { "accname", "charname", "title" });
+        fieldNames.AddRange(["accname", "charname", "title"]);
         // fieldA=@fieldA
         var updateCondition = (from fieldName in fieldNames
                                select $"{fieldName}=@{fieldName}");

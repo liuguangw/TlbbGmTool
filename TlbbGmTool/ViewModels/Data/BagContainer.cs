@@ -1,8 +1,7 @@
-using liuguang.TlbbGmTool.Common;
-using liuguang.TlbbGmTool.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Documents;
+using liuguang.TlbbGmTool.Common;
+using liuguang.TlbbGmTool.Models;
 
 namespace liuguang.TlbbGmTool.ViewModels.Data;
 public class BagContainer : NotifyBase
@@ -27,11 +26,28 @@ public class BagContainer : NotifyBase
     #endregion
     public ObservableCollection<ItemLogViewModel> ItemList => _itemList;
 
+    public ServerType GameServerType = ServerType.Common;
     public BagType RoleBagType
     {
         get => _roleBagType;
         set
         {
+            if (GameServerType == ServerType.Common)
+            {
+                BagMaxSize = 30;
+            }
+            else
+            {
+                if (value == BagType.ItemBag || value == BagType.MaterialBag)
+                {
+                    BagMaxSize = 100;
+
+                }
+                else
+                {
+                    BagMaxSize = 40;
+                }
+            }
             SetProperty(ref _roleBagType, value);
             if (PosOffset < 0)
             {
@@ -44,7 +60,14 @@ public class BagContainer : NotifyBase
                         PosOffset = BagMaxSize;
                         break;
                     case BagType.TaskBag:
-                        PosOffset = 2 * BagMaxSize;
+                        if (GameServerType == ServerType.Common)
+                        { 
+                            PosOffset = 2 * BagMaxSize;
+                        }
+                        else
+                        {
+                            PosOffset = 200;
+                        }
                         break;
                 }
             }

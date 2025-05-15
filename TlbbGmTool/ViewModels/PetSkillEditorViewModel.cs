@@ -132,17 +132,40 @@ public class PetSkillEditorViewModel : ViewModelBase
 
     private void LoadSkillList(string skillHex)
     {
+        if (Connection is null)
+        {
+            return;
+        }
+        var serverType = Connection.GameServerType;
         var pData = DataService.ConvertToPData(skillHex);
         for (var i = 0; i < 13; i++)
         {
-            var offset = i * 3;
-            var flag = pData[offset];
+            var offset = i;
+            byte flag;
+            if (serverType == ServerType.Common)
+            {
+                offset *= 3;
+                flag = pData[offset];
+                offset++;
+            }
+            else
+            {
+                offset *= 5;
+                flag = pData[offset + 4];
+            }
             if (flag == 0)
             {
                 continue;
             }
-            offset++;
-            var skillId = DataService.ReadShort(pData, offset);
+            int skillId;
+            if (serverType == ServerType.Common)
+            {
+                skillId = DataService.ReadShort(pData, offset);
+            }
+            else
+            {
+                skillId = DataService.ReadInt(pData, offset);
+            }
             if (_allSkills.TryGetValue(skillId, out var skillItem))
             {
                 SkillList.Add(skillItem);
@@ -179,24 +202,57 @@ public class PetSkillEditorViewModel : ViewModelBase
 
     private async Task DoSavePetSkillAsync(DbConnection connection, PetLogViewModel petInfo)
     {
-        var pData = new byte[13 * 3];
+        int nodeLength;
+        var serverType = connection.GameServerType;
+        if (serverType == ServerType.Common)
+        {
+            nodeLength = 3;
+        }
+        else
+        {
+            nodeLength = 5;
+        }
+
+        var pData = new byte[13 * nodeLength];
         var offset = 0;
         //写入技能id
         foreach (var skillInfo in SkillList)
         {
-            pData[offset] = 1;
-            offset++;
-            DataService.WriteData(pData, offset, (short)skillInfo.Id);
-            offset += 2;
+            if (serverType == ServerType.Common)
+            {
+                pData[offset] = 1;
+                offset++;
+                DataService.WriteData(pData, offset, (short)skillInfo.Id);
+                offset += 2;
+            }
+            else
+            {
+                DataService.WriteData(pData, offset, skillInfo.Id);
+                offset += 4;
+                pData[offset] = 1;
+                offset++;
+            }
         }
         //填充剩余数据
-        short padValue = -1;
         while (offset < pData.Length)
         {
-            pData[offset] = 0;
-            offset++;
-            DataService.WriteData(pData, offset, padValue);
-            offset += 2;
+
+            if (serverType == ServerType.Common)
+            {
+                short padValue = -1;
+                pData[offset] = 0;
+                offset++;
+                DataService.WriteData(pData, offset, padValue);
+                offset += 2;
+            }
+            else
+            {
+                int padValue = -1;
+                DataService.WriteData(pData, offset, padValue);
+                offset += 4;
+                pData[offset] = 0;
+                offset++;
+            }
         }
         petInfo.Skill = DataService.ConvertToHex(pData);
         //

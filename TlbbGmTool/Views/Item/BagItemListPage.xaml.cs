@@ -23,6 +23,10 @@ public partial class BagItemListPage : Page
             var roleWindowVm = (RoleWindowViewModel)roleWindow.DataContext;
             vm.OwnedWindow = roleWindow;
             vm.Connection = roleWindowVm.Connection;
+            if (roleWindowVm.Connection != null)
+            {
+                vm.ItemsContainer.GameServerType = roleWindowVm.Connection.GameServerType;
+            }
             vm.ItemsContainer.RoleBagType = RoleBagType;
             if (roleWindowVm.RoleInfo != null)
             {
