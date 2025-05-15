@@ -27,7 +27,7 @@ public class DbConnection
     /// <summary>
     /// 服务端类型
     /// </summary>
-    public ServerType _serverType;
+    private ServerType _serverType;
 
     /// <summary>
     /// MySQL连接对象

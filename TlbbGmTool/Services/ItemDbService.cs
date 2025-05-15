@@ -38,6 +38,7 @@ public static class ItemDbService
                     pArray[i] = rd.GetInt32("p" + (i + 1));
                 }
                 var pData = DataService.ConvertToPData(pArray);
+                var serverType = connection.GameServerType;
                 itemList.Add(new(new()
                 {
                     Id = rd.GetInt32("aid"),
@@ -55,7 +56,7 @@ public static class ItemDbService
                     TVar = rd.GetString("var"),
                     VisualId = rd.GetInt32("visualid"),
                     MaxgemId = rd.GetInt32("maxgemid")
-                }));
+                }, serverType));
             }
         }
         return itemList;

@@ -155,12 +155,13 @@ public class GemEditorViewModel : ViewModelBase
         {
             return;
         }
+        var serverType = connection.GameServerType;
         ItemLogViewModel itemLog = new(new()
         {
             CharGuid = _itemsContainer.CharGuid,
             ItemBaseId = itemBaseId,
             PData = pData,
-        });
+        }, serverType);
         try
         {
             await Task.Run(async () =>

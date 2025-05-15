@@ -349,13 +349,14 @@ public class EquipEditorViewModel : ViewModelBase
         {
             return;
         }
+        var serverType = connection.GameServerType;
         ItemLogViewModel itemLog = new(new()
         {
             CharGuid = _itemsContainer.CharGuid,
             ItemBaseId = itemBaseId,
             PData = pData,
             Creator = creator
-        });
+        }, serverType);
         try
         {
             await Task.Run(async () =>

@@ -1,3 +1,4 @@
+using liuguang.TlbbGmTool.Common;
 using liuguang.TlbbGmTool.ViewModels.Data;
 
 namespace liuguang.TlbbGmTool.Services;
@@ -9,7 +10,8 @@ public static class CommonItemDataService
     /// <param name="itemBaseId"></param>
     /// <param name="pData"></param>
     /// <param name="itemData"></param>
-    public static void Read(int itemBaseId, byte[] pData, CommonItemDataViewModel itemData)
+    /// <param name="serverType">端类型</param>
+    public static void Read(int itemBaseId, byte[] pData, CommonItemDataViewModel itemData, ServerType serverType)
     {
         itemData.ItemBaseId = itemBaseId;
         int offset = 0;
@@ -32,8 +34,11 @@ public static class CommonItemDataService
             return value;
         };
         itemData.RulerId = readNextByte();
-        //跳过固定为0的字节
-        offset++;
+        if (serverType == ServerType.Common)
+        {
+            //跳过固定为0的字节
+            offset++;
+        }
         var costSelf = readNextInt();
         itemData.CosSelf = (costSelf == 1);
         itemData.BasePrice = readNextUInt();
@@ -56,7 +61,8 @@ public static class CommonItemDataService
     /// </summary>
     /// <param name="itemData"></param>
     /// <param name="pData">17*4长度的字节数组</param>
-    public static void Write(CommonItemDataViewModel itemData, byte[] pData)
+    /// <param name="serverType">端类型</param>
+    public static void Write(CommonItemDataViewModel itemData, byte[] pData, ServerType serverType)
     {
         int offset = 0;
         var writeNextByte = (byte value) =>
@@ -76,8 +82,11 @@ public static class CommonItemDataService
         };
         //
         writeNextByte(itemData.RulerId);
-        //跳过固定为0的字节
-        offset++;
+        if (serverType == ServerType.Common)
+        {
+            //跳过固定为0的字节
+            offset++;
+        }
         int costSelf = itemData.CosSelf ? 1 : 0;
         writeNextInt(costSelf);
         writeNextUInt(itemData.BasePrice);

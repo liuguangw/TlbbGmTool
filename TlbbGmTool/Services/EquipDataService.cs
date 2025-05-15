@@ -79,6 +79,10 @@ public static class EquipDataService
             offset += 16;
             equipData.Gem3 = readNextInt();
         }
+        else
+        {
+            offset += 19;
+        }
         equipData.DarkFlag = readNextByte();
     }
 
@@ -155,6 +159,10 @@ public static class EquipDataService
             //最后一个宝石
             offset += 16;
             writeNextInt(equipData.Gem3);
+        }
+        else
+        {
+            offset += 19;
         }
         writeNextByte(equipData.DarkFlag);
     }

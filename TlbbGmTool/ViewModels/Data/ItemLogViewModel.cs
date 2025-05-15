@@ -7,6 +7,7 @@ public class ItemLogViewModel : NotifyBase
 {
     #region Fields
     private ItemLog _itemLog;
+    private readonly ServerType _serverType;
     #endregion
     #region Properties
     public int Id
@@ -181,13 +182,22 @@ public class ItemLogViewModel : NotifyBase
             {
                 return 1;
             }
-            return _itemLog.PData[6 * 4 + 3] & 0xff;
+            int offset;
+            if (_serverType == ServerType.Common) {
+                offset = 6 * 4 + 3;
+            }
+            else
+            {
+                offset = 6 * 4 + 2;
+            }
+            return _itemLog.PData[offset] & 0xff;
         }
     }
     #endregion
-    public ItemLogViewModel(ItemLog itemLog)
+    public ItemLogViewModel(ItemLog itemLog, ServerType serverType)
     {
         _itemLog = itemLog;
+        _serverType = serverType;
     }
     private void RaiseBaseIdChange()
     {

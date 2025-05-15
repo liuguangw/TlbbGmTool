@@ -50,7 +50,7 @@ public class CommonItemEditorViewModel : ViewModelBase
         set
         {
             _inputItemLog = value;
-            CommonItemDataService.Read(value.ItemBaseId, value.PData, _itemData);
+            CommonItemDataService.Read(value.ItemBaseId, value.PData, _itemData, Connection?.GameServerType ?? ServerType.Common);
         }
     }
     public BagContainer ItemsContainer
@@ -188,7 +188,7 @@ public class CommonItemEditorViewModel : ViewModelBase
         IsSaving = true;
         var itemBaseId = _itemData.ItemBaseId;
         byte[] pData = new byte[17 * 4];
-        CommonItemDataService.Write(_itemData, pData);
+        CommonItemDataService.Write(_itemData, pData,Connection.GameServerType);
         if (_inputItemLog is null)
         {
             await InsertItemAsync(Connection, itemBaseId, pData);
@@ -204,12 +204,13 @@ public class CommonItemEditorViewModel : ViewModelBase
         {
             return;
         }
+        var serverType = connection.GameServerType;
         ItemLogViewModel itemLog = new(new()
         {
             CharGuid = _itemsContainer.CharGuid,
             ItemBaseId = itemBaseId,
             PData = pData,
-        });
+        },serverType);
         try
         {
             await Task.Run(async () =>

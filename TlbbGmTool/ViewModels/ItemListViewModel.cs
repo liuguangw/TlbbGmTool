@@ -126,17 +126,17 @@ public class ItemListViewModel : ViewModelBase
         {
             ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
             {
-                vm.ItemLog = itemLog;
                 vm.RoleBagType = ItemsContainer.RoleBagType;
                 vm.Connection = Connection;
+                vm.ItemLog = itemLog;
             });
         }
         else if (itemLog.ItemClass == 5)
         {
             ShowDialog(new GemEditorWindow(), (GemEditorViewModel vm) =>
             {
-                vm.ItemLog = itemLog;
                 vm.Connection = Connection;
+                vm.ItemLog = itemLog;
             });
         }
         else
@@ -160,13 +160,14 @@ public class ItemListViewModel : ViewModelBase
         }
         var pData = new byte[itemLog.PData.Length];
         Array.Copy(itemLog.PData, pData, pData.Length);
+        var serverType = Connection.GameServerType;
         ItemLogViewModel newItemLog = new(new()
         {
             CharGuid = itemLog.CharGuid,
             ItemBaseId = itemLog.ItemBaseId,
             PData = pData,
             Creator = itemLog.Creator,
-        });
+        }, serverType);
         try
         {
             await Task.Run(async () =>
