@@ -130,6 +130,7 @@ public class GemEditorViewModel : ViewModelBase
             vm.ItemList = (from itemBaseInfo in SharedData.ItemBaseMap.Values
                            where itemBaseInfo.TClass == 5
                            select new ItemBaseViewModel(itemBaseInfo)).ToList();
+            vm.LoadLastData();
         };
         if (ShowDialog(selectorWindow, beforeAction) == true)
         {

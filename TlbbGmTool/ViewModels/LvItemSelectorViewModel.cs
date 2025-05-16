@@ -8,10 +8,23 @@ using System.Linq;
 namespace liuguang.TlbbGmTool.ViewModels;
 
 /// <summary>
-/// 装备选择器
+/// 宝石选择器
 /// </summary>
 public class LvItemSelectorViewModel : ViewModelBase
 {
+    #region StaticFields
+    private static int LastSelectedType = 0;
+    private static byte LastSelectedLevel = 0;
+    private static string LastSearchText = string.Empty;
+    private static int LastPage = 1;
+    public static void ResetLastData()
+    {
+        LastSelectedType = 0;
+        LastSelectedLevel = 0;
+        LastSearchText = string.Empty;
+        LastPage = 1;
+    }
+    #endregion
     #region Fields
     /// <summary>
     /// 所有的装备列表
@@ -63,6 +76,7 @@ public class LvItemSelectorViewModel : ViewModelBase
             {
                 DoFilterItemList();
             }
+            LastSelectedType = value;
         }
     }
     public byte SelectedLevel
@@ -74,6 +88,7 @@ public class LvItemSelectorViewModel : ViewModelBase
             {
                 DoFilterItemList();
             }
+            LastSelectedLevel = value;
         }
     }
     public string SearchText
@@ -85,6 +100,7 @@ public class LvItemSelectorViewModel : ViewModelBase
             {
                 DoFilterItemList();
             }
+            LastSearchText = value;
         }
     }
 
@@ -116,6 +132,7 @@ public class LvItemSelectorViewModel : ViewModelBase
         _pagination.OnPageChanged += () =>
         {
             RaisePropertyChanged(nameof(CurrentPageItemList));
+            LastPage = _pagination.Page;
         };
     }
     private void LoadShortTypeSelection()
@@ -184,5 +201,15 @@ public class LvItemSelectorViewModel : ViewModelBase
         currentWindow.SelectedItem = itemBaseInfo;
         currentWindow.DialogResult = true;
         currentWindow.Close();
+    }
+    /// <summary>
+    /// 加载上次的选项
+    /// </summary>
+    public void LoadLastData()
+    {
+        SelectedType = LastSelectedType;
+        SelectedLevel = LastSelectedLevel;
+        SearchText = LastSearchText;
+        _pagination.Page = LastPage;
     }
 }

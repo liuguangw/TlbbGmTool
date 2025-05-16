@@ -1,5 +1,4 @@
 using liuguang.TlbbGmTool.Common;
-using System;
 
 namespace liuguang.TlbbGmTool.ViewModels.Data;
 
@@ -33,6 +32,7 @@ public class PaginationViewModel : NotifyBase
             {
                 RaisePropertyChanged(nameof(PageTip));
                 RaisePageCommandChange();
+                OnPageChanged?.Invoke();
             }
         }
     }
@@ -100,24 +100,20 @@ public class PaginationViewModel : NotifyBase
     private void GoToFirstPage()
     {
         Page = 1;
-        OnPageChanged?.Invoke();
     }
 
     private void GoToLastPage()
     {
         Page = _pageTotal;
-        OnPageChanged?.Invoke();
     }
 
     private void GotoPrevPage()
     {
         Page = _page - 1;
-        OnPageChanged?.Invoke();
     }
 
     private void GotoNextPage()
     {
         Page = _page + 1;
-        OnPageChanged?.Invoke();
     }
 }

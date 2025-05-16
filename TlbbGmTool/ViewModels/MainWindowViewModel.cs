@@ -189,6 +189,8 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
         CurrentDbStatus = DbStatus.Connected;
+        //重置选项
+        LvItemSelectorViewModel.ResetLastData();
         //数据库连接成功过
         //从客户端的axp文件中加载数据
         this.DataStatus = DataStatus.Loading;
