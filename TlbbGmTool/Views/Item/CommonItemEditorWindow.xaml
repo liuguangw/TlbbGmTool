@@ -6,12 +6,15 @@
         xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
         mc:Ignorable="d"
         ShowInTaskbar="False" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
-        Title="{Binding WindowTitle}" Height="200" Width="400">
+        Title="{Binding WindowTitle}" Height="350" Width="400">
     <Window.DataContext>
         <vm:CommonItemEditorViewModel />
     </Window.DataContext>
     <Grid Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
@@ -63,7 +66,16 @@
         <TextBox Grid.Row="2" Grid.Column="2"
                 IsEnabled="{Binding CountEditorEnabled}"
                  Text="{Binding ItemData.Count,UpdateSourceTrigger=PropertyChanged}" />
-        <Button Grid.Row="3" Grid.Column="2" Margin="5"
+        <Label Grid.Row="3" Grid.Column="0">物品参数1</Label>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Text="{Binding ItemData.ItemParams0,UpdateSourceTrigger=PropertyChanged}" />
+        <Label Grid.Row="4" Grid.Column="0">物品参数2</Label>
+        <TextBox Grid.Row="4" Grid.Column="1"
+                 Text="{Binding ItemData.ItemParams1,UpdateSourceTrigger=PropertyChanged}" />
+        <Label Grid.Row="5" Grid.Column="0">物品参数3</Label>
+        <TextBox Grid.Row="5" Grid.Column="1"
+                 Text="{Binding ItemData.ItemParams2,UpdateSourceTrigger=PropertyChanged}" />
+        <Button Grid.Row="6" Grid.Column="2" Margin="5"
                 Command="{Binding SaveCommand}">保存</Button>
     </Grid>
 </Window>

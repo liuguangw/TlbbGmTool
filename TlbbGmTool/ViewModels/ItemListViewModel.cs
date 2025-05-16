@@ -124,12 +124,25 @@ public class ItemListViewModel : ViewModelBase
         }
         else if ((itemLog.ItemClass >= 2) && (itemLog.ItemClass <= 4))
         {
-            ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
+            //藏宝图
+            if (itemLog.ItemBaseId == 30000000)
             {
-                vm.RoleBagType = ItemsContainer.RoleBagType;
-                vm.Connection = Connection;
-                vm.ItemLog = itemLog;
-            });
+                ShowDialog(new StoreMapEditorWindow(), (CommonItemEditorViewModel vm) =>
+                {
+                    vm.RoleBagType = ItemsContainer.RoleBagType;
+                    vm.Connection = Connection;
+                    vm.ItemLog = itemLog;
+                });
+            }
+            else
+            {
+                ShowDialog(new CommonItemEditorWindow(), (CommonItemEditorViewModel vm) =>
+                {
+                    vm.RoleBagType = ItemsContainer.RoleBagType;
+                    vm.Connection = Connection;
+                    vm.ItemLog = itemLog;
+                });
+            }
         }
         else if (itemLog.ItemClass == 5)
         {

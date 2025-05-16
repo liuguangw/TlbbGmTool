@@ -1,0 +1,64 @@
+﻿<Window x:Class="liuguang.TlbbGmTool.Views.Item.StoreMapEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="clr-namespace:liuguang.TlbbGmTool.ViewModels"
+        mc:Ignorable="d"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Title="{Binding WindowTitle}" Height="350" Width="315">
+    <Window.DataContext>
+        <vm:CommonItemEditorViewModel />
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="8*" />
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,6,0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="13,6" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0" Grid.Column="0">名称</Label>
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 IsReadOnly="True" BorderThickness="0"
+                 Text="{Binding ItemData.ItemName,Mode=OneWay}" />
+        <Label Grid.Row="1" Grid.Column="0">等级</Label>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Text="{Binding ItemData.MapLevel}" />
+        <Label Grid.Row="2" Grid.Column="0">场景ID</Label>
+        <TextBox Grid.Row="2" Grid.Column="1"
+         Text="{Binding ItemData.SceneID}" />
+        <Label Grid.Row="3" Grid.Column="0">坐标X</Label>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Text="{Binding ItemData.PosX}" />
+        <Label Grid.Row="4" Grid.Column="0">坐标Y</Label>
+        <TextBox Grid.Row="4" Grid.Column="1"
+                 Text="{Binding ItemData.PosY}" />
+        <Label Grid.Row="5" Grid.Column="0">额外参数</Label>
+        <TextBox Grid.Row="5" Grid.Column="1"
+                 Text="{Binding ItemData.MapExtraValue}" />
+        <WrapPanel Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <Button MinWidth="74" Height="36" Command="{Binding SaveCommand}" Margin="0,0,5,0">保存</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

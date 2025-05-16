@@ -51,10 +51,9 @@ public static class CommonItemDataService
         itemData.TargetType = readNextByte();
         itemData.BindStatus = readNextByte();
         itemData.Count = readNextByte();
-        for (var i = 0; i < itemData.ItemParams.Length; i++)
-        {
-            itemData.ItemParams[i] = readNextByte();
-        }
+        itemData.ItemParams0 = readNextInt();
+        itemData.ItemParams1 = readNextInt();
+        itemData.ItemParams2 = readNextInt();
     }
     /// <summary>
     /// 将数据写入到pData中
@@ -99,9 +98,8 @@ public static class CommonItemDataService
         writeNextByte(itemData.TargetType);
         writeNextByte(itemData.BindStatus);
         writeNextByte(itemData.Count);
-        for (var i = 0; i < itemData.ItemParams.Length; i++)
-        {
-            writeNextByte(itemData.ItemParams[i]);
-        }
+        writeNextInt(itemData.ItemParams0);
+        writeNextInt(itemData.ItemParams1);
+        writeNextInt(itemData.ItemParams2);
     }
 }
