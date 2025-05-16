@@ -14,7 +14,7 @@ public class PetEditorViewModel : ViewModelBase
     private bool _isSaving = false;
     private PetLogViewModel? _inputPetInfo;
     private PetLogViewModel _petInfo = new(new());
-    private List<ComboBoxNode<int>> _aiTypeSelection = new() { 
+    private List<ComboBoxNode<int>> _aiTypeSelection = new() {
         new("胆小",0),
         new("谨慎",1),
         new("忠诚",2),

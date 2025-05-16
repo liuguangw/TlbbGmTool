@@ -52,8 +52,10 @@ public class ServerListViewModel : ViewModelBase
             {
                 vm.ServerInfo = serverInfo;
                 vm.ServerList = _serverList;
-                foreach (var node in vm.ServerTypes) {
-                    if (node.Value == serverInfo.GameServerType) { 
+                foreach (var node in vm.ServerTypes)
+                {
+                    if (node.Value == serverInfo.GameServerType)
+                    {
                         vm.SelectedNode = node;
                         break;
                     }

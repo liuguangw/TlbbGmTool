@@ -195,7 +195,7 @@ public static class ItemDbService
         //P18 - P21
         if (connection.GameServerType == ServerType.HuaiJiu)
         {
-            for (var i = 17; i <21; i++)
+            for (var i = 17; i < 21; i++)
             {
                 intDictionary.Add($"p{i + 1}", 0);
             }

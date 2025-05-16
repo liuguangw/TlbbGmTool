@@ -183,7 +183,8 @@ public class ItemLogViewModel : NotifyBase
                 return 1;
             }
             int offset;
-            if (_serverType == ServerType.Common) {
+            if (_serverType == ServerType.Common)
+            {
                 offset = 6 * 4 + 3;
             }
             else

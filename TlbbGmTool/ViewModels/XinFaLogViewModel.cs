@@ -23,7 +23,8 @@ public class XinFaLogViewModel : NotifyBase
     public int XinFaId
     {
         get => _xinFaLog.XinFaId;
-        private set {
+        private set
+        {
             if (SetProperty(ref _xinFaLog.XinFaId, value))
             {
                 //用于editor中

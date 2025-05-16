@@ -30,7 +30,7 @@ public class HashToolViewModel : NotifyBase
     public string HashText
     {
         get => _hashText;
-        private set =>SetProperty(ref _hashText, value);
+        private set => SetProperty(ref _hashText, value);
     }
 
     #endregion

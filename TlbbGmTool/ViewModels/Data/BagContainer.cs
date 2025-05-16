@@ -61,7 +61,7 @@ public class BagContainer : NotifyBase
                         break;
                     case BagType.TaskBag:
                         if (GameServerType == ServerType.Common)
-                        { 
+                        {
                             PosOffset = 2 * BagMaxSize;
                         }
                         else

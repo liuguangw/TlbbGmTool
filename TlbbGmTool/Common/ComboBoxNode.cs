@@ -6,7 +6,7 @@ namespace liuguang.TlbbGmTool.Common;
 /// <typeparam name="T"></typeparam>
 public class ComboBoxNode<T>
 {
-    public  string Title { get; }
+    public string Title { get; }
 
     public T Value { get; }
 

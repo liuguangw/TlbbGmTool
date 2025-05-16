@@ -210,7 +210,7 @@ public class CommonItemEditorViewModel : ViewModelBase
             CharGuid = _itemsContainer.CharGuid,
             ItemBaseId = itemBaseId,
             PData = pData,
-        },serverType);
+        }, serverType);
         try
         {
             await Task.Run(async () =>

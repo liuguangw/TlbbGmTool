@@ -63,7 +63,7 @@ public static class ServerService
                              DbUser = serverEl.Element("user")?.Value ?? string.Empty,
                              DbPassword = serverEl.Element("password")?.Value ?? string.Empty,
                              DisabledSsl = serverEl.Element("disabled_ssl")?.Value == "1",
-                             GameServerType = (serverEl.Element("server_type")?.Value == "1")? ServerType.HuaiJiu: ServerType.Common,
+                             GameServerType = (serverEl.Element("server_type")?.Value == "1") ? ServerType.HuaiJiu : ServerType.Common,
                              ClientPath = serverEl.Element("client_path")?.Value ?? string.Empty,
                          };
         return serverList;

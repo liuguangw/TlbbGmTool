@@ -25,7 +25,7 @@ public class PetLogViewModel : NotifyBase
     }
     public int Level
     {
-        get => _petLog.Level;set => SetProperty(ref _petLog.Level, value);
+        get => _petLog.Level; set => SetProperty(ref _petLog.Level, value);
     }
     public int NeedLevel
     {
@@ -49,7 +49,7 @@ public class PetLogViewModel : NotifyBase
     }
     public int Enjoy
     {
-        get => _petLog.Enjoy;set => SetProperty(ref _petLog.Enjoy, value);
+        get => _petLog.Enjoy; set => SetProperty(ref _petLog.Enjoy, value);
     }
 
     public int Savvy
@@ -58,7 +58,7 @@ public class PetLogViewModel : NotifyBase
     }
     public int Gengu
     {
-        get => _petLog.Gengu;set => SetProperty(ref _petLog.Gengu, value);
+        get => _petLog.Gengu; set => SetProperty(ref _petLog.Gengu, value);
     }
     public int GrowRate
     {
@@ -91,7 +91,7 @@ public class PetLogViewModel : NotifyBase
     }
     public int Dex
     {
-        get => _petLog.Dex;set => SetProperty(ref _petLog.Dex, value);
+        get => _petLog.Dex; set => SetProperty(ref _petLog.Dex, value);
     }
 
     public int StrPer
@@ -108,7 +108,7 @@ public class PetLogViewModel : NotifyBase
     }
     public int IprPer
     {
-        get => _petLog.IprPer;set => SetProperty(ref _petLog.IprPer, value);
+        get => _petLog.IprPer; set => SetProperty(ref _petLog.IprPer, value);
     }
     public int DexPer
     {

@@ -1,4 +1,4 @@
-﻿namespace liuguang.Axp;
+namespace liuguang.Axp;
 
 public struct AxpHashNode
 {

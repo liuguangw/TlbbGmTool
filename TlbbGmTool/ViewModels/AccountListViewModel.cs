@@ -46,7 +46,7 @@ public class AccountListViewModel : ViewModelBase
         SearchCommand = new(SearchAccount, () => !_isSearching);
         AddAccountCommand = new(ShowAddAccountEditorDialog, parameter => !_isSearching);
         EditAccountCommand = new(ShowAccountEditorDialog);
-        DeleteAccountCommand= new(ProcessDeleteAccount);
+        DeleteAccountCommand = new(ProcessDeleteAccount);
     }
 
     private async void SearchAccount()
@@ -166,7 +166,7 @@ public class AccountListViewModel : ViewModelBase
         {
             await Task.Run(async () =>
             {
-                await DeleteAccountAsync(Connection,accountInfo.Name);
+                await DeleteAccountAsync(Connection, accountInfo.Name);
             });
             AccountList.Remove(accountInfo);
             ShowMessage("删除成功", $"删除账号{accountInfo.Name}成功");
@@ -176,7 +176,7 @@ public class AccountListViewModel : ViewModelBase
             ShowErrorMessage("删除失败", ex, true);
         }
     }
-    private async Task DeleteAccountAsync(DbConnection connection,string name)
+    private async Task DeleteAccountAsync(DbConnection connection, string name)
     {
 
         const string sql = "DELETE FROM account WHERE name=@name";

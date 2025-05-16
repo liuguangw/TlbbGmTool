@@ -1,4 +1,4 @@
-﻿namespace liuguang.Axp;
+namespace liuguang.Axp;
 
 /// <summary>
 /// Hash计算类型

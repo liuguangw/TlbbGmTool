@@ -18,7 +18,7 @@ public class AboutWindowViewModel
             var metaAttribute = currentAssem.GetCustomAttribute<AssemblyMetadataAttribute>();
             RepositoryUrl = metaAttribute?.Value ?? "-";
 
-        }          
+        }
         AppRuntime = RuntimeInformation.FrameworkDescription;
     }
 }

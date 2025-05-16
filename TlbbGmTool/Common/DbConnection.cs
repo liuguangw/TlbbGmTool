@@ -37,7 +37,7 @@ public class DbConnection
     /// <summary>
     /// 服务端类型
     /// </summary>
-    public ServerType GameServerType =>_serverType;
+    public ServerType GameServerType => _serverType;
 
     public DbConnection()
     {
