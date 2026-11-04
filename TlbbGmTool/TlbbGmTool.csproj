@@ -44,7 +44,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="MySqlConnector" Version="2.4.0" />
+		<PackageReference Include="MySqlConnector" Version="2.6.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\axp\axp.csproj" />
